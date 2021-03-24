@@ -1,6 +1,6 @@
-﻿using System;
+﻿using eShop.Data.Enums;
+using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace eShop.Data.Entities
 {
@@ -16,5 +16,6 @@ namespace eShop.Data.Entities
         public OrderStatus Status { set; get; }
 
         public List<OrderDetail> OrderDetails { get; set; }
+        public AppUser AppUser { get; set; }
     }
 }
