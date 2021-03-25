@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Transactions;
 
 namespace eShop.Data.Entities
 {
@@ -15,5 +14,7 @@ namespace eShop.Data.Entities
         public string Message { set; get; }
         public TransactionStatus Status { set; get; }
         public string Provider { set; get; }
+        public Guid UserId { set; get; }
+        public AppUser AppUser { get; set; }
     }
 }
