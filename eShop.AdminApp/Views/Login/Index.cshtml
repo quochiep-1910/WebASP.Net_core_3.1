@@ -34,6 +34,7 @@
                 <p class="login-box-msg">Đăng nhập để bắt đầu phiên của bạn</p>
 
                 <form asp-action="Index" asp-controller="Login" method="post">
+                    <div asp-validation-summary="All" class="text-danger"></div>
                     <div class="input-group mb-3">
                         <input type="text" asp-for="UserName" class="form-control" placeholder="Tài Khoản">
                         <div class="input-group-append">
