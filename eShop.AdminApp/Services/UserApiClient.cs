@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace eShop.AdminApp.Services
 {
-    public class UserApiClient : IUserApiClient
+    public class UserApiClient : BaseApiClient, IUserApiClient
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
@@ -23,7 +23,7 @@ namespace eShop.AdminApp.Services
         public UserApiClient(IHttpClientFactory httpClientFactory,
             IConfiguration configuration,
                IHttpContextAccessor httpContextAccessor
-            )
+            ) : base(httpClientFactory, configuration, httpContextAccessor)
         {
             _httpClientFactory = httpClientFactory;
             _configuration = configuration;
@@ -62,16 +62,8 @@ namespace eShop.AdminApp.Services
 
         public async Task<ApiResult<UserViewModel>> GetById(Guid id)
         {
-            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
-            var client = _httpClientFactory.CreateClient();
-            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions); //lấy token
-            var response = await client.GetAsync($"/api/users/{id}");
-            var body = await response.Content.ReadAsStringAsync();
-            if (response.IsSuccessStatusCode)
-                return JsonConvert.DeserializeObject<ApiSuccessResult<UserViewModel>>(body);
-
-            return JsonConvert.DeserializeObject<ApiErrorResult<UserViewModel>>(body);
+            var result = await GetById<ApiResult<UserViewModel>>("/api/users", id);
+            return result;
         }
 
         public async Task<ApiResult<PagedResult<UserViewModel>>> GetUsersPagings(GetUserPagingRequest request)
@@ -97,6 +89,27 @@ namespace eShop.AdminApp.Services
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
             var response = await client.PostAsync("/api/users", httpContent);
+            var result = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)//kiểm tra status code
+            {
+                return JsonConvert.DeserializeObject<ApiSuccessResult<bool>>(result);
+            }
+            return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
+        }
+
+        public async Task<ApiResult<bool>> RoleAssign(Guid id, RoleAssignRequest request)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions); //lấy token
+
+            var json = JsonConvert.SerializeObject(request); //convert json to string
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await client.PutAsync($"/api/users/{id}/roles", httpContent);
             var result = await response.Content.ReadAsStringAsync();
 
             if (response.IsSuccessStatusCode)//kiểm tra status code

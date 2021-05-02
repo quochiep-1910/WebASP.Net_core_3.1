@@ -47,6 +47,8 @@ namespace eShop.AdminApp
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); //truy cập HttpContext thông qua  IHttpContextAccessor
             services.AddTransient<IUserApiClient, UserApiClient>();
+            services.AddTransient<IRoleApiClient, RoleApiClient>();
+            services.AddTransient<ILanguageApiClient, LanguageApiClient>();
 
             //biên dịch razor view
             IMvcBuilder builder = services.AddRazorPages();
