@@ -1,0 +1,132 @@
+﻿@using eShop.ViewModels.Common
+@model PagedResult<eShop.ViewModels.Catalog.Products.ProductViewModel>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    ViewData["Title"] = "Danh sách sản phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Scripts{
+    <script>
+        setTimeout(function () {
+            $('#msgAlert').fadeOut('slow');
+        }, 2000);
+    </script>
+}
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Danh sách sản phẩm</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active">Danh sách sản phẩm</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+    <section class="content">
+
+        <!-- Default box -->
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-6 col-xs-12">
+                        <a class="btn btn-success" asp-action="Create" asp-controller="Product">Tạo Mới </a>
+                    </div>
+                    <div class="col-md-6 col-xs-12">
+                        <form asp-action="Index" method="get">
+                            <div class="row">
+                                <div class=" col-md-9">
+                                    <input type="text" value="@ViewBag.Keyword" name="keyword" class="form-control" />
+                                </div>
+                                <div class=" col-md-3">
+                                    <button type="submit" class="btn btn-primary">Tìm</button>
+                                    <button type="button" onabort="window.location.href='/Product/Index'" class="btn btn-dark">Reset</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-md-12 ">
+                        @if (ViewBag.SuccessMsg != null)
+                        {
+                            <div id="msgAlert" class="alert alert-success text-center" role="alert">
+                                @ViewBag.SuccessMsg
+                            </div>
+                        }
+                    </div>
+                </div>
+                <br />
+
+                <table class="table">
+
+                    <thead>
+                        <tr>
+                            <th>
+                                Mã sản phẩm
+                            </th>
+                            <th>
+                                Tên
+                            </th>
+                            <th>
+                                Giá nhập
+                            </th>
+                            <th>
+                                Giá bán
+                            </th>
+                            <th>
+                                Số lượng tồn
+                            </th>
+                            <th>
+                                Lượt xem
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Id)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.OriginalPrice)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Price)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Stock)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ViewCount)
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Sửa", "Edit", new { id = item.Id }) |
+                                    @Html.ActionLink("Xem", "Details", new { id = item.Id }) |
+                                    @Html.ActionLink("Xoá", "Delete", new { id = item.Id }) |
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @await Component.InvokeAsync("Pager", Model)
+        </div>
+    </section>
+</div>

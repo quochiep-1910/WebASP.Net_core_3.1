@@ -58,5 +58,18 @@ namespace eShop.AdminApp.Services
 
             return JsonConvert.DeserializeObject<TResponse>(body);
         }
+
+        protected async Task<TResponse> GetPagings<TResponse>(string url)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
+
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions); //lấy token
+            var response = await client.GetAsync(url);
+            var body = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<TResponse>(body);
+            return result;
+        }
     }
 }
