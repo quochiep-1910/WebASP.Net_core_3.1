@@ -66,7 +66,7 @@ namespace eShop.AdminApp.Controllers
         public async Task<IActionResult> Create(RegisterRequest request)
         {
             if (!ModelState.IsValid)
-                return View();
+                return View(request);
             var result = await _userApiClient.RegisterUser(request);
             if (result.IsSuccessed)
             {

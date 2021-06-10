@@ -1,4 +1,5 @@
-﻿using eShop.Application.Catalog.Products;
+﻿using eShop.Application.Catalog.Categories;
+using eShop.Application.Catalog.Products;
 using eShop.Application.Common;
 using eShop.Application.System.Languages;
 using eShop.Application.System.Roles;
@@ -6,6 +7,7 @@ using eShop.Application.System.Users;
 using eShop.Data.EF;
 using eShop.Data.Entities;
 using eShop.Utilities.Constants;
+using eShop.ViewModels.Catalog.Products;
 using eShop.ViewModels.System.Users;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -49,6 +51,8 @@ namespace eShop.BackendApi
             //khai báo DI
 
             services.AddTransient<IProductService, ProductService>();
+            services.AddTransient<ICategoryService, CategoryService>();
+
             services.AddTransient<IStorageService, FileStorageService>();
             services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();
             services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
@@ -57,8 +61,8 @@ namespace eShop.BackendApi
             services.AddTransient<IRoleService, RoleService>();
             services.AddTransient<ILanguageService, LanguageService>();
 
-            services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
-            services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidator>();
+            //services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
+            //services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidator>();
 
             services.AddControllers()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>()); //đăng kí tất cả class nào có Validator
