@@ -1,4 +1,4 @@
-﻿using eShop.AdminApp.Services;
+﻿using eShop.ApiIntegration;
 using eShop.Utilities.Constants;
 using eShop.ViewModels.Catalog.Products;
 using eShop.ViewModels.Common;
