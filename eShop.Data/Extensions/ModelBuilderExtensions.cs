@@ -116,6 +116,38 @@ namespace eShop.Data.Extensions
                 RoleId = roleId,
                 UserId = adminId
             });
+            modelBuilder.Entity<Slide>().HasData(
+              new Slide()
+              {
+                  Id = 1,
+                  Name = "<h1><span>E</span>-SHOPPER</h1><h2> Free E - Commerce Template </h2>",
+                  Description = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                  SortOrder = 1,
+                  Url = "#",
+                  Image = "/images/home/girl1.jpg",
+                  Status = Status.Active
+              },
+              new Slide()
+              {
+                  Id = 2,
+                  Name = "<h1><span>E</span>-SHOPPER</h1><h2> Free E - Commerce Template </h2>",
+                  Description = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                  SortOrder = 2,
+                  Url = "#",
+                  Image = "/images/home/girl2.jpg",
+                  Status = Status.Active
+              },
+               new Slide()
+               {
+                   Id = 3,
+                   Name = "<h1><span>E</span>-SHOPPER</h1><h2> Free E - Commerce Template </h2>",
+                   Description = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                   SortOrder = 3,
+                   Url = "#",
+                   Image = "/images/home/girl3.jpg",
+                   Status = Status.Active
+               }
+              );
         }
     }
 }

@@ -46,6 +46,9 @@ namespace eShop.ViewModels.Catalog.Products
         [Display(Name = "Ngôn ngữ")]
         public string LanguageId { set; get; }
 
+        [Display(Name = "Sản phẩm Nổi bật")]
+        public bool? IsFeatured { set; get; }
+
         public List<string> Categories { get; set; } = new List<string>();
     }
 }
