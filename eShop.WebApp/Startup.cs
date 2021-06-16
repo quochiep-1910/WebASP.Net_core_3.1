@@ -1,11 +1,14 @@
-﻿using eShop.WebApp.LocalizationResources;
+﻿using eShop.ApiIntegration;
+using eShop.WebApp.LocalizationResources;
 using LazZiya.ExpressLocalization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 using System.Globalization;
 
 namespace eShop.WebApp
@@ -22,10 +25,11 @@ namespace eShop.WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpClient();
             var cultures = new[]
 {
-    new CultureInfo("en"),
-    new CultureInfo("vi")
+    new CultureInfo("en-US"),
+    new CultureInfo("vi-VN")
 };
             services.AddControllersWithViews()
                 .AddExpressLocalization<ExpressLocalizationResource, ViewLocalizationResource>(ops =>
@@ -54,9 +58,16 @@ namespace eShop.WebApp
                 {
                     o.SupportedCultures = cultures;
                     o.SupportedUICultures = cultures;
-                    o.DefaultRequestCulture = new RequestCulture("vi");
+                    o.DefaultRequestCulture = new RequestCulture("vi-VN");
                 };
-            }); ;
+            });
+            services.AddSession(opstions =>
+            {
+                opstions.IdleTimeout = TimeSpan.FromMinutes(20);
+            });
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); //truy cập HttpContext thông qua  IHttpContextAccessor
+            services.AddTransient<ISlideApiClient, SlideApiClient>();
+            services.AddTransient<IProductApiClient, ProductApiClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -79,6 +90,7 @@ namespace eShop.WebApp
 
             app.UseAuthorization();
             app.UseRequestLocalization(); //middleware hộ trợ đa ngôn ngữ
+            app.UseSession();
             app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllerRoute(

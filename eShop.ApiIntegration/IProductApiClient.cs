@@ -16,5 +16,7 @@ namespace eShop.ApiIntegration
         Task<ApiResult<bool>> CategoryAssign(int id, CategoryAssignRequest request);
 
         Task<ProductViewModel> GetById(int id, string languageId);
+
+        Task<List<ProductViewModel>> GetFeaturedProducts(int take, string languageId);
     }
 }

@@ -1,4 +1,5 @@
-﻿using eShop.WebApp.Models;
+﻿using eShop.ApiIntegration;
+using eShop.WebApp.Models;
 using LazZiya.ExpressLocalization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
@@ -6,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
+using System.Globalization;
+using System.Threading.Tasks;
+using static eShop.Utilities.Constants.SystemConstants;
 
 namespace eShop.WebApp.Controllers
 {
@@ -13,17 +17,29 @@ namespace eShop.WebApp.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ISharedCultureLocalizer _loc;
+        private readonly ISlideApiClient _slideApiClient;
+        private readonly IProductApiClient _productApiClient;
 
-        public HomeController(ILogger<HomeController> logger, ISharedCultureLocalizer loc)
+        public HomeController(ILogger<HomeController> logger, ISharedCultureLocalizer loc,
+            ISlideApiClient slideApiClient, IProductApiClient productApiClient)
         {
             _logger = logger;
             _loc = loc;
+            _slideApiClient = slideApiClient;
+            _productApiClient = productApiClient;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var msg = _loc.GetLocalizedString("Nike"); //get key
-            return View();
+            //var msg = _loc.GetLocalizedString("Nike"); //get key
+            var culture = CultureInfo.CurrentCulture.Name;
+            var viewModel = new HomeViewModel
+            {
+                Slides = await _slideApiClient.GetAll(),
+                FeaturedProducts = await _productApiClient
+                .GetFeaturedProducts(ProductSettings.NumberOfFeatureProducts, culture)
+            };
+            return View(viewModel);
         }
 
         public IActionResult Privacy()

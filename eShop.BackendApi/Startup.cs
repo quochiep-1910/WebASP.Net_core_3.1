@@ -4,6 +4,7 @@ using eShop.Application.Common;
 using eShop.Application.System.Languages;
 using eShop.Application.System.Roles;
 using eShop.Application.System.Users;
+using eShop.Application.Utilities.Slides;
 using eShop.Data.EF;
 using eShop.Data.Entities;
 using eShop.Utilities.Constants;
@@ -58,7 +59,7 @@ namespace eShop.BackendApi
             services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
             services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
             services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IRoleService, RoleService>();
+            services.AddTransient<ISlideService, SlideService>();
             services.AddTransient<ILanguageService, LanguageService>();
 
             //services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();

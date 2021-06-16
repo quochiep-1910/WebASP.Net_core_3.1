@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -99,6 +100,12 @@ namespace eShop.ApiIntegration
         public async Task<ProductViewModel> GetById(int id, string languageId)
         {
             var data = await GetAsync<ProductViewModel>($"/api/products/{id}/{languageId}");
+            return data;
+        }
+
+        public async Task<List<ProductViewModel>> GetFeaturedProducts(int take, string languageId)
+        {
+            var data = await GetListAsync<ProductViewModel>($"/api/products/featured/{languageId}/{take}");
             return data;
         }
     }
