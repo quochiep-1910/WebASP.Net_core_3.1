@@ -68,6 +68,7 @@ namespace eShop.WebApp
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); //truy cập HttpContext thông qua  IHttpContextAccessor
             services.AddTransient<ISlideApiClient, SlideApiClient>();
             services.AddTransient<IProductApiClient, ProductApiClient>();
+            services.AddTransient<ICategoryApiClient, CategoryApiClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -93,6 +94,38 @@ namespace eShop.WebApp
             app.UseSession();
             app.UseEndpoints(endpoints =>
         {
+            endpoints.MapControllerRoute(
+               name: "Product Category en-US",
+               pattern: "{culture}/categories/{id}", new
+               {
+                   controller = "Product",
+                   action = "Category"
+               });
+
+            endpoints.MapControllerRoute(
+             name: "Product Category vi-VN",
+             pattern: "{culture}/danh-muc/{id}", new
+             {
+                 controller = "Product",
+                 action = "Category"
+             });
+
+            endpoints.MapControllerRoute(
+             name: "Product Detail en-US",
+             pattern: "{culture}/products/{id}", new
+             {
+                 controller = "Product",
+                 action = "Detail"
+             });
+
+            endpoints.MapControllerRoute(
+             name: "Product Detail vi-VN",
+             pattern: "{culture}/san-pham/{id}", new
+             {
+                 controller = "Product",
+                 action = "Detail"
+             });
+
             endpoints.MapControllerRoute(
                 name: "default",
                 pattern: "{culture=vi}/{controller=Home}/{action=Index}/{id?}");

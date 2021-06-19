@@ -17,6 +17,12 @@ namespace eShop.ApiIntegration
 
         Task<ProductViewModel> GetById(int id, string languageId);
 
+        Task<ProductImageViewModel> GetImageById(int productId, int imageId);
+
         Task<List<ProductViewModel>> GetFeaturedProducts(int take, string languageId);
+
+        Task<List<ProductViewModel>> GetLatestProducts(int take, string languageId);
+
+        Task<bool> UpdateProduct(ProductUpdateRequest productUpdate);
     }
 }

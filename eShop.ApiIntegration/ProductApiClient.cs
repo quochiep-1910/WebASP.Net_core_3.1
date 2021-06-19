@@ -103,9 +103,54 @@ namespace eShop.ApiIntegration
             return data;
         }
 
+        public async Task<bool> UpdateProduct(ProductUpdateRequest productUpdate)
+        {
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
+            var languageId = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.DefaultLanguageId);
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration[SystemConstants.AppSettings.BaseAddress]);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions); //lấy token
+
+            var requestContent = new MultipartFormDataContent();
+            if (productUpdate.ThumbnailImage != null)
+            {
+                byte[] data;
+                using (var br = new BinaryReader(productUpdate.ThumbnailImage.OpenReadStream()))
+                {
+                    data = br.ReadBytes((int)productUpdate.ThumbnailImage.OpenReadStream().Length);
+                }
+                ByteArrayContent bytes = new ByteArrayContent(data);
+                requestContent.Add(bytes, "ThumbnailImage", productUpdate.ThumbnailImage.FileName);
+            }
+            // requestContent.Add(new StringContent(productUpdate.Id.ToString()), "id");
+
+            requestContent.Add(new StringContent(productUpdate.Name.ToString()), "Name");
+            requestContent.Add(new StringContent(productUpdate.Description.ToString()), "Description");
+            requestContent.Add(new StringContent(productUpdate.Details.ToString()), "Details");
+            requestContent.Add(new StringContent(productUpdate.SeoDescription.ToString()), "SeoDescription");
+            requestContent.Add(new StringContent(productUpdate.SeoTitle.ToString()), "SeoTitle");
+            requestContent.Add(new StringContent(productUpdate.SeoAlias.ToString()), "SeoAlias");
+            requestContent.Add(new StringContent(languageId), "LanguageId");
+
+            var response = await client.PutAsync($"/api/products/" + productUpdate.Id, requestContent);
+            return response.IsSuccessStatusCode;
+        }
+
         public async Task<List<ProductViewModel>> GetFeaturedProducts(int take, string languageId)
         {
             var data = await GetListAsync<ProductViewModel>($"/api/products/featured/{languageId}/{take}");
+            return data;
+        }
+
+        public async Task<List<ProductViewModel>> GetLatestProducts(int take, string languageId)
+        {
+            var data = await GetListAsync<ProductViewModel>($"/api/products/latest/{languageId}/{take}");
+            return data;
+        }
+
+        public async Task<ProductImageViewModel> GetImageById(int productId, int imageId)
+        {
+            var data = await GetAsync<ProductImageViewModel>($"/api/products/{productId}/images/{imageId}");
             return data;
         }
     }

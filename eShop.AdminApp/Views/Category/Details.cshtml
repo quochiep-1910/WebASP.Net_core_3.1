@@ -1,0 +1,99 @@
+﻿@model eShop.ViewModels.Catalog.ProductCategory.ProductCategoryViewModel
+
+@{
+    ViewData["Title"] = "Chi tiết";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Chi tiết</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/">Danh mục sản phẩm</a></li>
+                        <li class="breadcrumb-item active">Chi tiết</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+    <section class="content">
+
+        <!-- Default box -->
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <a class="btn btn-success" asp-action="Index" asp-controller="Category">Về Danh Sách</a>
+                </div>
+                <hr />
+                <dl class="row">
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Id)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Id)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.CategoryId)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.CategoryId)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Name)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Name)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.SeoDescription)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.SeoDescription)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.SeoTitle)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.SeoTitle)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.LanguageId)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.LanguageId)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.SeoAlias)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.SeoAlias)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.SortOrder)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.SortOrder)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.IsShowOnHome)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.IsShowOnHome)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.ParentId)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.ParentId)
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </section>
+</div>

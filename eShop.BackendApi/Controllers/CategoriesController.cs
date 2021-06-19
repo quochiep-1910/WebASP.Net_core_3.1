@@ -1,4 +1,5 @@
 ﻿using eShop.Application.Catalog.Categories;
+using eShop.ViewModels.Catalog.ProductCategory;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -24,6 +25,22 @@ namespace eShop.BackendApi.Controllers
         {
             var product = await _categoryService.GetAll(languageId);
             return Ok(product);
+        }
+
+        [HttpGet("paging")]
+        public async Task<IActionResult> GetAllPaging([FromQuery] GetManageProductCategoryPagingRequest request)
+        {
+            var product = await _categoryService.GetAllPaging(request);
+            return Ok(product);
+        }
+
+        [HttpGet("{productCategoryId}/{languageId}")]
+        public async Task<IActionResult> GetById(int productCategoryId, string languageId)
+        {
+            var category = await _categoryService.GetById(productCategoryId, languageId);
+            if (category == null)
+                return BadRequest("Không tim thấy product");
+            return Ok(category);
         }
     }
 }

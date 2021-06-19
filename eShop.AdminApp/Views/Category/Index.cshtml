@@ -1,10 +1,11 @@
 ﻿@using eShop.ViewModels.Common
-@model PagedResult<eShop.ViewModels.Catalog.Products.ProductViewModel>
+@model PagedResult<eShop.ViewModels.Catalog.ProductCategory.ProductCategoryViewModel>
 
 @{
-    ViewData["Title"] = "Danh sách sản phẩm";
+    ViewData["Title"] = "Danh mục sản phẩm";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 @section Scripts{
     <script>
         setTimeout(function () {
@@ -36,7 +37,7 @@
             <div class="card-header">
                 <div class="row">
                     <div class="col-md-6 col-xs-12">
-                        <a class="btn btn-success" asp-action="Create" asp-controller="Product">Tạo Mới </a>
+                        <a class="btn btn-success" asp-action="Create" asp-controller="Category">Tạo Mới </a>
                     </div>
                     <div class="col-md-6 col-xs-12">
                         <form asp-action="Index" method="get">
@@ -44,14 +45,10 @@
                                 <div class=" col-md-3">
                                     <input type="text" value="@ViewBag.Keyword" name="keyword" class="form-control" />
                                 </div>
-                                <div class=" col-md-3">
-                                    <select name="categoryId" onchange="this.form.submit()" asp-items="@ViewBag.Categories" class="form-control">
-                                        <option>--chọn danh mục--</option>
-                                    </select>
-                                </div>
+
                                 <div class=" col-md-3">
                                     <button type="submit" class="btn btn-primary">Tìm</button>
-                                    <button type="button" onclick="window.location.href='/Product/Index'" class="btn btn-dark">Reset</button>
+                                    <button type="button" onclick="window.location.href='/Category/Index'" class="btn btn-dark">Reset</button>
                                 </div>
                             </div>
                         </form>
@@ -75,25 +72,27 @@
                     <thead>
                         <tr>
                             <th>
-                                Mã sản phẩm
+                                Mã danh mục
+                            </th>
+
+                            <th>
+                                Tên danh mục
                             </th>
                             <th>
-                                Tên
+                                Mô tả SEO
+                            </th>
+
+                            <th>
+                                Từ khoá SEO
                             </th>
                             <th>
-                                Giá nhập
+                                Thứ tự sắp xếp
                             </th>
                             <th>
-                                Giá bán
-                            </th>
-                            @*<th>
-                                    Danh mục
-                                </th>*@
-                            <th>
-                                Số lượng tồn
+                                Hiện thị trang chủ
                             </th>
                             <th>
-                                Lượt xem
+                                Danh mục cha
                             </th>
                             <th></th>
                         </tr>
@@ -105,29 +104,31 @@
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Id)
                                 </td>
+
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Name)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.OriginalPrice)
+                                    @Html.DisplayFor(modelItem => item.SeoDescription)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.SeoAlias)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Price)
-                                </td>
-                                @*<td>
-                                        @Html.DisplayFor(modelItem => item.Categories)
-                                    </td>*@
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Stock)
+                                    @Html.DisplayFor(modelItem => item.SortOrder)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.ViewCount)
+                                    @Html.DisplayFor(modelItem => item.IsShowOnHome)
                                 </td>
                                 <td>
-                                    @Html.ActionLink("Sửa", "Edit", new { id = item.Id }) |
-                                    @Html.ActionLink("Xem", "Details", new { id = item.Id }) |
-                                    @Html.ActionLink("Xoá", "Delete", new { id = item.Id }) |
-                                    @Html.ActionLink("Gán danh mục", "CategoryAssign", new { id = item.Id })
+                                    @Html.DisplayFor(modelItem => item.ParentId)
+                                </td>
+
+                                <td>
+                                    @Html.ActionLink("Sửa", "Edit", new { id = item.CategoryId }) |
+                                    @Html.ActionLink("Xem", "Details", new { id = item.CategoryId }) |
+                                    @Html.ActionLink("Xoá", "Delete", new { id = item.CategoryId }) |
                                 </td>
                             </tr>
                         }
