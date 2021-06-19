@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @section Scripts{
-    <script src="https://cdn.ckeditor.com/ckeditor5/27.1.0/classic/ckeditor.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
     @*<script>
             $('#txt_details').ckeditor();
         </script>*@
@@ -74,7 +74,7 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="Details" class="control-label"></label>
-                        <input asp-for="Details" class="form-control" />
+                        <textarea id="txt_details" asp-for="Details" class="form-control"></textarea>
                         <span asp-validation-for="Details" class="text-danger"></span>
                     </div>
                     <div class="form-group">
