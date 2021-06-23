@@ -133,8 +133,12 @@
     <value>Features Items</value>
     <comment>Layout</comment>
   </data>
-  <data name="productUrl" xml:space="preserve">
+  <data name="products" xml:space="preserve">
     <value>products</value>
+    <comment>/Product/Category</comment>
+  </data>
+  <data name="productUrl" xml:space="preserve">
+    <value>carts</value>
     <comment>/Home/Index</comment>
   </data>
 </root>

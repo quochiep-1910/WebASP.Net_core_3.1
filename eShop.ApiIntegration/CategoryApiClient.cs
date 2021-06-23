@@ -1,5 +1,4 @@
-﻿using eShop.ViewModels.Catalog.Category;
-using eShop.ViewModels.Catalog.ProductCategory;
+﻿using eShop.ViewModels.Catalog.ProductCategory;
 using eShop.ViewModels.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -21,9 +20,9 @@ namespace eShop.ApiIntegration
         {
         }
 
-        public async Task<List<CategoryViewModel>> GetAll(string languageId)
+        public async Task<List<ProductCategoryViewModel>> GetAll(string languageId)
         {
-            return await GetListAsync<CategoryViewModel>("/api/categories?languageId=" + languageId);
+            return await GetListAsync<ProductCategoryViewModel>("/api/categories?languageId=" + languageId);
         }
 
         public async Task<PagedResult<ProductCategoryViewModel>> GetPagings(GetManageProductCategoryPagingRequest request)

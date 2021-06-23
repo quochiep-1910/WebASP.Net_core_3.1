@@ -39,7 +39,7 @@ namespace eShop.BackendApi.Controllers
         {
             var category = await _categoryService.GetById(productCategoryId, languageId);
             if (category == null)
-                return BadRequest("Không tim thấy product");
+                return BadRequest("Không tim thấy danh mục sản phẩm");
             return Ok(category);
         }
     }

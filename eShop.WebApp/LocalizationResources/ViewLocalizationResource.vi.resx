@@ -133,8 +133,12 @@
     <value>Giày Nike</value>
     <comment>Layout</comment>
   </data>
-  <data name="productUrl" xml:space="preserve">
+  <data name="products" xml:space="preserve">
     <value>san-pham</value>
+    <comment>/Product/Category</comment>
+  </data>
+  <data name="productUrl" xml:space="preserve">
+    <value>gio-hang</value>
     <comment>/Home/Index</comment>
   </data>
 </root>

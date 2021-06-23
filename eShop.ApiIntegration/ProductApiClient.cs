@@ -153,5 +153,11 @@ namespace eShop.ApiIntegration
             var data = await GetAsync<ProductImageViewModel>($"/api/products/{productId}/images/{imageId}");
             return data;
         }
+
+        public async Task<List<ProductViewModel>> GetRelatedProducts(int take, string languageId)
+        {
+            var data = await GetListAsync<ProductViewModel>($"/api/products/related/{languageId}/{take}");
+            return data;
+        }
     }
 }

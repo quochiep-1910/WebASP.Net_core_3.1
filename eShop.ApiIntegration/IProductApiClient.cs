@@ -23,6 +23,8 @@ namespace eShop.ApiIntegration
 
         Task<List<ProductViewModel>> GetLatestProducts(int take, string languageId);
 
+        Task<List<ProductViewModel>> GetRelatedProducts(int take, string languageId);
+
         Task<bool> UpdateProduct(ProductUpdateRequest productUpdate);
     }
 }

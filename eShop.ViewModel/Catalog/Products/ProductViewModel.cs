@@ -1,4 +1,4 @@
-﻿using eShop.ViewModels.Catalog.Category;
+﻿using eShop.ViewModels.Catalog.ProductCategory;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

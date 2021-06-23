@@ -1,5 +1,4 @@
-﻿using eShop.ViewModels.Catalog.Category;
-using eShop.ViewModels.Common;
+﻿using eShop.ViewModels.Common;
 using eShop.ViewModels.Utilities.Slides;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;

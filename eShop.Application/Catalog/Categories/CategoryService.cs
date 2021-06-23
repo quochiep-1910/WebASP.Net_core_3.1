@@ -1,5 +1,5 @@
 ﻿using eShop.Data.EF;
-using eShop.ViewModels.Catalog.Category;
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -20,7 +20,7 @@ namespace eShop.Application.Catalog.Categories
             _context = context;
         }
 
-        public async Task<List<CategoryViewModel>> GetAll(string languageId)
+        public async Task<List<ProductCategoryViewModel>> GetAll(string languageId)
         {
             //1. Select join
             var query = from c in _context.Categories
@@ -28,12 +28,12 @@ namespace eShop.Application.Catalog.Categories
 
                         where ct.LanguageId == languageId
                         select new { c, ct };
-            return await query.Select(x => new CategoryViewModel()
+            return await query.Select(x => new ProductCategoryViewModel()
             {
                 Id = x.c.Id,
                 Name = x.ct.Name,
                 ParentId = x.c.ParentId,
-                SEOAlias = x.ct.SeoAlias
+                SeoAlias = x.ct.SeoAlias
             }).ToListAsync();
         }
 

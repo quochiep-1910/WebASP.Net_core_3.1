@@ -20,6 +20,7 @@ namespace eShop.Utilities.Constants
         {
             public const int NumberOfFeatureProducts = 6;
             public const int NumberOfLastestProducts = 3;
+            public const int NumberOfRelatedProducts = 3;
         }
 
         public class ProductConstants

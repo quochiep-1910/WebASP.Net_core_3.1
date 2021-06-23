@@ -1,5 +1,4 @@
-﻿using eShop.ViewModels.Catalog.Category;
-using eShop.ViewModels.Catalog.ProductCategory;
+﻿using eShop.ViewModels.Catalog.ProductCategory;
 using eShop.ViewModels.Common;
 using System;
 using System.Collections.Generic;
@@ -10,7 +9,7 @@ namespace eShop.ApiIntegration
 {
     public interface ICategoryApiClient
     {
-        Task<List<CategoryViewModel>> GetAll(string languageId);
+        Task<List<ProductCategoryViewModel>> GetAll(string languageId);
 
         Task<PagedResult<ProductCategoryViewModel>> GetPagings(GetManageProductCategoryPagingRequest request);
 
