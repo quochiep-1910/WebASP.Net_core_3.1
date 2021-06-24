@@ -68,7 +68,7 @@
                     <div class="single-products">
                         <div class="productinfo text-center">
 
-                            <img src="@(Configuration["BaseAddress"] + "/user-content/" +  product.ThumbnailImage)" alt="@product.Name" />
+                            <img src="@(Configuration["BaseAddress"] +  product.ThumbnailImage)" alt="@product.Name" />
                             <h2>$@product.Price</h2>
                             <p>@product.Name</p>
                             <a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
@@ -379,7 +379,7 @@
                                 <div class="product-image-wrapper">
                                     <div class="single-products">
                                         <div class="productinfo text-center">
-                                            <img src="@(Configuration["BaseAddress"] + "/user-content/" +  item.ThumbnailImage)" alt="@item.Name" />
+                                            <img src="@(Configuration["BaseAddress"]  +  item.ThumbnailImage)" alt="@item.Name" />
                                             <h2>$@item.Price</h2>
                                             <p>@item.Name</p>
                                             <a href="@url" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>

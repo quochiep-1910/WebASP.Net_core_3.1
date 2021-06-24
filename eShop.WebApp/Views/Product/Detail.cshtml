@@ -18,7 +18,7 @@
         <!--product-details-->
         <div class="col-sm-5">
             <div class="view-product">
-                <img src="@(Configuration["BaseAddress"] + "/user-content/" + Model.Product.ThumbnailImage)" alt="@Model.Product.Name" />
+                <img src="@(Configuration["BaseAddress"]  + Model.Product.ThumbnailImage)" alt="@Model.Product.Name" />
             </div>
             <div id="similar-product" class="carousel slide" data-ride="carousel">
 
@@ -96,7 +96,7 @@
                     <div class="product-image-wrapper">
                         <div class="single-products">
                             <div class="productinfo text-center">
-                                <img src="@(Configuration["BaseAddress"] + "/user-content/" + Model.Product.ThumbnailImage)" alt="@Model.Product.Name" />
+                                <img src="@(Configuration["BaseAddress"] + Model.Product.ThumbnailImage)" alt="@Model.Product.Name" />
                                 <h2>$56</h2>
                                 <p>Easy Polo Black Edition</p>
 
@@ -240,7 +240,7 @@
                                     <div class="single-products">
                                         <div class="productinfo text-center">
                                             <a href="/@culture.Name/@_loc["products"]/@item.Id">
-                                                <img src="@(Configuration["BaseAddress"] + "/user-content/" + item.ThumbnailImage)" alt="@item.Name" />
+                                                <img src="@(Configuration["BaseAddress"]  + item.ThumbnailImage)" alt="@item.Name" />
                                             </a>
                                             <h2>$@item.Price</h2>
                                             <p>@item.Name</p>

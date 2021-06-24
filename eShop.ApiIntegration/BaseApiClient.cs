@@ -91,5 +91,20 @@ namespace eShop.ApiIntegration
             var result = JsonConvert.DeserializeObject<TResponse>(body);
             return result;
         }
+
+        public async Task<bool> DeleteProduct(string url)
+        {
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
+
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration[SystemConstants.AppSettings.BaseAddress]);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions); //lấy token
+            var response = await client.DeleteAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

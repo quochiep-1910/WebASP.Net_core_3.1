@@ -26,5 +26,7 @@ namespace eShop.ApiIntegration
         Task<List<ProductViewModel>> GetRelatedProducts(int take, string languageId);
 
         Task<bool> UpdateProduct(ProductUpdateRequest productUpdate);
+
+        Task<bool> DeleteProduct(int id);
     }
 }

@@ -31,6 +31,15 @@ namespace eShop.ViewModels.Catalog.Products
         [Display(Name = "Sản phẩm Nổi bật")]
         public bool? IsFeatured { set; get; }
 
+        [Display(Name = "Giá")]
+        public decimal Price { set; get; }
+
+        [Display(Name = "Giá gốc")]
+        public decimal OriginalPrice { set; get; }
+
+        [Display(Name = "Hàng trong kho")]
+        public int Stock { set; get; }
+
         [Display(Name = "Ảnh thu nhỏ")]
         public IFormFile ThumbnailImage { set; get; }
     }

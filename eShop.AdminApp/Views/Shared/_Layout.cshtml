@@ -76,24 +76,36 @@
                         </li>
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-copy"></i>
+                                <i class="nav-icon far fa-calendar-alt"></i>
                                 <p>
-                                    Sản phẩm
+                                    Danh Mục
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
+
                             <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a asp-controller="Product" asp-action="Index" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Sản phẩm</p>
+                                <li class="nav-item has-treeview">
+                                    <a href="#" class="nav-link">
+                                        <i class="nav-icon fas fa-copy"></i>
+                                        <p>
+                                            Sản phẩm
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
                                     </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-controller="Category" asp-action="Index" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Danh mục sản phẩm</p>
-                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a asp-controller="Product" asp-action="Index" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Sản phẩm</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a asp-controller="Category" asp-action="Index" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Danh mục sản phẩm</p>
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </li>
                             </ul>
                         </li>

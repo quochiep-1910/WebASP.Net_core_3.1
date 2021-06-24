@@ -3,6 +3,7 @@
     ViewData["Title"] = "Chi tiết";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
 
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -114,7 +115,8 @@
                         @Html.DisplayNameFor(model => model.ThumbnailImage)
                     </dt>
                     <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.ThumbnailImage)
+                        <img src="@(Configuration["BaseAddress"]  +Model.ThumbnailImage)"
+                             class="rounded-circle" />
                     </dd>
                 </dl>
             </div>
