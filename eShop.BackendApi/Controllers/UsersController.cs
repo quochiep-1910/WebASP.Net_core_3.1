@@ -77,11 +77,18 @@ namespace eShop.BackendApi.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(Guid id)
+        //[HttpGet]
+        //public async Task<IActionResult> GetById(Guid id)
+        //{
+        //    var user = await _userService.GetById(id);
+        //    return Ok(user);
+        //}
+
+        [HttpGet]
+        public async Task<IActionResult> GetByUserName(string userName)
         {
-            var user = await _userService.GetById(id);
-            return Ok(user);
+            var user = await _userService.GetByUserName(userName);
+            return Ok(user.ResultObj);
         }
 
         [HttpDelete("{id}")]

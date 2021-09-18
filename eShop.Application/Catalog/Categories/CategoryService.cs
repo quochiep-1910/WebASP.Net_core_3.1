@@ -8,6 +8,10 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using eShop.ViewModels.Common;
 using eShop.ViewModels.Catalog.ProductCategory;
+using eShop.Utilities.Exceptions;
+using eShop.Data.Entities;
+using static eShop.Utilities.Constants.SystemConstants;
+using eShop.Data.Enums;
 
 namespace eShop.Application.Catalog.Categories
 {
@@ -18,6 +22,52 @@ namespace eShop.Application.Catalog.Categories
         public CategoryService(EShopDbContext context)
         {
             _context = context;
+        }
+
+        public async Task<int> Create(ProductCategoryCreateRequest request)
+        {
+            var languages = _context.Languages;
+            var translations = new List<CategoryTranslation>();
+            foreach (var language in languages)
+            {
+                if (language.Id == request.LanguageId)
+                {
+                    //create CategoryTranslations
+                    translations.Add(new CategoryTranslation()
+                    {
+                        Name = request.Name,
+
+                        SeoDescription = request.SeoDescription,
+                        SeoAlias = request.SeoAlias,
+                        SeoTitle = request.SeoTitle,
+                        LanguageId = request.LanguageId
+                    });
+                }
+                else
+                {
+                    translations.Add(new CategoryTranslation()
+                    {
+                        Name = CategoryConstants.NA,
+                        SeoAlias = CategoryConstants.NA,
+                        LanguageId = language.Id
+                    });
+                }
+            }
+            var category = new Category()
+            {
+                SortOrder = request.SortOrder,
+                IsShowOnHome = request.IsShowOnHome,
+                Status = (Status)request.status,
+                CategoryTranslations = translations
+            };
+            _context.Categories.Add(category);
+            await _context.SaveChangesAsync();
+            return category.Id;
+        }
+
+        public Task<int> Delete(int categoryId)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<List<ProductCategoryViewModel>> GetAll(string languageId)
@@ -98,9 +148,32 @@ namespace eShop.Application.Catalog.Categories
                 SeoDescription = categoryTranslation != null ? categoryTranslation.SeoDescription : null,
                 SeoTitle = categoryTranslation != null ? categoryTranslation.SeoTitle : null,
                 LanguageId = categoryTranslation.LanguageId,
-                SeoAlias = categoryTranslation.SeoAlias
+                SeoAlias = categoryTranslation.SeoAlias,
             };
             return productCategoryViewModel;
+        }
+
+        public async Task<int> Update(ProductCategoryUpdateRequest request)
+        {
+            var category = await _context.Categories.FindAsync(request.CategoryId);
+            var productCategoryTranslations = await _context.CategoryTranslations.FirstOrDefaultAsync(x => x.CategoryId == request.CategoryId
+            && x.LanguageId == request.LanguageId);
+
+            if (category == null || productCategoryTranslations == null)
+                throw new EShopException($"Không thể tìm thấy một sản phẩm có id : {request.CategoryId}");
+
+            productCategoryTranslations.Name = request.Name;
+            productCategoryTranslations.SeoAlias = request.SeoAlias;
+            productCategoryTranslations.SeoDescription = request.SeoDescription;
+            productCategoryTranslations.SeoTitle = request.SeoTitle;
+            productCategoryTranslations.CategoryId = request.CategoryId;
+
+            category.SortOrder = request.SortOrder;
+            category.IsShowOnHome = request.IsShowOnHome;
+            category.ParentId = request.ParentId;
+            category.Status = (Status)request.status;
+
+            return await _context.SaveChangesAsync();
         }
     }
 }

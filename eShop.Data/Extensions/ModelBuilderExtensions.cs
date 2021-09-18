@@ -1,8 +1,9 @@
 ﻿using eShop.Data.Entities;
-using eShop.Data.Enums;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
+using static eShop.Utilities.Constants.SystemConstants;
 
 namespace eShop.Data.Extensions
 {

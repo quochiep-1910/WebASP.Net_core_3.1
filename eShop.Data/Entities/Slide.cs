@@ -1,4 +1,4 @@
-﻿using eShop.Data.Enums;
+﻿using static eShop.Utilities.Constants.SystemConstants;
 
 namespace eShop.Data.Entities
 {

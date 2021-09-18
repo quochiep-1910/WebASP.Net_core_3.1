@@ -1,5 +1,8 @@
-﻿using eShop.ApiIntegration;
+﻿using AspNetCoreHero.ToastNotification;
+using eShop.ApiIntegration;
+using eShop.ViewModels.System.Users;
 using eShop.WebApp.LocalizationResources;
+using FluentValidation.AspNetCore;
 using LazZiya.ExpressLocalization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -29,10 +32,17 @@ namespace eShop.WebApp
             services.AddHttpClient();
             var cultures = new[]
 {
-    new CultureInfo("en-US"),
-    new CultureInfo("vi-VN")
+            new CultureInfo("en-US"),
+            new CultureInfo("vi-VN")
 };
+            services.AddNotyf(config =>
+            {
+                config.DurationInSeconds = 10;
+                config.IsDismissable = true;
+                config.Position = NotyfPosition.BottomRight;
+            });
             services.AddControllersWithViews()
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>()) //đăng kí tất cả class nào có Validator;
                 .AddExpressLocalization<ExpressLocalizationResource, ViewLocalizationResource>(ops =>
             {
                 // When using all the culture providers, the localization process will
@@ -77,6 +87,9 @@ namespace eShop.WebApp
             services.AddTransient<IProductApiClient, ProductApiClient>();
             services.AddTransient<ICategoryApiClient, CategoryApiClient>();
             services.AddTransient<IUserApiClient, UserApiClient>();
+            services.AddTransient<IOrderApiClient, OrderApiClient>();
+            //biên dịch razor view
+            IMvcBuilder builder = services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -133,7 +146,13 @@ namespace eShop.WebApp
                  controller = "Product",
                  action = "Detail"
              });
-
+            endpoints.MapControllerRoute(
+           name: "CheckOut vi-VN",
+           pattern: "{culture}/cart/checkout", new
+           {
+               controller = "Cart",
+               action = "Checkout"
+           });
             endpoints.MapControllerRoute(
                 name: "default",
                 pattern: "{culture=vi}/{controller=Home}/{action=Index}/{id?}");

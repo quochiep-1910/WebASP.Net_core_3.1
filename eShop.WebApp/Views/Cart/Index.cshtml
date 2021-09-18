@@ -1,0 +1,115 @@
+﻿@model List<eShop.WebApp.Models.CartItemViewModel>
+
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
+@{
+    ViewData["Title"] = "Giỏ hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var culture = CultureInfo.CurrentCulture.Name;
+}
+@section scripts{
+
+    <script src="/js/HiddenSibar.js"></script>
+    <script>
+        var hidden = new Hidden();
+        hidden.initialize();
+    </script>
+    <script src="/js/cart.js"></script>
+    <script>
+        var cartController = new CartController();
+        cartController.initialize();
+    </script>
+
+}
+<div class="col-sm-9 padding-right">
+    <section id="cart_items">
+        <div class="container">
+            <div class="breadcrumbs">
+                <ol class="breadcrumb">
+                    <li><a href="/">Home</a></li>
+                    <li class="active">Giỏ hàng</li>
+                </ol>
+            </div>
+            <div class="table-responsive cart_info">
+                <table class="table table-condensed">
+                    <thead>
+                        <tr class="cart_menu">
+                            <td class="image">Hình Ảnh</td>
+                            <td class="description">Mô tả</td>
+                            <td class="price">Giá</td>
+                            <td class="quantity">Số Lượng</td>
+                            <td class="total">Tổng</td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            var amount = item.Price * item.Quantity;
+
+                            <tr>
+                                <td class="cart_product">
+
+                                    <a href=""><img width="90" src="@(Configuration["BaseAddress"] +  item.Image)" alt=""></a>
+                                </td>
+                                <td class="cart_description">
+                                    <h4><a href="">@item.Name</a></h4>
+                                    <p>@item.Description</p>
+                                </td>
+                                <td class="cart_price">
+                                    <p>$@item.Price</p>
+                                </td>
+                                <td class="cart_quantity">
+                                    <div class="cart_quantity_button">
+                                        <a class="cart_quantity_up btn-plus" href="" data-id="@item.ProductId"> + </a>
+                                        <input class="cart_quantity_input" type="text" id="txt_quantity_@item.ProductId" name="quantity" value="@item.Quantity" autocomplete="off" size="2">
+                                        <a class="cart_quantity_down btn-minus" data-id="@item.ProductId" href=""> - </a>
+                                    </div>
+                                </td>
+                                <td class="cart_total">
+                                    <p id="amount" class="cart_total_price">$@amount</p>
+                                </td>
+                                <td class="cart_delete">
+                                    <a class="cart_quantity_delete btn-remove" data-id="@item.ProductId" href=""><i class="fa fa-times"></i></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section> <!--/#cart_items-->
+    <section id="do_action">
+        <div class="container">
+            <div class="heading">
+                <h3>What would you like to do next?</h3>
+                <p>Choose if you have a discount code or reward points you want to use or would like to estimate your delivery cost.</p>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="total_area">
+                        <ul>
+                            <li>Shipping Cost <span>Free</span></li>
+
+                            @foreach (var item in Model)
+                            {
+                                var amount = item.Price * item.Quantity;
+                                <li>@item.Name <span>$@((item.Price* item.Quantity).ToString("N0")) </span></li>
+
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="total_area">
+                        <ul>
+                            @*<li>Total<span>$@(total += (item.Price * item.Quantity))</span></li>*@
+                            <li>Total<span>$@Model.Sum(x => x.Quantity * x.Price)</span></li>
+                        </ul>
+                        <a class="btn btn-default update" id="btnUpdate">Update</a>
+                        <a class="btn btn-default check_out" href="/@culture/Cart/Checkout">Check Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section><!--/#do_action-->
+</div>

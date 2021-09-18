@@ -127,6 +127,7 @@ namespace eShop.ApiIntegration
             requestContent.Add(new StringContent(productUpdate.Price.ToString()), "price");
             requestContent.Add(new StringContent(productUpdate.OriginalPrice.ToString()), "OriginalPrice");
             requestContent.Add(new StringContent(productUpdate.Stock.ToString()), "Stock");
+            requestContent.Add(new StringContent(productUpdate.IsFeatured.ToString()), "IsFeatured");
 
             requestContent.Add(new StringContent(string.IsNullOrEmpty(productUpdate.Name) ? "" : productUpdate.Name.ToString()), "Name");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(productUpdate.Description) ? "" : productUpdate.Description.ToString()), "Description");
@@ -166,7 +167,7 @@ namespace eShop.ApiIntegration
 
         public async Task<bool> DeleteProduct(int id)
         {
-            return await DeleteProduct($"/api/products/" + id);
+            return await Delete($"/api/products/" + id);
         }
     }
 }

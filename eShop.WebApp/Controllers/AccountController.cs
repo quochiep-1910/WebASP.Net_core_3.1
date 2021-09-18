@@ -1,4 +1,5 @@
-﻿using eShop.ApiIntegration;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using eShop.ApiIntegration;
 using eShop.Utilities.Constants;
 using eShop.ViewModels.System.Users;
 using Microsoft.AspNetCore.Authentication;
@@ -22,11 +23,13 @@ namespace eShop.WebApp.Controllers
     {
         private readonly IUserApiClient _userApiClient;
         private readonly IConfiguration _configuration;
+        private readonly INotyfService _notyf;
 
-        public AccountController(IUserApiClient userApiClient, IConfiguration configuration)
+        public AccountController(IUserApiClient userApiClient, IConfiguration configuration, INotyfService notyf)
         {
             _userApiClient = userApiClient;
             _configuration = configuration;
+            _notyf = notyf;
         }
 
         [HttpGet]
@@ -62,6 +65,51 @@ namespace eShop.WebApp.Controllers
 
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, authProperties);
+            _notyf.Success($"Xin chào {request.UserName}");
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Register(RegisterRequest request)
+        {
+            if (!ModelState.IsValid)
+
+                return View(request);
+
+            var result = await _userApiClient.RegisterUser(request);
+            if (!result.IsSuccessed)
+            {
+                ModelState.AddModelError("", result.Message);
+                return View();
+            }
+            var loginResult = await _userApiClient.Authenticate(new LoginRequest()
+            {
+                UserName = request.UserName,
+                Password = request.Password,
+                RememberMe = true
+            });
+
+            var userPrincipal = this.ValidateToken(loginResult.ResultObj);
+
+            //xác thực và thời hạn của phiên đăng nhập
+            var authProperties = new AuthenticationProperties
+            {
+                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(20),
+
+                IsPersistent = false
+            };
+
+            HttpContext.Session.SetString(SystemConstants.AppSettings.Token, loginResult.ResultObj);
+
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, authProperties);
+            _notyf.Success($"Xin chào {request.UserName}");
             return RedirectToAction("Index", "Home");
         }
 
@@ -89,6 +137,7 @@ namespace eShop.WebApp.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             HttpContext.Session.Remove("Token");
+            _notyf.Information("Đăng xuất thành công");
             return RedirectToAction("Index", "Home");
         }
     }

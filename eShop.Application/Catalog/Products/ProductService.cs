@@ -188,6 +188,7 @@ namespace eShop.Application.Catalog.Products
             product.Price = request.Price;
             product.OriginalPrice = request.OriginalPrice;
             product.Stock = request.Stock;
+            product.IsFeatured = request.IsFeatured;
             //Save image
             if (request.ThumbnailImage != null)
             {
@@ -258,6 +259,7 @@ namespace eShop.Application.Catalog.Products
                 Stock = product.Stock,
                 ViewCount = product.ViewCount,
                 Categories = categories,
+                IsFeatured = product.IsFeatured,
                 ThumbnailImage = image != null ? image.ImagePath : "no-image.jpg"
             };
             return productViewModel;

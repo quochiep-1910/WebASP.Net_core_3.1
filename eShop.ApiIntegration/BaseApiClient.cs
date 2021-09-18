@@ -79,6 +79,21 @@ namespace eShop.ApiIntegration
             return JsonConvert.DeserializeObject<TResponse>(body);
         }
 
+        protected async Task<TResponse> GetByUserName<TResponse>(string url)
+        {
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions); //lấy token
+
+            var response = await client.GetAsync($"{url}");
+            var body = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+                return JsonConvert.DeserializeObject<TResponse>(body);
+
+            return JsonConvert.DeserializeObject<TResponse>(body);
+        }
+
         protected async Task<TResponse> GetPagings<TResponse>(string url)
         {
             var client = _httpClientFactory.CreateClient();
@@ -92,7 +107,7 @@ namespace eShop.ApiIntegration
             return result;
         }
 
-        public async Task<bool> DeleteProduct(string url)
+        public async Task<bool> Delete(string url)
         {
             var sessions = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
 

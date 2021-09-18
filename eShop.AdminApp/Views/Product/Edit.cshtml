@@ -93,10 +93,11 @@
                         <input asp-for="SeoAlias" class="form-control" />
                         <span asp-validation-for="SeoAlias" class="text-danger"></span>
                     </div>
-                    @*<div class="form-group">
-                            <label asp-for="IsFeatured" class="control-label"></label>
-                            <input type="checkbox" />
-                        </div>*@
+                    <div class="form-group">
+                        <label asp-for="IsFeatured" class="control-label"></label>
+                        <input name="IsFeatured" type="checkbox" value="true" @((Model.IsFeatured == null || Model.IsFeatured == false ? "" : "checked")) />
+                        <input name="IsFeatured" type="hidden" value="false" />
+                    </div>
                     <div class="form-group">
                         <label asp-for="ThumbnailImage" class="control-label"></label>
                         <input asp-for="ThumbnailImage" type="file" class="form-control" />

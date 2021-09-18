@@ -40,7 +40,7 @@ namespace eShop.ApiIntegration
             var response = await client.PostAsync("/api/users/authenticate", httpContent);
             if (response.IsSuccessStatusCode)
             {
-                //convert var =>ApiResult<string>
+                //convert var => ApiResult<string>
                 return JsonConvert.DeserializeObject<ApiSuccessResult<string>>(await response.Content.ReadAsStringAsync());//get token
             }
             return JsonConvert.DeserializeObject<ApiErrorResult<string>>(await response.Content.ReadAsStringAsync());//get token
@@ -63,6 +63,12 @@ namespace eShop.ApiIntegration
         public async Task<ApiResult<UserViewModel>> GetById(Guid id)
         {
             var result = await GetById<ApiResult<UserViewModel>>("/api/users", id);
+            return result;
+        }
+
+        public async Task<UserViewModel> GetByUserName(string userName)
+        {
+            var result = await GetByUserName<UserViewModel>($"/api/users?userName={userName}");
             return result;
         }
 

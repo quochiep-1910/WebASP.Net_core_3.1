@@ -1,0 +1,114 @@
+﻿@model eShop.ViewModels.Catalog.ProductCategory.ProductCategoryCreateRequest
+
+@{
+    ViewData["Title"] = "Thêm mới danh mục Sản phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+@section Scripts{
+    <script src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
+    @*<script>
+            $('#txt_details').ckeditor();
+        </script>*@
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#txt_details'))
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
+}
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Thêm mới Sản phẩm</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active">Thêm mới Sản phẩm</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <section class="content">
+
+        <!-- Default box -->
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <a class="btn btn-success" asp-action="Index" asp-controller="Product">Về Danh Sách</a>
+                </div>
+                <hr />
+                <form asp-action="Create" enctype="multipart/form-data" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="SeoDescription" class="control-label"></label>
+                        <input asp-for="SeoDescription" class="form-control" />
+                        <span asp-validation-for="SeoDescription" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="SeoTitle" class="control-label"></label>
+                        <input asp-for="SeoTitle" class="form-control" />
+                        <span asp-validation-for="SeoTitle" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="SeoAlias" class="control-label"></label>
+                        <input asp-for="SeoAlias" class="form-control" />
+                        <span asp-validation-for="SeoAlias" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="SortOrder" class="control-label"></label>
+                        <input asp-for="SortOrder" class="form-control" />
+                        <span asp-validation-for="SortOrder" class="text-danger"></span>
+                    </div>
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="IsShowOnHome" /> @Html.DisplayNameFor(model => model.IsShowOnHome)
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <select>
+                            <option value="">Default</option>
+                            @{
+
+                                foreach (var item in ViewBag.categories)
+                                {
+
+                                    <option value="@item.Name">
+                                        @item.Name
+                                    </option>
+                                }
+                            }
+                        </select>
+                        <input type="hidden" asp-for="ParentId" />
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="status" class="control-label"></label>
+                        <select asp-for="status">
+                            <option value='1'>True</option>
+                            <option value='0'>False</option>
+                        </select>
+                        <span asp-validation-for="status" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>

@@ -77,7 +77,7 @@
                             <div class="overlay-content">
                                 <h2>$@product.Price</h2>
                                 <p>@product.Name</p>
-                                <a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+                                <a class="btn btn-add-cart" data-id="@product.Id" href="#"><i class="fa fa-shopping-cart"></i>Add to cart</a>
                             </div>
                         </div>
                     </div>
@@ -382,7 +382,7 @@
                                             <img src="@(Configuration["BaseAddress"]  +  item.ThumbnailImage)" alt="@item.Name" />
                                             <h2>$@item.Price</h2>
                                             <p>@item.Name</p>
-                                            <a href="@url" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+                                            <a class="btn btn-add-cart" data-id="@item.Id" href="#"><i class="fa fa-shopping-cart"></i>Add to cart</a>
                                         </div>
                                     </div>
                                 </div>

@@ -1,4 +1,5 @@
-﻿using eShop.ApiIntegration;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using eShop.ApiIntegration;
 using eShop.Utilities.Constants;
 using eShop.ViewModels.Catalog.Products;
 using eShop.ViewModels.Common;
@@ -14,18 +15,20 @@ using System.Threading.Tasks;
 
 namespace eShop.AdminApp.Controllers
 {
-    public class ProductController : Controller
+    public class ProductController : BaseController
     {
         private readonly IProductApiClient _productApiClient;
         private readonly IConfiguration _configuration;
         private readonly ICategoryApiClient _categoryApiClient;
+        private readonly INotyfService _notyf;
 
         public ProductController(IProductApiClient productApiClient, IConfiguration configuration,
-            ICategoryApiClient categoryApiClient)
+            ICategoryApiClient categoryApiClient, INotyfService notyf)
         {
             _productApiClient = productApiClient;
             _categoryApiClient = categoryApiClient;
             _configuration = configuration;
+            _notyf = notyf;
         }
 
         public async Task<IActionResult> Index(string keyword, int? categoryId, int pageIndex = 1, int pageSize = 5)
@@ -49,10 +52,10 @@ namespace eShop.AdminApp.Controllers
                 Value = x.Id.ToString(),
                 Selected = categoryId.HasValue && categoryId.Value == x.Id
             });
-            if (TempData["result"] != null)
-            {
-                ViewBag.SuccessMsg = TempData["result"];
-            }
+            // if (TempData["result"] != null)
+            // {
+            //     ViewBag.SuccessMsg = TempData["result"];
+            // }
             return View(data);
         }
 
@@ -71,11 +74,13 @@ namespace eShop.AdminApp.Controllers
             var result = await _productApiClient.CreateProduct(request);
             if (result)
             {
-                TempData["result"] = "Thêm mới sản phẩm thành công";
+                //TempData["result"] = "Thêm mới sản phẩm thành công";
+                _notyf.Success("Thêm mới sản phẩm thành công");
                 return RedirectToAction("Index");
             }
 
             ModelState.AddModelError("", "Thêm sản phẩm thất bại");
+
             return View(request);
         }
 
@@ -95,7 +100,8 @@ namespace eShop.AdminApp.Controllers
 
             if (result.IsSuccessed)
             {
-                TempData["result"] = "Cập nhập danh mục thành công";
+                //TempData["result"] = "Cập nhập danh mục thành công";
+                _notyf.Success("Cập nhập danh mục thành công");
                 return RedirectToAction("Index");
             }
             ModelState.AddModelError("", result.Message);//key and message
@@ -147,7 +153,8 @@ namespace eShop.AdminApp.Controllers
                 SeoTitle = product.SeoTitle,
                 Price = product.Price,
                 OriginalPrice = product.OriginalPrice,
-                Stock = product.Stock
+                Stock = product.Stock,
+                IsFeatured = product.IsFeatured
             };
             return View(editVm);
         }
@@ -161,7 +168,8 @@ namespace eShop.AdminApp.Controllers
             var result = await _productApiClient.UpdateProduct(request);
             if (result)
             {
-                TempData["result"] = "Cập nhập sản phẩm thành công";
+                //TempData["result"] = "Cập nhập sản phẩm thành công";
+                _notyf.Success("Cập nhập sản phẩm thành công");
                 return RedirectToAction("Index");
             }
 
@@ -188,6 +196,7 @@ namespace eShop.AdminApp.Controllers
             if (result)
             {
                 TempData["result"] = "Xoá sản phẩm thành công";
+                _notyf.Success("Xoá sản phẩm thành công");
                 return RedirectToAction("Index");
             }
             ModelState.AddModelError("", "Xoá sản phẩm không thành công");//key and message

@@ -1,4 +1,5 @@
-﻿using eShop.ApiIntegration;
+﻿using AspNetCoreHero.ToastNotification;
+using eShop.ApiIntegration;
 using eShop.ViewModels.System.Users;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -28,6 +29,14 @@ namespace eShop.AdminApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Notyf
+            services.AddNotyf(config =>
+            {
+                config.DurationInSeconds = 10;
+                config.IsDismissable = true;
+                config.Position = NotyfPosition.BottomRight;
+            });
+
             services.AddHttpClient();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -51,7 +60,7 @@ namespace eShop.AdminApp
             services.AddTransient<ILanguageApiClient, LanguageApiClient>();
             services.AddTransient<IProductApiClient, ProductApiClient>();
             services.AddTransient<ICategoryApiClient, CategoryApiClient>();
-
+            services.AddTransient<IOrderApiClient, OrderApiClient>();
             //biên dịch razor view
             IMvcBuilder builder = services.AddRazorPages();
 

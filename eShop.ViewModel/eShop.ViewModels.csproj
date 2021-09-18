@@ -13,4 +13,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="3.1.13" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\eShop.Utilities\eShop.Utilities.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -122,7 +122,7 @@
                             <ul class="nav nav-treeview">
 
                                 <li class="nav-item">
-                                    <form method="post" asp-controller="User" asp-action="Logout">
+                                    <form method="post" asp-controller="Login" asp-action="Logout">
                                         <button type="submit" class="nav-link">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p>Đăng Xuất</p>
@@ -172,6 +172,7 @@
     <script src="/js/adminlte.min.js"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="/js/demo.js"></script>
+    @await Component.InvokeAsync("Notyf")
     @RenderSection("Scripts", required: false);
 </body>
 </html>

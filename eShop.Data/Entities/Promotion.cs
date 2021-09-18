@@ -1,5 +1,5 @@
-﻿using eShop.Data.Enums;
-using System;
+﻿using System;
+using static eShop.Utilities.Constants.SystemConstants;
 
 namespace eShop.Data.Entities
 {

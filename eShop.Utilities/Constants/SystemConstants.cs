@@ -7,6 +7,7 @@ namespace eShop.Utilities.Constants
     public class SystemConstants
     {
         public const string MainConnecttionString = "eShopDb";
+        public const string CartSession = "CartSession";
 
         public class AppSettings
         {
@@ -26,6 +27,26 @@ namespace eShop.Utilities.Constants
         public class ProductConstants
         {
             public const string NA = "N/A";
+        }
+
+        public class CategoryConstants
+        {
+            public const string NA = "N/A";
+        }
+
+        public enum Status
+        {
+            InActive,
+            Active
+        }
+
+        public enum OrderStatus
+        {
+            InProgress,
+            Confirmed,
+            Shipping,
+            Success,
+            Canceled
         }
     }
 }

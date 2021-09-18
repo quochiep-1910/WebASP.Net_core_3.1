@@ -1,7 +1,8 @@
 ﻿using eShop.Data.Entities;
-using eShop.Data.Enums;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using static eShop.Utilities.Constants.SystemConstants;
 
 namespace eShop.Data.Configurations
 {

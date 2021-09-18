@@ -1,4 +1,5 @@
-﻿using eShop.ApiIntegration;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using eShop.ApiIntegration;
 using eShop.ViewModels.Common;
 using eShop.ViewModels.System.Users;
 using Microsoft.AspNetCore.Authentication;
@@ -23,12 +24,15 @@ namespace eShop.AdminApp.Controllers
         private readonly IUserApiClient _userApiClient;
         private readonly IConfiguration _configuration;
         private readonly IRoleApiClient _roleApiClient;
+        private readonly INotyfService _notyf;
 
-        public UserController(IUserApiClient userApiClient, IConfiguration configuration, IRoleApiClient roleApiClient)
+        public UserController(IUserApiClient userApiClient, IConfiguration configuration,
+            IRoleApiClient roleApiClient, INotyfService notyf)
         {
             _roleApiClient = roleApiClient;
             _userApiClient = userApiClient;
             _configuration = configuration;
+            _notyf = notyf;
         }
 
         public async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 5)
@@ -41,10 +45,10 @@ namespace eShop.AdminApp.Controllers
             };
             var data = await _userApiClient.GetUsersPagings(request);
             ViewBag.Keyword = keyword;
-            if (TempData["result"] != null)
-            {
-                ViewBag.SuccessMsg = TempData["result"];
-            }
+            // if (TempData["result"] != null)
+            // {
+            //     ViewBag.SuccessMsg = TempData["result"];
+            // }
             return View(data.ResultObj);
         }
 
@@ -70,11 +74,13 @@ namespace eShop.AdminApp.Controllers
             var result = await _userApiClient.RegisterUser(request);
             if (result.IsSuccessed)
             {
-                TempData["result"] = "Thêm mới người dùng thành công";
+                //TempData["result"] = "Thêm mới tài khoản quản trị thành công";
+                _notyf.Success("Thêm mới tài khoản quản trị thành công");
                 return RedirectToAction("Index");
             }
 
             ModelState.AddModelError("", result.Message);
+
             return View(request);
         }
 
@@ -108,19 +114,13 @@ namespace eShop.AdminApp.Controllers
 
             if (result.IsSuccessed)
             {
-                TempData["result"] = "Cập nhập người dùng thành công";
+                //TempData["result"] = "Cập nhập tài khoản quản trị thành công";
+                _notyf.Success("Cập nhập tài khoản quản trị thành công");
                 return RedirectToAction("Index");
             }
             ModelState.AddModelError("", result.Message);//key and message
-            return View(request);
-        }
 
-        [HttpPost]
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            HttpContext.Session.Remove("Token");
-            return RedirectToAction("Index", "Login");
+            return View(request);
         }
 
         [HttpGet]
@@ -145,10 +145,12 @@ namespace eShop.AdminApp.Controllers
 
             if (result.IsSuccessed)
             {
-                TempData["result"] = "Xoá Người dùng thành công";
+                //TempData["result"] = "Xoá tài khoản quản trị thành công";
+                _notyf.Success("Xoá tài khoản quản trị thành công");
                 return RedirectToAction("Index");
             }
             ModelState.AddModelError("", result.Message);//key and message
+
             return View(request);
         }
 
@@ -168,10 +170,12 @@ namespace eShop.AdminApp.Controllers
 
             if (result.IsSuccessed)
             {
-                TempData["result"] = "Cập nhập quyền thành công";
+                //TempData["result"] = "Cập nhập quyền thành công";
+                _notyf.Success("Cập nhập quyền thành công");
                 return RedirectToAction("Index");
             }
             ModelState.AddModelError("", result.Message);//key and message
+
             var roleAssignRequest = await GetRoleroleAssignRequest(request.id);
             return View(roleAssignRequest);
         }

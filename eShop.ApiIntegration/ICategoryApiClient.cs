@@ -14,5 +14,11 @@ namespace eShop.ApiIntegration
         Task<PagedResult<ProductCategoryViewModel>> GetPagings(GetManageProductCategoryPagingRequest request);
 
         Task<ProductCategoryViewModel> GetById(int id, string languageId);
+
+        Task<bool> UpdateCategory(ProductCategoryUpdateRequest categoryUpdateRequest);
+
+        Task<bool> CreateCategory(ProductCategoryCreateRequest categoryCreateRequest);
+
+        Task<bool> DeleteCategory(int id);
     }
 }

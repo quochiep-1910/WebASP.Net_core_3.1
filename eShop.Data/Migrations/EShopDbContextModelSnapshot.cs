@@ -180,7 +180,7 @@ namespace eShop.Data.Migrations
                         new
                         {
                             Id = new Guid("8d04dce2-969a-435d-bba4-df3f325983dc"),
-                            ConcurrencyStamp = "b384d42b-1c27-4485-ac66-e9e992ecfef6",
+                            ConcurrencyStamp = "a0996984-4dc2-41e8-a379-eb424a015151",
                             Description = "Administrator role",
                             Name = "admin",
                             NormalizedName = "admin"
@@ -257,7 +257,7 @@ namespace eShop.Data.Migrations
                         {
                             Id = new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "797df239-3dc8-4210-9475-0605e06c9f3b",
+                            ConcurrencyStamp = "063d82f9-a49e-4ad4-aa1e-78c57c60d956",
                             Dob = new DateTime(2020, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "quochiep@gmail.com",
                             EmailConfirmed = true,
@@ -266,7 +266,7 @@ namespace eShop.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "quochiep@gmail.com",
                             NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAEF8T8B11UBVuCwNint/d8vra/AOD1sP8Kk0aKenlBtKZUZoN0jiOGwH/D2vOatYp9Q==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEB8ncWn5/PiZ4KUHF0fgZQy1on6qhw0GIyRfXtZU5QkdJMj9wdhGsKOjGrFPjiSnPQ==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
@@ -517,6 +517,9 @@ namespace eShop.Data.Migrations
                         .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<Guid?>("AppUserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
@@ -544,12 +547,12 @@ namespace eShop.Data.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("AppUserId");
 
                     b.ToTable("Orders");
                 });
@@ -617,7 +620,7 @@ namespace eShop.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 6, 23, 9, 34, 12, 255, DateTimeKind.Local).AddTicks(6897),
+                            DateCreated = new DateTime(2021, 9, 18, 9, 28, 50, 479, DateTimeKind.Local).AddTicks(5381),
                             OriginalPrice = 100000m,
                             Price = 200000m,
                             Stock = 0,
@@ -946,11 +949,9 @@ namespace eShop.Data.Migrations
 
             modelBuilder.Entity("eShop.Data.Entities.Order", b =>
                 {
-                    b.HasOne("eShop.Data.Entities.AppUser", "AppUser")
+                    b.HasOne("eShop.Data.Entities.AppUser", null)
                         .WithMany("Orders")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AppUserId");
                 });
 
             modelBuilder.Entity("eShop.Data.Entities.OrderDetail", b =>

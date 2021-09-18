@@ -14,5 +14,11 @@ namespace eShop.Application.Catalog.Categories
         Task<PagedResult<ProductCategoryViewModel>> GetAllPaging(GetManageProductCategoryPagingRequest request);
 
         Task<ProductCategoryViewModel> GetById(int productCategoryId, string languageId);
+
+        Task<int> Update(ProductCategoryUpdateRequest request);
+
+        Task<int> Create(ProductCategoryCreateRequest request);
+
+        Task<int> Delete(int categoryId);
     }
 }

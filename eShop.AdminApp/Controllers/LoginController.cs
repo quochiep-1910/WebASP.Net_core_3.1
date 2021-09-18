@@ -1,4 +1,5 @@
-﻿using eShop.ApiIntegration;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using eShop.ApiIntegration;
 using eShop.Utilities.Constants;
 using eShop.ViewModels.System.Users;
 using Microsoft.AspNetCore.Authentication;
@@ -22,18 +23,30 @@ namespace eShop.AdminApp.Controllers
     {
         private readonly IUserApiClient _userApiClient;
         private readonly IConfiguration _configuration;
+        private readonly INotyfService _notyf;
 
-        public LoginController(IUserApiClient userApiClient, IConfiguration configuration)
+        public LoginController(IUserApiClient userApiClient, IConfiguration configuration, INotyfService notyf)
         {
             _userApiClient = userApiClient;
             _configuration = configuration;
+            _notyf = notyf;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
             return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            HttpContext.Session.Remove("Token");
+
+            return RedirectToAction("Index", "Login");
         }
 
         [HttpPost]
@@ -63,6 +76,7 @@ namespace eShop.AdminApp.Controllers
 
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, authProperties);
+            _notyf.Success($"Xin chào {request.UserName}");
             return RedirectToAction("Index", "Home");
         }
 

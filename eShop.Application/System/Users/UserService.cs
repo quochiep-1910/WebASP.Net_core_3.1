@@ -109,6 +109,28 @@ namespace eShop.Application.System.Users
             return new ApiSuccessResult<UserViewModel>(userVM);
         }
 
+        public async Task<ApiResult<UserViewModel>> GetByUserName(string userName)
+        {
+            var user = await _userManager.FindByNameAsync(userName);
+            if (user == null)
+            {
+                return new ApiErrorResult<UserViewModel>("User không tồn tại");
+            }
+            var roles = await _userManager.GetRolesAsync(user); //get roles form database
+            var userVM = new UserViewModel()
+            {
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Dob = user.Dob,
+                FirstName = user.FirstName,
+                Id = user.Id,
+                LastName = user.LastName,
+                UserName = user.UserName,
+                Roles = roles
+            };
+            return new ApiSuccessResult<UserViewModel>(userVM);
+        }
+
         public async Task<ApiResult<PagedResult<UserViewModel>>> GetUserPaging(GetUserPagingRequest request)
         {
             var query = _userManager.Users;
