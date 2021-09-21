@@ -97,18 +97,49 @@
                                             <a asp-controller="Product" asp-action="Index" class="nav-link">
                                                 <i class="far fa-circle nav-icon"></i>
                                                 <p>Sản phẩm</p>
+                                                <span class="badge badge-info right">@TempData["TotalProducts"]</span>
                                             </a>
                                         </li>
                                         <li class="nav-item">
                                             <a asp-controller="Category" asp-action="Index" class="nav-link">
                                                 <i class="far fa-circle nav-icon"></i>
                                                 <p>Danh mục sản phẩm</p>
+                                                <span class="badge badge-info right">@TempData["TotalCategorys"]</span>
                                             </a>
                                         </li>
                                     </ul>
                                 </li>
                             </ul>
                         </li>
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link">
+
+                                <i class="nav-icon fas fa-chart-area"></i>
+                                <p>
+
+                                    Thống kê
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a asp-controller="Order" asp-action="GetRevenue" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Biểu đồ doanh thu</p>
+                                    </a>
+                                </li>
+                            </ul>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a asp-controller="Order" asp-action="Index" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Đơn hàng</p>
+                                        <span class="badge badge-info right">@TempData["TotalOrder"]</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-copy"></i>
@@ -170,6 +201,7 @@
 
     <!-- AdminLTE App -->
     <script src="/js/adminlte.min.js"></script>
+
     <!-- AdminLTE for demo purposes -->
     <script src="/js/demo.js"></script>
     @await Component.InvokeAsync("Notyf")

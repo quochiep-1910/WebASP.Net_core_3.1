@@ -1,0 +1,77 @@
+﻿@model eShop.ViewModels.Sales.Order.OrderUpdateRequest
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Cập nhập đơn hàng</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active">Cập nhập đơn hàng</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <section class="content">
+
+        <!-- Default box -->
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <a class="btn btn-success" asp-action="Index" asp-controller="Order">Về Danh Sách</a>
+                </div>
+                <hr />
+                <form asp-action="Edit" enctype="multipart/form-data" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <div class="form-group">
+                        <label asp-for="ShipName" class="control-label"></label>
+                        <input asp-for="ShipName" class="form-control" />
+                        <span asp-validation-for="ShipName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ShipAddress" class="control-label"></label>
+                        <input asp-for="ShipAddress" class="form-control" />
+                        <span asp-validation-for="ShipAddress" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ShipEmail" class="control-label"></label>
+                        <input asp-for="ShipEmail" type="email" class="form-control" />
+                        <span asp-validation-for="ShipEmail" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ShipPhoneNumber" class="control-label"></label>
+                        <input asp-for="ShipPhoneNumber" type="number" class="form-control" />
+                        <span asp-validation-for="ShipPhoneNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Status" class="control-label"></label>
+                        <select asp-for="Status">
+                            <option value='0'>Trong tiến trình</option>
+                            <option value='1'>Đã xác nhận</option>
+                            <option value='2'>Đang chuyển hàng</option>
+                            <option value='3'>Thành công</option>
+                            <option value='4'>Đã hủy</option>
+                        </select>
+                        <span asp-validation-for="Status" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Save" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>

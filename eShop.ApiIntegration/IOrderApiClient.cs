@@ -1,4 +1,6 @@
-﻿using eShop.ViewModels.Sales.Order;
+﻿using eShop.ViewModels.Common;
+using eShop.ViewModels.Sales.Order;
+using eShop.ViewModels.Sales.RevenueStatistics;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,8 +13,14 @@ namespace eShop.ApiIntegration
     {
         Task<bool> CreateOrder(OrderCreateRequest request);
 
+        Task<bool> UpdateOrder(OrderUpdateRequest orderUpdate);
+
+        Task<List<RevenueStatisticViewModel>> RevenueStatistic(StatisticsRequest request);
+
         Task<OrderViewModel> GetById(int id);
 
         Task<bool> DeleteOrder(int id);
+
+        Task<PagedResult<OrderViewModel>> GetPagings(GetOrderPagingRequest request);
     }
 }

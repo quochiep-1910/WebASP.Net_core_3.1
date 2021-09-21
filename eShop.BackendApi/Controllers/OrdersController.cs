@@ -1,10 +1,16 @@
 ﻿using eShop.Application.Sales;
+using eShop.BackendApi.Models;
+using eShop.Data.EF;
 using eShop.ViewModels.Sales.Order;
+using eShop.ViewModels.Sales.RevenueStatistics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,11 +20,13 @@ namespace eShop.BackendApi.Controllers
     [ApiController]
     public class OrdersController : ControllerBase
     {
+        private readonly EShopDbContext _context;
         private readonly IOrderService _OrderService;
 
-        public OrdersController(IOrderService OrderService)
+        public OrdersController(IOrderService OrderService, EShopDbContext context)
         {
             _OrderService = OrderService;
+            _context = context;
         }
 
         [HttpPost]
@@ -54,6 +62,41 @@ namespace eShop.BackendApi.Controllers
                 return BadRequest();
 
             return Ok();
+        }
+
+        [HttpGet("paging")]
+        [Authorize]
+        public async Task<IActionResult> GetAllPaging([FromQuery] GetOrderPagingRequest request)
+        {
+            var order = await _OrderService.GetOrderPaging(request);
+
+            return Ok(order);
+        }
+
+        [HttpPut("{orderId}")]
+        [Consumes("multipart/form-data")]
+        [Authorize]
+        public async Task<IActionResult> Update([FromRoute] int orderId, [FromForm] OrderUpdateRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            request.Id = orderId;
+            var affectedResult = await _OrderService.Update(request);
+            if (affectedResult == 0)
+                return BadRequest();
+
+            return Ok();
+        }
+
+        [Route("getrevenue")]
+        [HttpGet]
+        public async Task<IActionResult> GetRevenuesStatistic([FromQuery] StatisticsRequest request)
+        {
+            var affectedResult = await _OrderService.GetRevenueStatistic(request);
+
+            return Ok(affectedResult);
         }
     }
 }

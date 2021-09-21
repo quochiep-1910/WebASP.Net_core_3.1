@@ -1,5 +1,7 @@
-﻿using eShop.ViewModels.Common;
+﻿using eShop.Data.Entities;
+using eShop.ViewModels.Common;
 using eShop.ViewModels.Sales.Order;
+using eShop.ViewModels.Sales.RevenueStatistics;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,10 +13,16 @@ namespace eShop.Application.Sales
     {
         Task<int> Create(OrderCreateRequest request);
 
+        Task<int> Update(OrderUpdateRequest request);
+
         Task<int> Delete(int orderId);
 
         Task<OrderViewModel> GetById(int orderId);
 
         Task<List<OrderViewModel>> GetAll();
+
+        Task<PagedResult<OrderViewModel>> GetOrderPaging(GetOrderPagingRequest request);
+
+        Task<IEnumerable<RevenueStatistic>> GetRevenueStatistic(StatisticsRequest request);
     }
 }

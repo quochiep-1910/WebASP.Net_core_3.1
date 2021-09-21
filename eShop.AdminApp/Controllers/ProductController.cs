@@ -56,6 +56,7 @@ namespace eShop.AdminApp.Controllers
             // {
             //     ViewBag.SuccessMsg = TempData["result"];
             // }
+            TempData["TotalProducts"] = data.TotalRecords;
             return View(data);
         }
 

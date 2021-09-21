@@ -44,6 +44,10 @@ namespace eShop.Data.EF
             modelBuilder.Entity<IdentityRoleClaim<Guid>>().ToTable("AppRoleClaims");
             modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("AppUserTokens").HasKey(x => x.UserId);
 
+            modelBuilder.Entity<RevenueStatistic>(entity =>
+            {
+                entity.HasNoKey();
+            });
             //Data seeding
             modelBuilder.Seed();
             //base.OnModelCreating(modelBuilder);
@@ -74,5 +78,7 @@ namespace eShop.Data.EF
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
         public DbSet<Slide> Slides { get; set; }
+
+        public DbSet<RevenueStatistic> RevenueStatistics { get; set; }
     }
 }
