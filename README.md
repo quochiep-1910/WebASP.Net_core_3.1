@@ -22,8 +22,8 @@ You will need the following tools:
 
 ### You can run as below urls
 - Page Admin: http://www.hhk.somee.com/Login/Index?ReturnUrl=%2F
- UserName: quochiep
- Password: Abc@123
+- UserName: quochiep
+- Password: Abc@123
 
 - Page for the customer: http://khh.somee.com/
 
