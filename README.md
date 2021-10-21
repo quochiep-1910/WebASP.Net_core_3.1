@@ -21,7 +21,6 @@ You will need the following tools:
 * [SQL Server 2014](https://www.microsoft.com/en-us/download/details.aspx?id=42299)
 
 ### You can run as below urls
-
 - Page Admin: http://www.hhk.somee.com/Login/Index?ReturnUrl=%2F
 * UserName: quochiep
 * Password: Abc@123
