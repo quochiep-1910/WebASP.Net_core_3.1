@@ -31,6 +31,7 @@ namespace eShop.ViewModels.Catalog.ProductCategory
         [Display(Name = "Danh mục cha")]
         public int? ParentId { set; get; }
 
+        [Display(Name = "Trạng Thái kích hoạt")]
         public Status status { set; get; }
     }
 }

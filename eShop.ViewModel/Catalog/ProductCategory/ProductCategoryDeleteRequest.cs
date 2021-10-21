@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace eShop.ViewModels.Catalog.ProductCategory
+﻿namespace eShop.ViewModels.Catalog.ProductCategory
 {
     public class ProductCategoryDeleteRequest
     {

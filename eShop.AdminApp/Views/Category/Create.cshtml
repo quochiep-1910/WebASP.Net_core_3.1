@@ -7,17 +7,23 @@
 }
 
 @section Scripts{
-    <script src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
-    @*<script>
-            $('#txt_details').ckeditor();
-        </script>*@
     <script>
-        ClassicEditor
-            .create(document.querySelector('#txt_details'))
-            .catch(error => {
-                console.error(error);
-            });
+        $(document).ready(function () {
+            $.ajax({
+                method: "GET",
+                url: "https://localhost:5001/api/Categories?languageId=vi-VN",
+                dataType: "json",
+                success: function (data) {
+                    var s = '<option value="">Default</option>';
+                    for (var i = 0; i < data.length; i++) {
+                        s += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
+                    }
+                    $("#list").html(s);
+                }
+            })
+        })
     </script>
+
 }
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -43,7 +49,7 @@
         <div class="card">
             <div class="card-header">
                 <div>
-                    <a class="btn btn-success" asp-action="Index" asp-controller="Product">Về Danh Sách</a>
+                    <a class="btn btn-success" asp-action="Index" asp-controller="Category">Về Danh Sách</a>
                 </div>
                 <hr />
                 <form asp-action="Create" enctype="multipart/form-data" method="post">
@@ -74,26 +80,21 @@
                         <span asp-validation-for="SortOrder" class="text-danger"></span>
                     </div>
                     <div class="form-group form-check">
-                        <label class="form-check-label">
-                            <input class="form-check-input" asp-for="IsShowOnHome" /> @Html.DisplayNameFor(model => model.IsShowOnHome)
+                        <label asp-for="IsShowOnHome" class="form-check-label">
+                            @*<input class="form-check-input" asp-for="IsShowOnHome" /> @Html.DisplayNameFor(model => model.IsShowOnHome)*@
                         </label>
+                        <select asp-for="IsShowOnHome">
+                            <option value='True'>True</option>
+                            <option value='False'>False</option>
+                        </select>
+                        <span asp-validation-for="IsShowOnHome" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <select>
-                            <option value="">Default</option>
-                            @{
-
-                                foreach (var item in ViewBag.categories)
-                                {
-
-                                    <option value="@item.Name">
-                                        @item.Name
-                                    </option>
-                                }
-                            }
+                        <label asp-for="ParentId" class="form-check-label"></label>
+                        <select id="list">
+                            <input type="hidden" asp-for="ParentId" />
                         </select>
-                        <input type="hidden" asp-for="ParentId" />
                     </div>
 
                     <div class="form-group">

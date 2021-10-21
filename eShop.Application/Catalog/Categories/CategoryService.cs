@@ -65,9 +65,15 @@ namespace eShop.Application.Catalog.Categories
             return category.Id;
         }
 
-        public Task<int> Delete(int categoryId)
+        public async Task<int> Delete(int categoryId)
         {
-            throw new NotImplementedException();
+            var category = await _context.Categories.FindAsync(categoryId);
+
+            if (category == null) throw new EShopException($"Không thể tìm thấy một danh mục sản phẩm : {categoryId}");
+
+            _context.Categories.Remove(category);
+
+            return await _context.SaveChangesAsync();
         }
 
         public async Task<List<ProductCategoryViewModel>> GetAll(string languageId)

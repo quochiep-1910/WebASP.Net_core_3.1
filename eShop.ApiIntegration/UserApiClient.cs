@@ -62,7 +62,7 @@ namespace eShop.ApiIntegration
 
         public async Task<ApiResult<UserViewModel>> GetById(Guid id)
         {
-            var result = await GetById<ApiResult<UserViewModel>>("/api/users", id);
+            var result = await GetById<ApiResult<UserViewModel>>($"/api/users/GetId?id={id}");
             return result;
         }
 

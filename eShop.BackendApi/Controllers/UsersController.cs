@@ -77,12 +77,12 @@ namespace eShop.BackendApi.Controllers
             return Ok(result);
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> GetById(Guid id)
-        //{
-        //    var user = await _userService.GetById(id);
-        //    return Ok(user);
-        //}
+        [HttpGet("GetId")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var user = await _userService.GetById(id);
+            return Ok(user);
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetByUserName(string userName)

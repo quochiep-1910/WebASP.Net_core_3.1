@@ -101,6 +101,7 @@ namespace eShop.Application.Catalog.Products
         public async Task<int> Delete(int productId)
         {
             var product = await _context.Products.FindAsync(productId);
+
             if (product == null) throw new EShopException($"Không thể tìm thấy một sản phẩm : {productId}");
 
             var images = _context.ProductImages.Where(i => i.ProductId == productId);//lấy ra ds của các ảnh

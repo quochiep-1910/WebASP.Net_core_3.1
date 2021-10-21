@@ -6,7 +6,7 @@
 }
 
 @section Scripts{
-   
+
     <script>
         $(document).ready(function () {
             $.ajax({
@@ -82,11 +82,17 @@
                         <span asp-validation-for="SortOrder" class="text-danger"></span>
                     </div>
                     <div class="form-group form-check">
-                        <label class="form-check-label">
-                            <input class="form-check-input" asp-for="IsShowOnHome" /> @Html.DisplayNameFor(model => model.IsShowOnHome)
+                        <label asp-for="IsShowOnHome" class="form-check-label">
                         </label>
+                        <select asp-for="IsShowOnHome">
+                            <option value='True'>True</option>
+                            <option value='False'>False</option>
+                        </select>
+                        <span asp-validation-for="IsShowOnHome" class="text-danger"></span>
                     </div>
+
                     <div class="form-group">
+                        <label asp-for="ParentId" class="form-check-label"></label>
                         <select id="list">
                             <input type="hidden" asp-for="ParentId" />
                         </select>

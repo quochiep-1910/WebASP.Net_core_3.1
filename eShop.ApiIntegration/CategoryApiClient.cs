@@ -99,9 +99,9 @@ namespace eShop.ApiIntegration
             return response.IsSuccessStatusCode;
         }
 
-        public Task<bool> DeleteCategory(int id)
+        public async Task<bool> DeleteCategory(int id)
         {
-            throw new NotImplementedException();
+            return await Delete($"/api/categories/" + id);
         }
     }
 }

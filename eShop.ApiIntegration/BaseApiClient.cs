@@ -65,13 +65,13 @@ namespace eShop.ApiIntegration
             throw new Exception(body);
         }
 
-        protected async Task<TResponse> GetById<TResponse>(string url, Guid id)
+        protected async Task<TResponse> GetById<TResponse>(string url)
         {
             var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions); //lấy token
-            var response = await client.GetAsync($"{url}/{id}");
+            var response = await client.GetAsync($"{url}");
             var body = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
                 return JsonConvert.DeserializeObject<TResponse>(body);
