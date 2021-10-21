@@ -20,15 +20,21 @@ You will need the following tools:
 * [Visual Studio 2019](https://visualstudio.microsoft.com/downloads/)
 * [SQL Server 2014](https://www.microsoft.com/en-us/download/details.aspx?id=42299)
 
-- You can run as below urls:
-* [Page Admin](http://www.hhk.somee.com/Login/Index?ReturnUrl=%2F)
-- UserName: quochiep
-- Password: Abc@123
+### You can run as below urls
 
-* [Page for the customer ](http://khh.somee.com/)
+- Page Admin: http://www.hhk.somee.com/Login/Index?ReturnUrl=%2F
+* UserName: quochiep
+* Password: Abc@123
 
-* [Page API](http://backendapi.somee.com/swagger/index.html)
+- Page for the customer: http://khh.somee.com/
+
+- Page API: http://backendapi.somee.com/swagger/index.html
 
 - Free Windows ASP.NET Hosting: https://somee.com/
+
+![Page Admin](https://raw.githubusercontent.com/quochiep-1910/WebASP.Net_core_3.1/main/eShop.WebApp/resource/img/PageAdmin.PNG)
+
+![Page Admin](https://raw.githubusercontent.com/quochiep-1910/WebASP.Net_core_3.1/main/eShop.WebApp/resource/img/PageForCutomer.PNG)
+
 
 
