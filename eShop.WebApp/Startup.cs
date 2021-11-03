@@ -1,5 +1,6 @@
 ﻿using AspNetCoreHero.ToastNotification;
 using eShop.ApiIntegration;
+using eShop.Utilities.Exceptions;
 using eShop.ViewModels.System.Users;
 using eShop.WebApp.LocalizationResources;
 using FluentValidation.AspNetCore;
@@ -41,6 +42,7 @@ namespace eShop.WebApp
                 config.IsDismissable = true;
                 config.Position = NotyfPosition.BottomRight;
             });
+            services.AddControllers(options => options.Filters.Add(typeof(ExceptionFilter))).AddFluentValidation(); //lọc thông báo hiện lên
             services.AddControllersWithViews()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>()) //đăng kí tất cả class nào có Validator;
                 .AddExpressLocalization<ExpressLocalizationResource, ViewLocalizationResource>(ops =>
@@ -105,6 +107,7 @@ namespace eShop.WebApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseAuthentication();

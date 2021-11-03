@@ -3,6 +3,7 @@ using eShop.ApiIntegration;
 using eShop.Utilities.Constants;
 using eShop.ViewModels.Catalog.Products;
 using eShop.ViewModels.Common;
+using eShop.ViewModels.System.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -203,5 +204,113 @@ namespace eShop.AdminApp.Controllers
             ModelState.AddModelError("", "Xoá sản phẩm không thành công");//key and message
             return View(request);
         }
+
+        #region lập trình tiên tiến
+
+        public async Task<IActionResult> IndexWS(string keyword, int pageIndex = 1, int pageSize = 3)
+        {
+            var request = new GetUserPagingRequest()
+            {
+                Keyword = keyword,
+                PageIndex = pageIndex,
+                PageSize = pageSize
+            };
+            ViewBag.Keyword = keyword;
+
+            var categories = await _productApiClient.GetAll(request);
+
+            return View(categories);
+        }
+
+        [HttpGet("CreateWS")]
+        public IActionResult CreateWS()
+        {
+            return View();
+        }
+
+        [HttpPost("CreateWS")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> CreateWS([FromForm] WorkingscheduleViewModel request)
+        {
+            if (!ModelState.IsValid)
+                return View(request);
+            var result = await _productApiClient.CreateWorkingSchedule(request);
+            if (result)
+            {
+                //TempData["result"] = "Thêm mới sản phẩm thành công";
+                _notyf.Success("Thêm mới lịch công tác thành công");
+                return RedirectToAction("IndexWS");
+            }
+
+            ModelState.AddModelError("", "Thêm lịch công tác thất bại");
+
+            return View(request);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteWS(int id)
+        {
+            var ws = await _productApiClient.GetByIdWS(id);
+            return View(new WorkingscheduleViewModel()
+            {
+                Id = ws.Id,
+                UserName = ws.UserName,
+                EndDate = ws.EndDate,
+                StartDate = ws.StartDate,
+                LyDo = ws.LyDo,
+                Message = ws.Message
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteWS(WorkingscheduleViewModel request)
+        {
+            var result = await _productApiClient.DeleteWorkingSchedule(request.Id);
+
+            if (result)
+            {
+                TempData["result"] = "Xoá lịch công tác thành công";
+                _notyf.Success("Xoá lịch công tác thành công");
+                return RedirectToAction("IndexWS");
+            }
+            ModelState.AddModelError("", "Xoá lịch công tác không thành công");//key and message
+            return View(request);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditWS(int id)
+        {
+            var ws = await _productApiClient.GetByIdWS(id);
+            var workingscheduleVm = new WorkingscheduleViewModel()
+            {
+                Id = ws.Id,
+                UserName = ws.UserName,
+                EndDate = ws.EndDate,
+                StartDate = ws.StartDate,
+                LyDo = ws.LyDo,
+                Message = ws.Message
+            };
+            return View(workingscheduleVm);
+        }
+
+        [HttpPost]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> EditWS([FromForm] WorkingscheduleViewModel request)
+        {
+            if (!ModelState.IsValid)
+                return View(request);
+            var result = await _productApiClient.UpdateWorkingSchedule(request);
+            if (result)
+            {
+                //TempData["result"] = "Cập nhập lịch công tác thành công";
+                _notyf.Success("Cập nhập lịch công tác thành công");
+                return RedirectToAction("IndexWS");
+            }
+
+            ModelState.AddModelError("", "Cập nhập lịch công tác thất bại");
+            return View(request);
+        }
+
+        #endregion lập trình tiên tiến
     }
 }

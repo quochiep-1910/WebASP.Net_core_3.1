@@ -1,0 +1,120 @@
+﻿@using eShop.ViewModels.Common
+@model PagedResult<eShop.ViewModels.System.Users.WorkingscheduleViewModel>
+
+@{
+    ViewData["Title"] = "IndexWS";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Danh sách lịch công tác</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active">Danh sách lịch công tác</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+    <section class="content">
+
+        <!-- Default box -->
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-6 col-xs-12">
+                        <a class="btn btn-success" asp-action="CreateWS" asp-controller="Product">Tạo Mới </a>
+                    </div>
+                    <div class="col-md-6 col-xs-12">
+                        <form asp-action="IndexWS" method="get">
+                            <div class="row">
+                                <div class=" col-md-3">
+                                    <input type="text" value="@ViewBag.Keyword" name="keyword" class="form-control" />
+                                </div>
+
+                                <div class=" col-md-3">
+                                    <button type="submit" class="btn btn-primary">Tìm</button>
+                                    <button type="button" onclick="window.location.href='/Product/IndexWS'" class="btn btn-dark">Reset</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                @* <div class="row">
+
+                        <div class="col-md-12 ">
+                            @if (ViewBag.SuccessMsg != null)
+                            {
+                                <div id="msgAlert" class="alert alert-success text-center" role="alert">
+                                    @ViewBag.SuccessMsg
+                                </div>
+                            }
+                        </div>
+                    </div> *@
+                <br />
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                Id
+                            </th>
+                            <th>
+                                Từ Ngày
+                            </th>
+                            <th>
+                                Đến Ngày
+                            </th>
+                            <th>
+                                Lý Do
+                            </th>
+                            <th>
+                                Đăng kí cho
+                            </th>
+                            <th>
+                                Diễn giải
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Id)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.StartDate)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.EndDate)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.LyDo)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.UserName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Message)
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Sửa", "EditWS", new { id = item.Id }) |
+                                    @Html.ActionLink("Xoá", "DeleteWS", new { id = item.Id })
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @*@await Component.InvokeAsync("Pager", Model)*@
+        </div>
+    </section>
+</div>

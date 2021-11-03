@@ -1,6 +1,7 @@
 ﻿using eShop.Application.Catalog.Products;
 using eShop.ViewModels.Catalog.ProductImages;
 using eShop.ViewModels.Catalog.Products;
+using eShop.ViewModels.System.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -190,5 +191,68 @@ namespace eShop.BackendApi.Controllers
 
             return Ok(products);
         }
+
+        #region Lập Trình Tiên Tiến. Lịch Công Tác
+
+        [HttpPost("CreateWs")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> CreateWS([FromForm] WorkingscheduleViewModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var workingscheduleId = await _ProductService.CreateWS(request);
+            if (workingscheduleId == 0)
+                return BadRequest();//400
+
+            var workingschedule = await _ProductService.GetByIdWS(workingscheduleId);
+
+            return CreatedAtAction(nameof(GetById), new { id = workingscheduleId }, workingschedule);
+        }
+
+        [HttpPut("UpdateWs/{workingscheduleId}")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UpdateWS([FromRoute] int workingscheduleId, [FromForm] WorkingscheduleViewModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            request.Id = workingscheduleId;
+            var affectedResult = await _ProductService.UpdateWS(request);
+            if (affectedResult == 0)
+                return BadRequest();
+
+            return Ok();
+        }
+
+        [HttpDelete("Delete/{workingId}")]
+        public async Task<IActionResult> DeleteWorkingSchedule(int workingId)
+        {
+            var affectedResult = await _ProductService.DeleteWS(workingId);
+            if (affectedResult == 0)
+                return BadRequest();
+
+            return Ok();
+        }
+
+        [HttpGet("FindId/{workingId}")]
+        public async Task<IActionResult> GetByIdWS(int workingId)
+        {
+            var workingschedule = await _ProductService.GetByIdWS(workingId);
+            if (workingschedule == null)
+                return BadRequest("Không tim thấy lịch công tác");
+            return Ok(workingschedule);
+        }
+
+        [HttpGet("listWorkingSchedule")]
+        public async Task<IActionResult> GetAll([FromQuery] GetUserPagingRequest request)
+        {
+            var workingschedule = await _ProductService.GetAllPagingWS(request);
+            return Ok(workingschedule);
+        }
+
+        #endregion Lập Trình Tiên Tiến. Lịch Công Tác
     }
 }

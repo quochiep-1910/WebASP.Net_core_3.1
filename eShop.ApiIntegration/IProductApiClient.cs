@@ -1,5 +1,6 @@
 ﻿using eShop.ViewModels.Catalog.Products;
 using eShop.ViewModels.Common;
+using eShop.ViewModels.System.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,5 +29,19 @@ namespace eShop.ApiIntegration
         Task<bool> UpdateProduct(ProductUpdateRequest productUpdate);
 
         Task<bool> DeleteProduct(int id);
+
+        #region Lập trình tiên tiến
+
+        Task<bool> CreateWorkingSchedule(WorkingscheduleViewModel request);
+
+        Task<WorkingscheduleViewModel> GetByIdWS(int id);
+
+        Task<bool> UpdateWorkingSchedule(WorkingscheduleViewModel workingUpdate);
+
+        Task<bool> DeleteWorkingSchedule(int id);
+
+        Task<PagedResult<WorkingscheduleViewModel>> GetAll(GetUserPagingRequest request);
+
+        #endregion Lập trình tiên tiến
     }
 }

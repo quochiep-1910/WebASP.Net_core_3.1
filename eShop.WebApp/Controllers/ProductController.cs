@@ -49,5 +49,6 @@ namespace eShop.WebApp.Controllers
                  .GetRelatedProducts(ProductSettings.NumberOfRelatedProducts, culture)
             });
         }
+    
     }
 }
