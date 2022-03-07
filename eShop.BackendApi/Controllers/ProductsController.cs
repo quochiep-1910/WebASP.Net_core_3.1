@@ -16,8 +16,8 @@ namespace eShop.BackendApi.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly IProductService _ProductService;
 
+        private readonly IProductService _ProductService;
         public ProductsController(IProductService ProductService)
         {
             _ProductService = ProductService;
@@ -241,6 +241,7 @@ namespace eShop.BackendApi.Controllers
         public async Task<IActionResult> GetByIdWS(int workingId)
         {
             var workingschedule = await _ProductService.GetByIdWS(workingId);
+
             if (workingschedule == null)
                 return BadRequest("Không tim thấy lịch công tác");
             return Ok(workingschedule);

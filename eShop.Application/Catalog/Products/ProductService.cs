@@ -589,6 +589,7 @@ namespace eShop.Application.Catalog.Products
                 Message = request.Message,
                 UserName = request.UserName
             };
+
             _context.WorkingSchedules.Add(workSchedule);
             await _context.SaveChangesAsync();
             return workSchedule.Id;

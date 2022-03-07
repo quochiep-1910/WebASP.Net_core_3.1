@@ -281,6 +281,7 @@ namespace eShop.AdminApp.Controllers
         public async Task<IActionResult> EditWS(int id)
         {
             var ws = await _productApiClient.GetByIdWS(id);
+
             var workingscheduleVm = new WorkingscheduleViewModel()
             {
                 Id = ws.Id,
