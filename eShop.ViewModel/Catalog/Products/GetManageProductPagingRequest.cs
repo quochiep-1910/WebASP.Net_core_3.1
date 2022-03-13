@@ -1,5 +1,4 @@
 ﻿using eShop.ViewModels.Common;
-using System.Collections.Generic;
 
 namespace eShop.ViewModels.Catalog.Products
 {

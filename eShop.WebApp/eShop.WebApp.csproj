@@ -5,6 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="resource\**" />
+    <Content Remove="resource\**" />
+    <EmbeddedResource Remove="resource\**" />
+    <None Remove="resource\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AspNetCoreHero.ToastNotification" Version="1.1.0" />
     <PackageReference Include="LazZiya.ExpressLocalization" Version="4.0.4" />
     <PackageReference Include="Microsoft.IdentityModel.Logging" Version="6.9.0" />

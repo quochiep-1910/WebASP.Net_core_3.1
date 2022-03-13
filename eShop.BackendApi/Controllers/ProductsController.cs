@@ -3,11 +3,7 @@ using eShop.ViewModels.Catalog.ProductImages;
 using eShop.ViewModels.Catalog.Products;
 using eShop.ViewModels.System.Users;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace eShop.BackendApi.Controllers
@@ -16,8 +12,8 @@ namespace eShop.BackendApi.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-
         private readonly IProductService _ProductService;
+
         public ProductsController(IProductService ProductService)
         {
             _ProductService = ProductService;

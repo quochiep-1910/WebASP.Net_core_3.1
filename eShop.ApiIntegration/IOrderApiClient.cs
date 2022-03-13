@@ -1,10 +1,7 @@
 ﻿using eShop.ViewModels.Common;
 using eShop.ViewModels.Sales.Order;
 using eShop.ViewModels.Sales.RevenueStatistics;
-using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace eShop.ApiIntegration

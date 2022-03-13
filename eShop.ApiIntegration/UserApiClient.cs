@@ -1,12 +1,9 @@
 ﻿using eShop.ViewModels.Common;
-using eShop.ViewModels.System;
 using eShop.ViewModels.System.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;

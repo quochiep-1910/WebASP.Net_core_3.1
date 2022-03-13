@@ -1,11 +1,12 @@
 ﻿using eShop.Data.Entities;
+using eShop.Utilities.Constants;
+using eShop.Utilities.Exceptions;
 using eShop.ViewModels.Common;
-using eShop.ViewModels.System;
 using eShop.ViewModels.System.Users;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
@@ -22,18 +23,20 @@ namespace eShop.Application.System.Users
         private readonly SignInManager<AppUser> _signInManager;
         private readonly RoleManager<AppRole> _roleManager;
         private readonly IConfiguration _config;
+        private readonly ILogger<UserService> _logger;
 
         public UserService(UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
 
             RoleManager<AppRole> roleManager,
-            IConfiguration config)
+            IConfiguration config, ILogger<UserService> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
 
             _roleManager = roleManager;
             _config = config;
+            _logger = logger;
         }
 
         public async Task<ApiResult<string>> Authencate(LoginRequest loginRequest)
@@ -251,6 +254,27 @@ namespace eShop.Application.System.Users
             }
             //return false;
             return new ApiErrorResult<bool>("Cập nhập không thành công");
+        }
+
+        public async Task<bool> ChangeUserPassword(int id, AppUserChangePasswordDTO appUserChangePassword)
+        {
+            if (id != appUserChangePassword.Id) throw new EShopException(ResponseMessage.NOT_MATCH);
+            bool success = false;
+            try
+            {
+                var user = await _userManager.FindByIdAsync(appUserChangePassword.Id.ToString());
+                if (user == null)
+                    throw new EShopException(ResponseMessage.GetDataFailed);
+                var changePass = await _userManager.ChangePasswordAsync(user, appUserChangePassword.OldPasswordHash, appUserChangePassword.PasswordHash);
+                if (changePass.Succeeded)
+                    success = true;
+                return success;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "{0} {1}", "Something went wrong in ", nameof(DeleteUser));
+                throw;
+            }
         }
     }
 }

@@ -84,7 +84,7 @@ namespace eShop.WebApp
             {
                 opstions.IdleTimeout = TimeSpan.FromMinutes(20);
             });
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); //truy cập HttpContext thông qua  IHttpContextAccessor
+            services.AddTransient<IHttpContextAccessor, HttpContextAccessor>(); //truy cập HttpContext thông qua  IHttpContextAccessor
             services.AddTransient<ISlideApiClient, SlideApiClient>();
             services.AddTransient<IProductApiClient, ProductApiClient>();
             services.AddTransient<ICategoryApiClient, CategoryApiClient>();

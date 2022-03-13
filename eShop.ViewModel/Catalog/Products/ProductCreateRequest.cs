@@ -27,7 +27,7 @@ namespace eShop.ViewModels.Catalog.Products
         public string SeoDescription { set; get; }
 
         [Display(Name = "Tiêu đề Seo ")]
-        
+
         public string SeoTitle { set; get; }
 
         [Display(Name = "Từ khoá SEO")]

@@ -1,17 +1,13 @@
 ﻿using eShop.Data.EF;
-
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using eShop.ViewModels.Common;
-using eShop.ViewModels.Catalog.ProductCategory;
-using eShop.Utilities.Exceptions;
 using eShop.Data.Entities;
+using eShop.Utilities.Exceptions;
+using eShop.ViewModels.Catalog.ProductCategory;
+using eShop.ViewModels.Common;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using static eShop.Utilities.Constants.SystemConstants;
-using eShop.Data.Enums;
 
 namespace eShop.Application.Catalog.Categories
 {

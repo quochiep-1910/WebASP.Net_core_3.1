@@ -3,7 +3,6 @@ using eShop.ViewModels.Catalog.Products;
 
 using eShop.ViewModels.Common;
 using eShop.ViewModels.System.Users;
-using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

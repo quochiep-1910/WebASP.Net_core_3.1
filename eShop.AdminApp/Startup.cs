@@ -53,7 +53,7 @@ namespace eShop.AdminApp
 
             //DI
 
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); //truy cập HttpContext thông qua  IHttpContextAccessor
+            services.AddTransient<IHttpContextAccessor, HttpContextAccessor>(); //truy cập HttpContext thông qua  IHttpContextAccessor
             services.AddTransient<IUserApiClient, UserApiClient>();
             services.AddTransient<IRoleApiClient, RoleApiClient>();
             services.AddTransient<ILanguageApiClient, LanguageApiClient>();

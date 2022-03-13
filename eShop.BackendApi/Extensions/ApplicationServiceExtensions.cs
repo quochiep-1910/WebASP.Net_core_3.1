@@ -27,7 +27,7 @@ namespace eShop.BackendApi.Extensions
             options.UseSqlServer(Configuration.GetConnectionString(SystemConstants.MainConnecttionString)));
 
             services.AddIdentity<AppUser, AppRole>()
-                .AddEntityFrameworkStores<EShopDbContext>()
+              .AddEntityFrameworkStores<EShopDbContext>()
                 .AddDefaultTokenProviders();
             //khai báo DI
 
