@@ -1,172 +1,170 @@
-﻿using eShop.Data.EF;
-
+﻿using AutoMapper;
+using eShop.Data.EF;
+using eShop.Data.Entities;
+using eShop.Data.Paging;
+using eShop.Data.UnitOfWork;
+using eShop.Utilities.Exceptions;
+using eShop.ViewModels.Catalog.ProductCategory;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using eShop.ViewModels.Common;
-using eShop.ViewModels.Catalog.ProductCategory;
-using eShop.Utilities.Exceptions;
-using eShop.Data.Entities;
 using static eShop.Utilities.Constants.SystemConstants;
-using eShop.Data.Enums;
 
 namespace eShop.Application.Catalog.Categories
 {
     public class CategoryService : ICategoryService
     {
         private readonly EShopDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogger<CategoryService> _logger;
+        private readonly IMapper _mapper;
 
-        public CategoryService(EShopDbContext context)
+        public CategoryService(EShopDbContext context, IUnitOfWork unitOfWork,
+                             ILogger<CategoryService> logger, IMapper mapper)
         {
             _context = context;
+            _unitOfWork = unitOfWork;
+            _logger = logger;
+            _mapper = mapper;
         }
 
         public async Task<int> Create(ProductCategoryCreateRequest request)
         {
-            var languages = _context.Languages;
-            var translations = new List<CategoryTranslation>();
-            foreach (var language in languages)
+            await using var trans = await _unitOfWork.BeginTransactionAsync();
+            try
             {
-                if (language.Id == request.LanguageId)
+                var languages = await _unitOfWork.LanguageRepository.GetAllAsyncNoPaging();
+                var translations = new List<CategoryTranslation>();
+                foreach (var language in languages)
                 {
-                    //create CategoryTranslations
-                    translations.Add(new CategoryTranslation()
+                    var categoryTranslation = _mapper.Map<CategoryTranslation>(request);
+                    if (language.Id == request.LanguageId)
                     {
-                        Name = request.Name,
-
-                        SeoDescription = request.SeoDescription,
-                        SeoAlias = request.SeoAlias,
-                        SeoTitle = request.SeoTitle,
-                        LanguageId = request.LanguageId
-                    });
-                }
-                else
-                {
-                    translations.Add(new CategoryTranslation()
+                        translations.Add(categoryTranslation);
+                    }
+                    else
                     {
-                        Name = CategoryConstants.NA,
-                        SeoAlias = CategoryConstants.NA,
-                        LanguageId = language.Id
-                    });
+                        translations.Add(new CategoryTranslation()
+                        {
+                            Name = CategoryConstants.NA,
+                            SeoAlias = CategoryConstants.NA,
+                            LanguageId = language.Id
+                        });
+                    }
                 }
+                var category = _mapper.Map<Category>(request);
+                category.CategoryTranslations = translations;
+                await _context.Categories.AddAsync(category);
+                await _unitOfWork.SaveAsync();
+                await trans.CommitAsync();
+                return category.Id;
             }
-            var category = new Category()
+            catch (Exception e)
             {
-                SortOrder = request.SortOrder,
-                IsShowOnHome = request.IsShowOnHome,
-                Status = (Status)request.status,
-                CategoryTranslations = translations
-            };
-            _context.Categories.Add(category);
-            await _context.SaveChangesAsync();
-            return category.Id;
+                _logger.LogError($"Has en error when adding category. {e.InnerException?.Message}");
+                await trans.RollbackAsync();
+                throw;
+            }
         }
 
         public async Task<int> Delete(int categoryId)
         {
-            var category = await _context.Categories.FindAsync(categoryId);
-
-            if (category == null) throw new EShopException($"Không thể tìm thấy một danh mục sản phẩm : {categoryId}");
-
-            _context.Categories.Remove(category);
-
-            return await _context.SaveChangesAsync();
-        }
-
-        public async Task<List<ProductCategoryViewModel>> GetAll(string languageId)
-        {
-            //1. Select join
-            var query = from c in _context.Categories
-                        join ct in _context.CategoryTranslations on c.Id equals ct.CategoryId
-
-                        where ct.LanguageId == languageId
-                        select new { c, ct };
-            return await query.Select(x => new ProductCategoryViewModel()
+            await using var transaction = await _unitOfWork.BeginTransactionAsync();
+            try
             {
-                Id = x.c.Id,
-                Name = x.ct.Name,
-                ParentId = x.c.ParentId,
-                SeoAlias = x.ct.SeoAlias
-            }).ToListAsync();
-        }
-
-        public async Task<PagedResult<ProductCategoryViewModel>> GetAllPaging(GetManageProductCategoryPagingRequest request)
-        {
-            //1. Select join
-            var query = from c in _context.Categories
-                        join ct in _context.CategoryTranslations on c.Id equals ct.CategoryId
-                        //join pic in _context.ProductInCategories on c.Id equals pic.CategoryId
-
-                        where ct.LanguageId == request.LanguageId
-                        select new { c, ct };
-            //2. filter
-            if (!string.IsNullOrEmpty(request.Keyword))
-                query = query.Where(x => x.ct.Name.Contains(request.Keyword));
-
-            //3. Paging
-            int totalRow = await query.CountAsync();
-
-            var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
-                .Take(request.PageSize)
-                .Select(x => new ProductCategoryViewModel()
+                var category =
+                    await _unitOfWork.CategoryRepository.GetAsync(ct => ct.Id == categoryId);
+                var result = await _unitOfWork.CategoryRepository.RemoveAsync(category);
+                if (result == true)
                 {
-                    Id = x.ct.Id,
-                    Name = x.ct.Name,
-                    CategoryId = x.ct.CategoryId,
-                    LanguageId = x.ct.LanguageId,
-                    SeoAlias = x.ct.SeoAlias,
-                    SeoDescription = x.ct.SeoDescription,
-                    SeoTitle = x.ct.SeoTitle,
-                    SortOrder = x.c.SortOrder,
-                    IsShowOnHome = x.c.IsShowOnHome,
-                    ParentId = x.c.ParentId
-                }).ToListAsync();
+                    return 1;
+                }
 
-            //4. Select and projection
-            var pagedResult = new PagedResult<ProductCategoryViewModel>()
+                await _unitOfWork.SaveAsync();
+                await transaction.CommitAsync();
+                return 0;
+            }
+            catch (Exception ex)
             {
-                TotalRecords = totalRow,
-                PageIndex = request.PageIndex,
-                PageSize = request.PageSize,
-                Items = data
-            };
-            return pagedResult;
+                _logger.LogError($"Has en error when delete. {ex.InnerException?.Message}");
+                await transaction.RollbackAsync();
+
+                throw;
+            }
         }
 
-        public async Task<ProductCategoryViewModel> GetById(int CategoryId, string languageId)
+        public async Task<List<CategoryTranslationViewModel>> GetAll(string languageId)
         {
-            var category = await _context.Categories.FindAsync(CategoryId);
-            var categoryTranslation = await _context.CategoryTranslations.FirstOrDefaultAsync(x => x.CategoryId == CategoryId
-            && x.LanguageId == languageId);
-
-            //mapper
-            var productCategoryViewModel = new ProductCategoryViewModel()
+            try
             {
-                Id = category.Id,
-                SortOrder = category.SortOrder,
-                IsShowOnHome = category.IsShowOnHome,
-                ParentId = category != null ? category.ParentId : null,
-                CategoryId = categoryTranslation.CategoryId,
-                Name = categoryTranslation.Name,
-                SeoDescription = categoryTranslation != null ? categoryTranslation.SeoDescription : null,
-                SeoTitle = categoryTranslation != null ? categoryTranslation.SeoTitle : null,
-                LanguageId = categoryTranslation.LanguageId,
-                SeoAlias = categoryTranslation.SeoAlias,
-            };
-            return productCategoryViewModel;
+                var productCategory = _mapper.Map<List<CategoryTranslationViewModel>>(await _unitOfWork.CategoryRepository.GetAll(languageId));
+
+                return productCategory;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+
+                throw;
+            }
+        }
+
+        public async Task<PagingResult<CategoryTranslationViewModel>> GetAllPaging(string languageId, string keyword, PagingRequest pageQueryParams = null)
+        {
+            try
+            {
+                var categories = _mapper.Map<PaginatedList<CategoryTranslationViewModel>>
+                    (await _unitOfWork.CategoryRepository.GetAllPaging(languageId, keyword, pageQueryParams));
+
+                var pageResult = new PagingResult<CategoryTranslationViewModel>()
+                {
+                    TotalCount = categories.TotalCount,
+                    PageSize = categories.PageSize,
+                    TotalPages = categories.TotalPages,
+                    CurrentPage = categories.CurrentPage,
+                    Objects = categories
+                };
+                return pageResult;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<List<CategoryTranslationViewModel>> GetById(int CategoryId, string languageId)
+        {
+            try
+            {
+                if (CategoryId != 0 && !string.IsNullOrEmpty(languageId))
+                {
+                    var category = await _unitOfWork.CategoryRepository.GetByCategoryId(CategoryId, languageId);
+
+                    return _mapper.Map<List<CategoryTranslationViewModel>>(category);
+                }
+                else
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
         }
 
         public async Task<int> Update(ProductCategoryUpdateRequest request)
         {
-            var category = await _context.Categories.FindAsync(request.CategoryId);
+            var category = await _unitOfWork.CategoryRepository.GetByCategoryId(request.CategoryId,);
             var productCategoryTranslations = await _context.CategoryTranslations.FirstOrDefaultAsync(x => x.CategoryId == request.CategoryId
             && x.LanguageId == request.LanguageId);
 
             if (category == null || productCategoryTranslations == null)
+            {
                 throw new EShopException($"Không thể tìm thấy một sản phẩm có id : {request.CategoryId}");
+            }
 
             productCategoryTranslations.Name = request.Name;
             productCategoryTranslations.SeoAlias = request.SeoAlias;
@@ -177,7 +175,7 @@ namespace eShop.Application.Catalog.Categories
             category.SortOrder = request.SortOrder;
             category.IsShowOnHome = request.IsShowOnHome;
             category.ParentId = request.ParentId;
-            category.Status = (Status)request.status;
+            category.Status = request.status;
 
             return await _context.SaveChangesAsync();
         }

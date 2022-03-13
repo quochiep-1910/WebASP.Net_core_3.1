@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace eShop.Utilities.Exceptions
 {
@@ -19,7 +16,7 @@ namespace eShop.Utilities.Exceptions
         ///Lọc lỗi thông báo từ server hiện lên trên màn hình hình
         public void OnException(ExceptionContext context)
         {
-            _logger.LogCritical($"Caught in ExceptionFilter {context.Exception.Message}", context.Exception);
+            _logger.LogError($"Caught in ExceptionFilter {context.Exception.Message}");
 
             var result = new JsonResult("Something went wrong");
             result.StatusCode = 500;

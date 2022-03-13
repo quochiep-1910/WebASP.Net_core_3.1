@@ -1,8 +1,7 @@
-﻿using eShop.Data.Entities;
+﻿using eShop.Data.EF;
+using eShop.Data.Entities;
 using eShop.ViewModels.Common;
-using eShop.ViewModels.System;
 using eShop.ViewModels.System.Users;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -22,18 +21,20 @@ namespace eShop.Application.System.Users
         private readonly SignInManager<AppUser> _signInManager;
         private readonly RoleManager<AppRole> _roleManager;
         private readonly IConfiguration _config;
+        private readonly EShopDbContext _context;
 
         public UserService(UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
 
             RoleManager<AppRole> roleManager,
-            IConfiguration config)
+            IConfiguration config, EShopDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
 
             _roleManager = roleManager;
             _config = config;
+            _context = context;
         }
 
         public async Task<ApiResult<string>> Authencate(LoginRequest loginRequest)
@@ -252,5 +253,110 @@ namespace eShop.Application.System.Users
             //return false;
             return new ApiErrorResult<bool>("Cập nhập không thành công");
         }
+
+        //public async Task<bool> ForgotPassword(string email, string origin)
+        //{
+        //    try
+        //    {
+        //        var appUser = await _context.Users.FindAsync(email);
+        //        if (appUser == null) throw new NotFoundException(ResponseMessage.RESOURCE_NOTFOUND(email));
+        //        appUser.ResetToken = randomTokenString();
+        //        appUser.ResetTokenExpires = DateTime.UtcNow.AddDays(1);
+
+        //        await AppUserRepository.UpdateAsync(appUser);
+        //        var isSave = await _unitOfWork.SaveAsync() > 0;
+        //        if (!isSave) throw new Exception(ResponseMessage.UpdateFailure);
+        //        await sendPasswordResetEmail(appUser, origin);
+
+        //        return isSave;
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //        throw;
+        //    }
+
+        //}
+
+
+        //public async Task<bool> ResetPassword(ResetPasswordRequest model)
+        //{
+        //    using var transaction = await _unitOfWork.BeginTransactionAsync();
+        //    try
+        //    {
+        //        var appUser = await _unitOfWork.AppUserRepository
+        //                .GetAsync(x =>
+        //                    x.ResetToken == model.Token
+        //                    && x.ResetTokenExpires > DateTime.UtcNow);
+        //        if (appUser == null) throw new NotFoundException(ResponseMessage.RESOURCE_NOTFOUND(model.Email));
+        //        var hasher = new PasswordHasher<AppUser>();
+        //        appUser.PasswordHash = hasher.HashPassword(null, model.Password);
+        //        appUser.PasswordReset = DateTime.UtcNow;
+        //        appUser.ResetToken = null;
+        //        appUser.ResetTokenExpires = null;
+        //        await _unitOfWork.AppUserRepository.UpdateAsync(appUser);
+        //        var isSave = await _unitOfWork.SaveAsync() > 0;
+        //        if (!isSave) throw new Exception(ResponseMessage.UpdateFailure);
+        //        await transaction.CommitAsync();
+        //        return isSave;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        await transaction.RollbackAsync();
+        //        throw;
+        //    }
+        //}
+        //#region Send Email
+
+        //private async Task sendPasswordResetEmail(AppUser appUser, string origin)
+        //{
+        //    string message;
+        //    if (!string.IsNullOrEmpty(origin))
+        //    {
+        //        var resetUrl = $"{origin}/api/Auth/reset-password?token={appUser.ResetToken}";
+        //        message = $@"<p>Please click the below link to reset your password, the link will be valid for 1 day:</p>
+        //                     <p><a href=""{resetUrl}"">{resetUrl}</a></p>";
+        //    }
+        //    else
+        //    {
+        //        message = $@"<p>Please use the below token to reset your password with the <code>/accounts/reset-password</code> api route:</p>
+        //                     <p><code>{appUser.ResetToken}</code></p>";
+        //    }
+
+        //    await _emailService.SenderEmailAsync(
+        //        to: appUser.Email,
+        //        subject: "Sign-up Verification API - Reset Password",
+        //        html: $@"<h4>Reset Password Email</h4>
+        //                 {message}"
+        //    );
+        //}
+        //private async Task sendVerificationEmail(AppUser appUser, string origin)
+        //{
+        //    string msg;
+        //    var token = appUser.VerificationToken;
+        //    if (!string.IsNullOrEmpty(origin))
+        //    {
+        //        var verifyUrl = $"{origin}/api/Auth/verify-email?token={token}";
+        //        msg = $@"<p>Please click the below link to verify your email address:</p>
+        //                     <p><a href=""{verifyUrl}"">{verifyUrl}</a></p>";
+        //    }
+        //    else
+        //    {
+        //        msg = $@"<p>Please use the below token to verify your email address with the <code>/Auth/verify-email</code> api route:</p>
+        //                     <p><code>{token}</code></p>";
+        //    }
+
+        //    await _emailService.SenderEmailAsync(
+        //        to: appUser.Email,
+        //        subject: "Sign-up Verification API - Verify Email",
+        //        html: $@"<h4>Verify Email</h4>
+        //                 <p>Thanks for registering!</p>
+        //                 {msg}"
+        //    );
+        //}
+
+        //#endregion
+
+
     }
 }

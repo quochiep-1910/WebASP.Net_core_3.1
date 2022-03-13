@@ -1,6 +1,7 @@
 ﻿using AspNetCoreHero.ToastNotification;
 using eShop.ApiIntegration;
 using eShop.Utilities.Exceptions;
+using eShop.ViewModels.AutoMapper;
 using eShop.ViewModels.System.Users;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -50,6 +51,8 @@ namespace eShop.AdminApp
             {
                 opstions.IdleTimeout = TimeSpan.FromMinutes(20);
             });
+            //Mapper 
+            services.AddAutoMapper(typeof(MapperConfig));
 
             //DI
 

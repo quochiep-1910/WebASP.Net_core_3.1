@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 using static eShop.Utilities.Constants.SystemConstants;
 
 namespace eShop.ViewModels.Catalog.ProductCategory
@@ -37,6 +34,7 @@ namespace eShop.ViewModels.Catalog.ProductCategory
 
         [Display(Name = "Danh mục cha")]
         public int? ParentId { set; get; }
+
 
         public Status status { set; get; }
     }

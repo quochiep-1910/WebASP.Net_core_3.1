@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -29,9 +28,10 @@ namespace eShop.ApiIntegration
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<List<ProductCategoryViewModel>> GetAll(string languageId)
+        public async Task<List<CategoryTranslationViewModel>> GetAll(string languageId)
         {
-            return await GetListAsync<ProductCategoryViewModel>("/api/categories?languageId=" + languageId);
+            return await GetListAsync<CategoryTranslationViewModel>("/api/categories?languageId=" + $"{languageId}");
+
         }
 
         public async Task<PagedResult<ProductCategoryViewModel>> GetPagings(GetManageProductCategoryPagingRequest request)

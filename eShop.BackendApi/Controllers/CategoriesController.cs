@@ -1,11 +1,10 @@
 ﻿using eShop.Application.Catalog.Categories;
+using eShop.Data.Paging;
 using eShop.ViewModels.Catalog.ProductCategory;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace eShop.BackendApi.Controllers
@@ -15,26 +14,36 @@ namespace eShop.BackendApi.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
+        private readonly ILogger<CategoriesController> _logger;
 
-        public CategoriesController(ICategoryService categoryService)
+        public CategoriesController(ICategoryService categoryService, ILogger<CategoriesController> logger)
         {
             _categoryService = categoryService;
+            _logger = logger;
         }
 
         [HttpGet()]
         public async Task<IActionResult> GetAll(string languageId)
         {
-            var product = await _categoryService.GetAll(languageId);
-            return Ok(product);
+            try
+            {
+                var product = await _categoryService.GetAll(languageId);
+                return Ok(product);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error Get All Favorite Courses of User in API");
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("paging")]
-        public async Task<IActionResult> GetAllPaging([FromQuery] GetManageProductCategoryPagingRequest request)
+        public async Task<IActionResult> GetAllPaging(string languageId, string keyword, [FromQuery] PagingRequest pageQueryParams = null)
         {
-            var product = await _categoryService.GetAllPaging(request);
+            var product = await _categoryService.GetAllPaging(languageId, keyword, pageQueryParams);
             return Ok(product);
         }
-
         [HttpGet("{productCategoryId}/{languageId}")]
         public async Task<IActionResult> GetById(int productCategoryId, string languageId)
         {

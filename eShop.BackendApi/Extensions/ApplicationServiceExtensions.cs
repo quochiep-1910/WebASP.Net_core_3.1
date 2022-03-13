@@ -8,7 +8,9 @@ using eShop.Application.System.Users;
 using eShop.Application.Utilities.Slides;
 using eShop.Data.EF;
 using eShop.Data.Entities;
+using eShop.Data.UnitOfWork;
 using eShop.Utilities.Constants;
+using eShop.ViewModels.AutoMapper;
 using eShop.ViewModels.System.Users;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
@@ -44,11 +46,16 @@ namespace eShop.BackendApi.Extensions
             services.AddTransient<IRoleService, RoleService>();
             services.AddTransient<IOrderService, OrderService>();
 
+
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
             //services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
             //services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidator>();
             services.AddControllers()
                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>()); //đăng kí tất cả class nào có Validator
 
+
+            //Mapper 
+            services.AddAutoMapper(typeof(MapperConfig));
             return services;
         }
     }

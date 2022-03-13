@@ -17,5 +17,13 @@ namespace eShop.Data.Entities
         public List<Order> Orders { get; set; }
 
         public List<Transaction> Transactions { get; set; }
+
+        public bool IsDelete { get; set; }
+        public string VerificationToken { get; set; }
+        public string ResetToken { get; set; }
+        public DateTime? ResetTokenExpires { get; set; }
+        public DateTime? PasswordReset { get; set; }
+
+        public string? ProfileImageUrl { get; set; }
     }
 }

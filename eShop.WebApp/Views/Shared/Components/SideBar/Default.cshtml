@@ -1,4 +1,5 @@
-﻿@model List<eShop.ViewModels.Catalog.ProductCategory.ProductCategoryViewModel>
+﻿
+@model List<eShop.ViewModels.Catalog.ProductCategory.CategoryTranslationViewModel>
 @inject LazZiya.ExpressLocalization.ISharedCultureLocalizer _loc;
 @{
     var culture = CultureInfo.CurrentCulture.Name;
@@ -10,11 +11,12 @@
         <div class="panel-group category-products" id="accordian">
             <!--category-productsr-->
             @{
-                var parents = Model.Where(x => x.ParentId == null);
+               
+                var parents = Model.Where(x => x.Category.ParentId == null);
             }
             @foreach (var parent in parents)
             {
-                var children = Model.Where(x => x.ParentId == parent.Id);
+                var children = Model.Where(x => x.Category.ParentId == parent.Id);
                 if (children.Any())
                 {
                     <div class="panel panel-default">
