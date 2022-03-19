@@ -22,6 +22,8 @@ namespace eShop.BackendApi
             services.AddApplicationServices(_configuration); // connect and DI
 
             services.AddIdentityServices(_configuration); //Swagger
+
+            services.ConfigureOptionsPattern(_configuration);//option pattern
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -40,6 +42,7 @@ namespace eShop.BackendApi
             app.UseCors(builder => builder
             .AllowAnyOrigin()
              .AllowAnyMethod()
+
             .AllowAnyHeader());
 
             app.UseHttpsRedirection();

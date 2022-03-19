@@ -1,4 +1,5 @@
 ﻿using eShop.Application.System.Users;
+using eShop.ViewModels.System.Auth;
 using eShop.ViewModels.System.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +28,7 @@ namespace eShop.BackendApi.Controllers
             {
                 return BadRequest(ModelState);
             }
+
             var result = await _userService.Authencate(request);
             if (string.IsNullOrEmpty(result.ResultObj))
             {
@@ -44,7 +46,8 @@ namespace eShop.BackendApi.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var result = await _userService.Register(request);
+
+            var result = await _userService.Register(request, Request.Headers["Host"].ToString());
             if (!result.IsSuccessed)
             {
                 return BadRequest(result);
@@ -108,6 +111,45 @@ namespace eShop.BackendApi.Controllers
                 return BadRequest(result);
             }
             return Ok(result);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> ChangeUserPassword(AppUserChangePasswordDTO appUserChangePassword)
+        {
+            return Ok(await _userService.ChangeUserPassword(appUserChangePassword));
+        }
+
+        [HttpPost("LockUser")]
+        public async Task<IActionResult> LockUser(string userid, DateTime? endDate)
+        {
+            return Ok(await _userService.LockUser(userid, endDate));
+        }
+
+        [HttpPost("Unlock")]
+        public async Task<IActionResult> Unlock(string userid)
+        {
+            return Ok(await _userService.UnlockUser(userid));
+        }
+
+        [HttpPost("ForgotPassword")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest model)
+        {
+            return Ok(await _userService.ForgotPassword(model.EmailAddress, Request.Headers["Host"].ToString()));
+        }
+
+        [HttpPost("ResetPassword")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest model)
+        {
+            return Ok(await _userService.ResetPassword(model));
+        }
+
+        [HttpGet("VerifyEmail")]
+        [AllowAnonymous]
+        public async Task<IActionResult> VerifyEmail([FromQuery] string token)
+        {
+            return Ok(await _userService.VerifyEmail(token));
         }
     }
 }

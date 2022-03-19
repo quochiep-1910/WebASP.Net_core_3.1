@@ -26,6 +26,9 @@ namespace eShop.ViewModels.System.Users
         [Display(Name = "Ngày Sinh")]
         public DateTime Dob { set; get; }
 
+        [Display(Name = "Trạng Thái")]
+        public bool LockoutEnabled { get; set; }
+
         public IList<string> Roles { get; set; }
     }
 }

@@ -88,6 +88,7 @@ namespace eShop.AdminApp.Controllers
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     PhoneNumber = user.PhoneNumber,
+
                     Id = id
                 };
                 return View(updateRequest);//nếu thành công thì load dữ liệu ra

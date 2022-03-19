@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -21,6 +22,7 @@ namespace eShop.AdminApp
             Configuration = configuration;
         }
 
+        private readonly string allowSpecificOrigins = "_allowSpecificOrigins";
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -33,7 +35,7 @@ namespace eShop.AdminApp
                 config.IsDismissable = true;
                 config.Position = NotyfPosition.BottomRight;
             });
-
+           
             services.AddHttpClient();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -60,6 +62,21 @@ namespace eShop.AdminApp
             services.AddTransient<IProductApiClient, ProductApiClient>();
             services.AddTransient<ICategoryApiClient, CategoryApiClient>();
             services.AddTransient<IOrderApiClient, OrderApiClient>();
+            services.AddCors(options =>
+
+            {
+                options.AddPolicy(allowSpecificOrigins,
+
+                builder =>
+
+                {
+                    builder.WithOrigins("https://localhost:44380")
+
+                            .AllowAnyHeader()
+
+                            .AllowAnyMethod();
+                });
+            });
             //biên dịch razor view
             IMvcBuilder builder = services.AddRazorPages();
 
@@ -86,8 +103,8 @@ namespace eShop.AdminApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
             app.UseStatusCodePages();
+
             //Other code
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -95,7 +112,8 @@ namespace eShop.AdminApp
             app.UseAuthentication();
 
             app.UseRouting();
-
+            app.UseCors(allowSpecificOrigins);
+            app.UseHttpsRedirection();
             app.UseAuthorization();
 
             app.UseSession();

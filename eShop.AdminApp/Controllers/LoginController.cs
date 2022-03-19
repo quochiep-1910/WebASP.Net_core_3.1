@@ -69,8 +69,14 @@ namespace eShop.AdminApp.Controllers
 
                 IsPersistent = false
             };
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = false,
+                Expires = DateTime.UtcNow.AddDays(7)
+            };
             HttpContext.Session.SetString(SystemConstants.AppSettings.DefaultLanguageId, _configuration[SystemConstants.AppSettings.DefaultLanguageId]);
             HttpContext.Session.SetString(SystemConstants.AppSettings.Token, result.ResultObj);
+            HttpContext!.Response.Cookies.Append("Token", result.ResultObj, cookieOptions);
 
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, authProperties);

@@ -1,6 +1,6 @@
 ﻿namespace eShop.Utilities.Constants
 {
-    public static class ResponseMessage
+    public class ResponseMessage
     {
         public const string AddFailure = "Failed To Add New Resource";
         public const string DeleteFailure = "Failed To Delete New Resource";
@@ -30,6 +30,8 @@
         public const string TitleMaxLengthInvalid = "Title max length is 100";
         public const string ShortDescriptionMaxLengthInvalid = "Short description max length is 220";
         public const string AddPriceWithoutCourse = "Price must be create with new course";
+
+        public const string FindUserNotFound = "Can't find out user";
 
         public static string NotMatch { get; set; }
     }

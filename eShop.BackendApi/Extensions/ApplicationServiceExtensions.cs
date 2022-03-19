@@ -2,6 +2,7 @@
 using eShop.Application.Catalog.Products;
 using eShop.Application.Common;
 using eShop.Application.Sales;
+using eShop.Application.System.Email;
 using eShop.Application.System.Languages;
 using eShop.Application.System.Roles;
 using eShop.Application.System.Users;
@@ -9,6 +10,7 @@ using eShop.Application.Utilities.Slides;
 using eShop.Data.EF;
 using eShop.Data.Entities;
 using eShop.Utilities.Constants;
+using eShop.ViewModels.AutoMapper;
 using eShop.ViewModels.System.Users;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
@@ -43,13 +45,21 @@ namespace eShop.BackendApi.Extensions
             services.AddTransient<ILanguageService, LanguageService>();
             services.AddTransient<IRoleService, RoleService>();
             services.AddTransient<IOrderService, OrderService>();
+            services.AddTransient<IEmailService, EmailService>();
 
             //services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
             //services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidator>();
+
+            services.AddAutoMapper(typeof(MapperConfig)); //automapper
             services.AddControllers()
                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>()); //đăng kí tất cả class nào có Validator
 
             return services;
+        }
+
+        public static void ConfigureOptionsPattern(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<AuthMessageSenderOptions>(configuration.GetSection(AuthMessageSenderOptions.EmailSenderSettings));
         }
     }
 }

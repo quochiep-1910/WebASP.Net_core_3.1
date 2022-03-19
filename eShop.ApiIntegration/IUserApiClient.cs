@@ -1,4 +1,5 @@
 ﻿using eShop.ViewModels.Common;
+using eShop.ViewModels.System.Auth;
 using eShop.ViewModels.System.Users;
 using System;
 using System.Threading.Tasks;
@@ -22,5 +23,11 @@ namespace eShop.ApiIntegration
         Task<ApiResult<bool>> Delete(Guid id);
 
         Task<ApiResult<bool>> RoleAssign(Guid id, RoleAssignRequest request);
+
+        Task<ApiResult<bool>> ChangeUserPassword(AppUserChangePasswordDTO appUserChangePassword);
+
+        Task<ApiResult<bool>> ForgotPassword(ForgotPasswordRequest model);
+
+        Task<ApiResult<bool>> ResetPassword(ResetPasswordRequest model);
     }
 }
