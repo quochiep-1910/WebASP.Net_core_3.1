@@ -51,6 +51,7 @@ namespace eShop.Data.EF
             {
                 entity.HasNoKey();
             });
+
             //Data seeding
             modelBuilder.Seed();
             //base.OnModelCreating(modelBuilder);

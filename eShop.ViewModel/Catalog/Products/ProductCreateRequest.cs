@@ -27,7 +27,6 @@ namespace eShop.ViewModels.Catalog.Products
         public string SeoDescription { set; get; }
 
         [Display(Name = "Tiêu đề Seo ")]
-
         public string SeoTitle { set; get; }
 
         [Display(Name = "Từ khoá SEO")]
@@ -40,6 +39,7 @@ namespace eShop.ViewModels.Catalog.Products
         public bool? IsFeatured { set; get; }
 
         [Display(Name = "Ảnh thu nhỏ")]
+        [Required]
         public IFormFile ThumbnailImage { set; get; }
     }
 }

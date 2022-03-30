@@ -7,5 +7,7 @@ namespace eShop.ViewModels.System.Auth
         [Required]
         [EmailAddress]
         public string EmailAddress { get; set; }
+
+        public string origin { get; set; }
     }
 }

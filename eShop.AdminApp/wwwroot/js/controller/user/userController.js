@@ -91,7 +91,7 @@
                     var date = new Date(str),
                         mnth = ("0" + (date.getMonth() + 1)).slice(-2),
                         day = ("0" + date.getDate()).slice(-2);
-                    return [ mnth,day, date.getFullYear()].join("-");
+                    return [mnth, day, date.getFullYear()].join("-");
                 }
                 var time = convert(flatpickrInstance.selectedDates);
                 var awd = "https://localhost:5001/api/Users/LockUser?userid=" + userid + "&endDate=" + time;

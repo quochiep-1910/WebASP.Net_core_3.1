@@ -79,7 +79,7 @@ namespace eShop.WebApp.Controllers
             if (!ModelState.IsValid)
 
                 return View(request);
-
+            request.origin = Request.Headers["origin"];
             var result = await _userApiClient.RegisterUser(request);
             if (!result.IsSuccessed)
             {

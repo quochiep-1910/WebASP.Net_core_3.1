@@ -31,6 +31,8 @@ namespace eShop.AdminApp.Controllers
 
         public async Task<IActionResult> Index(string keyword, int? categoryId, int pageIndex = 1, int pageSize = 5)
         {
+            var awd = User;
+
             var languageId = HttpContext.Session.GetString(SystemConstants.AppSettings.DefaultLanguageId);
             var request = new GetManageProductPagingRequest()
             {
@@ -141,6 +143,7 @@ namespace eShop.AdminApp.Controllers
             var languageId = HttpContext.Session.GetString(SystemConstants.AppSettings.DefaultLanguageId);
 
             var product = await _productApiClient.GetById(id, languageId);
+
             var editVm = new ProductUpdateRequest()
             {
                 Id = product.Id,
@@ -153,9 +156,24 @@ namespace eShop.AdminApp.Controllers
                 Price = product.Price,
                 OriginalPrice = product.OriginalPrice,
                 Stock = product.Stock,
-                IsFeatured = product.IsFeatured
+                IsFeatured = product.IsFeatured,
+                ThumbnailImage = Base64ToImage(product.ThumbnailImage, product.Name)
             };
+
             return View(editVm);
+        }
+
+        /// <summary>
+        /// Convert IFormFile to string
+        /// </summary>
+        /// <param name="equipmentFiles"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        private IFormFile Base64ToImage(string equipmentFiles, string name)
+        {
+            IFormFile file = new FormFile(null, 0, 1, name, equipmentFiles);
+
+            return file;
         }
 
         [HttpPost]

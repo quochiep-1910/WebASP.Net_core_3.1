@@ -44,5 +44,12 @@
             Success,
             Canceled
         }
+
+        public class UserTokenConstants
+        {
+            public const string AuthenticatorKey = "AuthenticatorKey";
+            public const string AspNetUserStore = "[AspNetUserStore]";
+            public const string RecoveryCodes = "RecoveryCodes";
+        }
     }
 }

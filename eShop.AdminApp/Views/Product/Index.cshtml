@@ -59,15 +59,15 @@
                 </div>
                 @* <div class="row">
 
-                    <div class="col-md-12 ">
-                        @if (ViewBag.SuccessMsg != null)
-                        {
-                            <div id="msgAlert" class="alert alert-success text-center" role="alert">
-                                @ViewBag.SuccessMsg
-                            </div>
-                        }
-                    </div>
-                </div> *@
+                        <div class="col-md-12 ">
+                            @if (ViewBag.SuccessMsg != null)
+                            {
+                                <div id="msgAlert" class="alert alert-success text-center" role="alert">
+                                    @ViewBag.SuccessMsg
+                                </div>
+                            }
+                        </div>
+                    </div> *@
                 <br />
 
                 <table class="table">
@@ -109,16 +109,23 @@
                                     @Html.DisplayFor(modelItem => item.Name)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.OriginalPrice)
+                                    <div class="AddingCommas">
+                                        @Html.DisplayFor(modelItem => item.OriginalPrice)
+                                    </div>
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Price)
+                                    <div class="AddingCommas">
+
+                                        @Html.DisplayFor(modelItem => item.Price)
+                                    </div>
                                 </td>
                                 @*<td>
                                         @Html.DisplayFor(modelItem => item.Categories)
                                     </td>*@
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Stock)
+                                    <div class="AddingCommas">
+                                        @Html.DisplayFor(modelItem => item.Stock)
+                                    </div>
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.ViewCount)

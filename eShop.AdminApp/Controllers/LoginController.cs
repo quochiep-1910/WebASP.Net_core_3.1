@@ -1,6 +1,7 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using eShop.ApiIntegration;
 using eShop.Utilities.Constants;
+using eShop.ViewModels.System.Auth;
 using eShop.ViewModels.System.Users;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -33,7 +34,7 @@ namespace eShop.AdminApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            //    await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             return View();
         }
@@ -101,6 +102,100 @@ namespace eShop.AdminApp.Controllers
             ClaimsPrincipal principal = new JwtSecurityTokenHandler().ValidateToken(jwtToken, validationParameters, out validatedToken);
 
             return principal;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+            model.origin = Request.Headers["origin"];
+            var result = await _userApiClient.ForgotPassword(model);
+
+            if (result)
+            {
+                //_notyf.Success($"Đã gửi một email tới {model.EmailAddress}");
+                ViewBag.SendEmailSuccess = $"Chúng tôi đã gửi một email tới {model.EmailAddress}";
+                return View();
+            }
+            ModelState.AddModelError("", "Gửi email thất bại");//key and message
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ResetPassword([FromQuery] string Token)
+        {
+            if (!ModelState.IsValid)
+                return View();
+
+            if (!string.IsNullOrEmpty(Token))
+            {
+                var tokenReset = new ResetPasswordRequest()
+                {
+                    Token = Token
+                };
+                return View(tokenReset);
+            }
+            return View("Error");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var result = await _userApiClient.ResetPassword(model);
+            if (result)
+            {
+                return RedirectToAction("Index", "Login");
+            }
+
+            ModelState.AddModelError("", "Reset mật khẩu thất bại");//key and message
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> VerifyEmail([FromQuery] string Token)
+        {
+            if (!ModelState.IsValid)
+                return View();
+
+            if (!string.IsNullOrEmpty(Token))
+            {
+                var tokenReset = new VerifyEmail()
+                {
+                    Token = Token
+                };
+                return View(tokenReset);
+            }
+            return View("Error");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> VerifyEmail(VerifyEmail model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var result = await _userApiClient.VerifyEmail(model);
+            if (result)
+            {
+                _notyf.Success("Xác thực Email thành công");
+                return RedirectToAction("Index", "Login");
+            }
+
+            ModelState.AddModelError("", "Reset mật khẩu thất bại");//key and message
+
+            return View(model);
         }
     }
 }

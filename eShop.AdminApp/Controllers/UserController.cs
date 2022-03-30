@@ -61,6 +61,7 @@ namespace eShop.AdminApp.Controllers
         {
             if (!ModelState.IsValid)
                 return View(request);
+            request.origin = Request.Headers["origin"];
             var result = await _userApiClient.RegisterUser(request);
             if (result.IsSuccessed)
             {
@@ -187,5 +188,29 @@ namespace eShop.AdminApp.Controllers
             }
             return roleAssignRequest;
         }
+
+        #region Two factor Authentication
+
+        [HttpGet]
+        public async Task<IActionResult> TwoFactorAuthentication()
+        {
+            var userId = await _userApiClient.GetByUserName(User.Identity.Name);
+            var resultAuthen = await _userApiClient.CheckTwoFactorAuthentication(userId.Id.ToString());
+            return View(resultAuthen);
+        }
+
+        #endregion Two factor Authentication
+
+        #region Enable Authenticator
+
+        [HttpGet]
+        public async Task<IActionResult> EnableAuthenticator()
+        {
+            var userId = await _userApiClient.GetByUserName(User.Identity.Name);
+            var resultAuthen = await _userApiClient.GetEnableAuthenticator(userId.Id.ToString());
+            return View(resultAuthen);
+        }
+
+        #endregion Enable Authenticator
     }
 }

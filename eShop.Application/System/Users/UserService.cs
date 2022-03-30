@@ -54,7 +54,7 @@ namespace eShop.Application.System.Users
             }
 
             var result = await _signInManager.PasswordSignInAsync(user, loginRequest.Password, loginRequest.RememberMe, lockoutOnFailure: true);
-           
+
             if (result.IsLockedOut)
             {
                 _logger.LogWarning("User account locked out.");
@@ -371,6 +371,8 @@ namespace eShop.Application.System.Users
         {
             try
             {
+                if (token == null)
+                    throw new Exception("Cannot find user!!");
                 var appUserFromDb = await _userManager
                     .Users.Where(x => x.VerificationToken == token).FirstOrDefaultAsync();
                 if (appUserFromDb == null) throw new Exception("Verification failed");
@@ -437,7 +439,7 @@ namespace eShop.Application.System.Users
             string message;
             if (!string.IsNullOrEmpty(origin))
             {
-                var resetUrl = $"{origin}/api/Users/ResetPassword?token={appUser.ResetToken}";
+                var resetUrl = $"{origin}/Login/ResetPassword?token={appUser.ResetToken}";
                 message = $@"<p>Please click the below link to reset your password, the link will be valid for 1 day:</p>
                              <p><a href=""{resetUrl}"">{resetUrl}</a></p>";
             }
@@ -461,7 +463,7 @@ namespace eShop.Application.System.Users
             var token = appUser.VerificationToken;
             if (!string.IsNullOrEmpty(origin))
             {
-                var verifyUrl = $"{origin}/api/Users/VerifyEmail?token={token}";
+                var verifyUrl = $"{origin}/Login/VerifyEmail?token={token}";
                 msg = $@"<p>Please click the below link to verify your email address:</p>
                              <p><a href=""{verifyUrl}"">{verifyUrl}</a></p>";
             }

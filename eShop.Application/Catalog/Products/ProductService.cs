@@ -11,9 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using static eShop.Utilities.Constants.SystemConstants;
 
@@ -124,11 +122,11 @@ namespace eShop.Application.Catalog.Products
                         from pic in ppic.DefaultIfEmpty()
                         join c in _context.Categories on pic.CategoryId equals c.Id into picc
                         from c in picc.DefaultIfEmpty()
-                            //join pi in _context.ProductImages on p.Id equals pi.ProductId into ppi
-                            //from pi in ppi.DefaultIfEmpty()
+                        join pi in _context.ProductImages on p.Id equals pi.ProductId into ppi
+                        from pi in ppi.DefaultIfEmpty()
                         where pt.LanguageId == request.LanguageId
-                        //pi.IsDefault == true
-                        select new { p, pt, pic };
+                        //& pi.IsDefault == true
+                        select new { p, pt, pic, pi };
             //2. filter
             if (!string.IsNullOrEmpty(request.Keyword))
                 query = query.Where(x => x.pt.Name.Contains(request.Keyword));
@@ -156,8 +154,8 @@ namespace eShop.Application.Catalog.Products
                     SeoDescription = x.pt.SeoDescription,
                     SeoTitle = x.pt.SeoTitle,
                     Stock = x.p.Stock,
-                    ViewCount = x.p.ViewCount
-                    //ThumbnailImage = x.pi.ImagePath,
+                    ViewCount = x.p.ViewCount,
+                    ThumbnailImage = x.pi.ImagePath
                     //Categories = x.ct.Name
                 }).ToListAsync();
 
@@ -194,7 +192,10 @@ namespace eShop.Application.Catalog.Products
             //Save image
             if (request.ThumbnailImage != null)
             {
-                var thumbnailImage = await _context.ProductImages.FirstOrDefaultAsync(i => i.IsDefault == true && i.ProductId == request.Id);
+                var thumbnailImage = await _context.ProductImages
+                    .FirstOrDefaultAsync(i => i.IsDefault == true && i.ProductId == request.Id);
+                //var result = thumbnailImage.Select(x => x.ImagePath.Split(";")).ToList();
+
                 if (thumbnailImage != null)
                 {
                     thumbnailImage.FileSize = request.ThumbnailImage.Length;
@@ -225,10 +226,7 @@ namespace eShop.Application.Catalog.Products
 
         private async Task<string> SaveFile(IFormFile file)
         {
-            var originalFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
-            await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
-            return "/" + USER_CONTENT_FOLDER_NAME + "/" + fileName;
+            return await _storageService.SaveFileAsync(file);
         }
 
         public async Task<ProductViewModel> GetById(int productId, string languageId)

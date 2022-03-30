@@ -54,19 +54,25 @@
                         @Html.DisplayNameFor(model => model.Price)
                     </dt>
                     <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.Price)
+                        <div class="AddingCommas">
+                            @Html.DisplayFor(model => model.Price)
+                        </div>
                     </dd>
                     <dt class="col-sm-2">
                         @Html.DisplayNameFor(model => model.OriginalPrice)
                     </dt>
                     <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.OriginalPrice)
+                        <div class="AddingCommas">
+                            @Html.DisplayFor(model => model.OriginalPrice)
+                        </div>
                     </dd>
                     <dt class="col-sm-2">
                         @Html.DisplayNameFor(model => model.Stock)
                     </dt>
                     <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.Stock)
+                        <div class="AddingCommas">
+                            @Html.DisplayFor(model => model.Stock)
+                        </div>
                     </dd>
                     <dt class="col-sm-2">
                         @Html.DisplayNameFor(model => model.ViewCount)

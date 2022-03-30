@@ -87,6 +87,7 @@ namespace eShop.ApiIntegration
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);
 
             var json = JsonConvert.SerializeObject(registerRequestrequest); //convert json to string
+
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
             var response = await client.PostAsync("/api/users", httpContent);
@@ -162,7 +163,7 @@ namespace eShop.ApiIntegration
             return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
         }
 
-        public async Task<ApiResult<bool>> ForgotPassword(ForgotPasswordRequest model)
+        public async Task<bool> ForgotPassword(ForgotPasswordRequest model)
         {
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);
@@ -175,12 +176,12 @@ namespace eShop.ApiIntegration
 
             if (response.IsSuccessStatusCode)//kiểm tra status code
             {
-                return JsonConvert.DeserializeObject<ApiSuccessResult<bool>>(result);
+                return true;
             }
-            return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
+            return false;
         }
 
-        public async Task<ApiResult<bool>> ResetPassword(ResetPasswordRequest model)
+        public async Task<bool> ResetPassword(ResetPasswordRequest model)
         {
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);
@@ -189,13 +190,49 @@ namespace eShop.ApiIntegration
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
             var response = await client.PostAsync($"/api/users/ResetPassword", httpContent);
-            var result = await response.Content.ReadAsStringAsync();
 
             if (response.IsSuccessStatusCode)//kiểm tra status code
             {
-                return JsonConvert.DeserializeObject<ApiSuccessResult<bool>>(result);
+                return true;
             }
-            return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
+            return false;
         }
+
+        public async Task<bool> VerifyEmail(VerifyEmail model)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            var json = JsonConvert.SerializeObject(model); //convert json to string
+
+            var response = await client.GetAsync($"/api/users/VerifyEmail?token={model.Token}");
+            if (response.IsSuccessStatusCode)//kiểm tra status code
+            {
+                return true;
+            }
+            return false;
+        }
+
+        #region Two Factor Authentication
+
+        public async Task<TwoFactorAuthenticationViewModel> CheckTwoFactorAuthentication(string userId)
+        {
+            var result = await GetAsync<TwoFactorAuthenticationViewModel>
+                ($"/api/users/CheckTwoFactorAuthentication?userId={userId}");
+            return result;
+        }
+
+        #endregion Two Factor Authentication
+
+        #region Enable Authenticator
+
+        public async Task<EnableAuthenticatorViewModel> GetEnableAuthenticator(string userId)
+        {
+            var result = await GetAsync<EnableAuthenticatorViewModel>
+                ($"/api/users/GetEnableAuthenticator?userId={userId}");
+            return result;
+        }
+
+        #endregion Enable Authenticator
     }
 }

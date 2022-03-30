@@ -26,8 +26,22 @@ namespace eShop.ApiIntegration
 
         Task<ApiResult<bool>> ChangeUserPassword(AppUserChangePasswordDTO appUserChangePassword);
 
-        Task<ApiResult<bool>> ForgotPassword(ForgotPasswordRequest model);
+        Task<bool> ForgotPassword(ForgotPasswordRequest model);
 
-        Task<ApiResult<bool>> ResetPassword(ResetPasswordRequest model);
+        Task<bool> ResetPassword(ResetPasswordRequest model);
+
+        Task<bool> VerifyEmail(VerifyEmail model);
+
+        #region Two factor Authentication
+
+        Task<TwoFactorAuthenticationViewModel> CheckTwoFactorAuthentication(string userId);
+
+        #endregion Two factor Authentication
+
+        #region Enable Authenticator
+
+        Task<EnableAuthenticatorViewModel> GetEnableAuthenticator(string userId);
+
+        #endregion Enable Authenticator
     }
 }
