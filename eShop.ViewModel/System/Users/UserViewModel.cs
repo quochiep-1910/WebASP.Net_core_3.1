@@ -6,7 +6,7 @@ namespace eShop.ViewModels.System.Users
 {
     public class UserViewModel
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         [Display(Name = "Tên")]
         public string FirstName { get; set; }

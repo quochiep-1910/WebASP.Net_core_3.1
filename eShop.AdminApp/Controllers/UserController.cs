@@ -4,7 +4,6 @@ using eShop.ViewModels.Common;
 using eShop.ViewModels.System.Users;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using System;
 using System.Threading.Tasks;
 
 namespace eShop.AdminApp.Controllers
@@ -49,7 +48,7 @@ namespace eShop.AdminApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Details(Guid id)
+        public async Task<IActionResult> Details(string id)
         {
             var result = await _userApiClient.GetById(id);
 
@@ -76,7 +75,7 @@ namespace eShop.AdminApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(Guid id)
+        public async Task<IActionResult> Edit(string id)
         {
             var result = await _userApiClient.GetById(id);
             if (result.IsSuccessed)
@@ -116,7 +115,7 @@ namespace eShop.AdminApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(string id)
         {
             var result = await _userApiClient.GetById(id);
             return View(new UserDeleteRequest()
@@ -147,7 +146,7 @@ namespace eShop.AdminApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> RoleAssign(Guid id)
+        public async Task<IActionResult> RoleAssign(string id)
         {
             var roleAssignRequest = await GetRoleroleAssignRequest(id);
             return View(roleAssignRequest);
@@ -172,7 +171,7 @@ namespace eShop.AdminApp.Controllers
             return View(roleAssignRequest);
         }
 
-        private async Task<RoleAssignRequest> GetRoleroleAssignRequest(Guid id)
+        private async Task<RoleAssignRequest> GetRoleroleAssignRequest(string id)
         {
             var userObj = await _userApiClient.GetById(id);
             var roleObj = await _roleApiClient.GetAll();

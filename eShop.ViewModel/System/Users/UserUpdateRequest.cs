@@ -5,7 +5,7 @@ namespace eShop.ViewModels.System.Users
 {
     public class UserUpdateRequest
     {
-        public Guid Id { set; get; }
+        public string Id { set; get; }
 
         [Display(Name = "Tên")]
         public string FirstName { get; set; }

@@ -9,7 +9,7 @@ namespace eShop.ViewModels.Sales.Order
     public class OrderViewModel
     {
         public int Id { set; get; }
-        public Guid? UserId { set; get; }
+        public string UserId { set; get; }
         public int ProductId { set; get; }
 
         [Display(Name = "Ngày tạo")]

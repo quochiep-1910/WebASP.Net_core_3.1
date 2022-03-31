@@ -1,11 +1,10 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace eShop.ViewModels.System.Users
 {
     public class UserDeleteRequest
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         [Display(Name = "Tên đăng nhập")]
         public string UserName { get; set; }

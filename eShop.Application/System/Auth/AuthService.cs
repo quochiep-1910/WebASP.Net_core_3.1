@@ -21,7 +21,6 @@ namespace eShop.Application.System.Auth
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
-        private readonly RoleManager<AppRole> _roleManager;
         private readonly IConfiguration _config;
         private readonly ILogger<AuthService> _logger;
         private readonly IEmailService _emailService;
@@ -32,14 +31,12 @@ namespace eShop.Application.System.Auth
 
         public AuthService(UserManager<AppUser> userManager, EShopDbContext context,
             SignInManager<AppUser> signInManager,
-            RoleManager<AppRole> roleManager,
             IConfiguration config, ILogger<AuthService> logger,
             IEmailService emailService, UrlEncoder urlEncoder)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
-            _roleManager = roleManager;
             _config = config;
             _logger = logger;
             _emailService = emailService;
@@ -63,10 +60,10 @@ namespace eShop.Application.System.Auth
                 #region get info user tokens
 
                 var userTokenKey = await _context.UserTokens
-                    .Where(x => x.UserId == new Guid(userid) && x.Name == SystemConstants.UserTokenConstants.AuthenticatorKey)
+                    .Where(x => x.UserId == userid && x.Name == SystemConstants.UserTokenConstants.AuthenticatorKey)
                     .Select(x => x.Value).FirstOrDefaultAsync() ?? null;
                 var valuesRecoveryCode = await _context.UserTokens
-                    .Where(x => x.UserId == new Guid(userid) && x.Name == SystemConstants.UserTokenConstants.RecoveryCodes)
+                    .Where(x => x.UserId == userid && x.Name == SystemConstants.UserTokenConstants.RecoveryCodes)
                     .Select(x => x.Value).FirstOrDefaultAsync() ?? null;
                 var valuesRecovery = new List<string>();
                 if (valuesRecoveryCode != null)
@@ -85,7 +82,7 @@ namespace eShop.Application.System.Auth
                     result.HasAuthenticator = true;
                 }
                 result.Is2faEnabled = await _userManager.GetTwoFactorEnabledAsync(user);
-                result.IsMachineRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user);
+                // result.IsMachineRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user);
                 result.RecoveryCodesLeft = valuesRecovery.Count();
 
                 return result;
@@ -167,12 +164,12 @@ namespace eShop.Application.System.Auth
 
             var user = await _userManager.FindByIdAsync(userid);
             var unformattedKey = await _context.UserTokens
-                .Where(x => x.UserId == new Guid(userid)).Select(x => x.Value).FirstOrDefaultAsync() ?? null;
+                .Where(x => x.UserId == userid).Select(x => x.Value).FirstOrDefaultAsync() ?? null;
             if (string.IsNullOrEmpty(unformattedKey))
             {
                 unformattedKey = _userManager.GenerateNewAuthenticatorKey();
 
-                var userToken = new IdentityUserToken<Guid>()
+                var userToken = new IdentityUserToken<string>()
                 {
                     LoginProvider = SystemConstants.UserTokenConstants.AspNetUserStore,
                     Value = unformattedKey,

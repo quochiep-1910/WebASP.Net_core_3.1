@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace eShop.Data.Entities
 {
-    public class AppUser : IdentityUser<Guid>
+    public class AppUser : IdentityUser<string>
     {
         public string FirstName { get; set; }
 
@@ -24,6 +24,6 @@ namespace eShop.Data.Entities
         public DateTime? ResetTokenExpires { get; set; }
         public DateTime? PasswordReset { get; set; }
 
-        public string? ProfileImageUrl { get; set; }
+        public string ProfileImageUrl { get; set; }
     }
 }
