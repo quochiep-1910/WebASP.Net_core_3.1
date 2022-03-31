@@ -1,6 +1,7 @@
 ﻿using eShop.Utilities.Constants;
 using eShop.ViewModels.Catalog.Products;
 using eShop.ViewModels.Common;
+using eShop.ViewModels.System.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -169,5 +170,69 @@ namespace eShop.ApiIntegration
         {
             return await Delete($"/api/products/" + id);
         }
+
+        #region Lập Trình Tiên Tiến. Lịch Công Tác
+
+        public async Task<bool> CreateWorkingSchedule(WorkingscheduleViewModel request)
+        {
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
+
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration[SystemConstants.AppSettings.BaseAddress]);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions); //lấy token
+
+            var requestContent = new MultipartFormDataContent();
+
+            requestContent.Add(new StringContent(request.EndDate.ToString()), "EndDate");
+            requestContent.Add(new StringContent(request.StartDate.ToString()), "StartDate");
+
+            requestContent.Add(new StringContent(string.IsNullOrEmpty(request.UserName) ? "" : request.UserName.ToString()), "UserName");
+            requestContent.Add(new StringContent(string.IsNullOrEmpty(request.LyDo) ? "" : request.LyDo.ToString()), "LyDo");
+            requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Message) ? "" : request.Message.ToString()), "Message");
+
+            var response = await client.PostAsync($"/api/products/CreateWs/", requestContent);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<WorkingscheduleViewModel> GetByIdWS(int id)
+        {
+            var data = await GetAsync<WorkingscheduleViewModel>($"/api/products/FindId/{id}");
+            return data;
+        }
+
+        public async Task<bool> UpdateWorkingSchedule(WorkingscheduleViewModel workingUpdate)
+        {
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration[SystemConstants.AppSettings.BaseAddress]);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions); //lấy token
+
+            var requestContent = new MultipartFormDataContent();
+            requestContent.Add(new StringContent(workingUpdate.EndDate.ToString()), "EndDate");
+            requestContent.Add(new StringContent(workingUpdate.StartDate.ToString()), "StartDate");
+
+            requestContent.Add(new StringContent(string.IsNullOrEmpty(workingUpdate.UserName) ? "" : workingUpdate.UserName.ToString()), "UserName");
+            requestContent.Add(new StringContent(string.IsNullOrEmpty(workingUpdate.LyDo) ? "" : workingUpdate.LyDo.ToString()), "LyDo");
+            requestContent.Add(new StringContent(string.IsNullOrEmpty(workingUpdate.Message) ? "" : workingUpdate.Message.ToString()), "Message");
+
+            var response = await client.PutAsync($"/api/products/UpdateWs/" + workingUpdate.Id, requestContent);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> DeleteWorkingSchedule(int workingId)
+        {
+            return await Delete($"/api/products/Delete/" + workingId);
+        }
+
+        public async Task<PagedResult<WorkingscheduleViewModel>> GetAll(GetUserPagingRequest request)
+        {
+            var result = await GetAsync<PagedResult<WorkingscheduleViewModel>>(
+                 "/api/products/listWorkingSchedule?pageIndex="
+                  + $"{request.PageIndex}&pageSize={request.PageSize}" +
+                  $"&keyword={request.Keyword}");
+            return result;
+        }
+
+        #endregion Lập Trình Tiên Tiến. Lịch Công Tác
     }
 }

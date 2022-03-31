@@ -1,14 +1,9 @@
 ﻿using eShop.AdminApp.Models;
 using eShop.Utilities.Constants;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace eShop.AdminApp.Controllers
 {
@@ -23,6 +18,7 @@ namespace eShop.AdminApp.Controllers
 
         public IActionResult Index()
         {
+            var ss = HttpContext.Session.GetString("Token");
             var name = User.Identity.Name;
             return View();
         }

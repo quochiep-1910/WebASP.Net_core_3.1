@@ -67,13 +67,46 @@
                             </ul>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a asp-controller="User" asp-action="Create" class="nav-link">
+                                    <a asp-controller="User" asp-action="TwoFactorAuthentication" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Thêm mới Tài Khoản</p>
+                                        <p>Two-factor authentication</p>
                                     </a>
                                 </li>
                             </ul>
+                            @*<ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a asp-controller="Product" asp-action="CreateWS" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Thêm mới Lịch</p>
+                                        </a>
+                                    </li>
+                                </ul>*@
                         </li>
+                        @*<li class="nav-item has-treeview">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon fas fa-tachometer-alt"></i>
+                                    <p>
+                                        Quản lý lịch công tác
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a asp-controller="Product" asp-action="IndexWS" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Danh sách lịch công tác</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a asp-controller="Product" asp-action="CreateWS" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Thêm mới Lịch</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>*@
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon far fa-calendar-alt"></i>
@@ -201,9 +234,15 @@
 
     <!-- AdminLTE App -->
     <script src="/js/adminlte.min.js"></script>
-
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="/js/demo.js"></script>
+    <script src="~/js/AddingCommasWhenTyping.js"></script>
+    <script>
+        var AddingCommasWhenTyping = new AddingCommas();
+        AddingCommasWhenTyping.initialize();
+    </script>
     @await Component.InvokeAsync("Notyf")
     @RenderSection("Scripts", required: false);
 </body>

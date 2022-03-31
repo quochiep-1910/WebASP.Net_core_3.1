@@ -1,19 +1,16 @@
 ﻿using AspNetCoreHero.ToastNotification;
 using eShop.ApiIntegration;
+using eShop.Utilities.Exceptions;
 using eShop.ViewModels.System.Users;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace eShop.AdminApp
 {
@@ -24,6 +21,7 @@ namespace eShop.AdminApp
             Configuration = configuration;
         }
 
+        private readonly string allowSpecificOrigins = "_allowSpecificOrigins";
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -45,6 +43,8 @@ namespace eShop.AdminApp
                     options.LoginPath = "/Login/Index";
                     options.AccessDeniedPath = "/User/Forbidden/";
                 });
+
+            services.AddControllers(options => options.Filters.Add(typeof(ExceptionFilter))).AddFluentValidation(); //lọc thông báo hiện lên
             services.AddControllersWithViews()
                     .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>()); //đăng kí tất cả class nào có Validator;
             services.AddSession(opstions =>
@@ -54,13 +54,28 @@ namespace eShop.AdminApp
 
             //DI
 
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); //truy cập HttpContext thông qua  IHttpContextAccessor
+            services.AddTransient<IHttpContextAccessor, HttpContextAccessor>(); //truy cập HttpContext thông qua  IHttpContextAccessor
             services.AddTransient<IUserApiClient, UserApiClient>();
             services.AddTransient<IRoleApiClient, RoleApiClient>();
             services.AddTransient<ILanguageApiClient, LanguageApiClient>();
             services.AddTransient<IProductApiClient, ProductApiClient>();
             services.AddTransient<ICategoryApiClient, CategoryApiClient>();
             services.AddTransient<IOrderApiClient, OrderApiClient>();
+            services.AddCors(options =>
+
+            {
+                options.AddPolicy(allowSpecificOrigins,
+
+                builder =>
+
+                {
+                    builder.WithOrigins("https://localhost:44380")
+
+                            .AllowAnyHeader()
+
+                            .AllowAnyMethod();
+                });
+            });
             //biên dịch razor view
             IMvcBuilder builder = services.AddRazorPages();
 
@@ -87,13 +102,17 @@ namespace eShop.AdminApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            app.UseStatusCodePages();
+
+            //Other code
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseAuthentication();
 
             app.UseRouting();
-
+            app.UseCors(allowSpecificOrigins);
+            app.UseHttpsRedirection();
             app.UseAuthorization();
 
             app.UseSession();

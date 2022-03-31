@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace eShop.ViewModels.System.Languages
+﻿namespace eShop.ViewModels.System.Languages
 {
     public class LanguageViewModel
     {

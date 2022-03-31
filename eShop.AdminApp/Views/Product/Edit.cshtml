@@ -1,5 +1,5 @@
 ﻿@model eShop.ViewModels.Catalog.Products.ProductUpdateRequest
-
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
 @{
     ViewData["Title"] = "Cập nhập sản phẩm";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -17,6 +17,7 @@
                 console.error(error);
             });
     </script>
+
 }
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -55,17 +56,17 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="Price" class="control-label"></label>
-                        <input asp-for="Price" type="number" class="form-control" />
+                        <input asp-for="Price" data-type="number" type="text" class="form-control AddingCommas" />
                         <span asp-validation-for="Price" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="OriginalPrice" class="control-label"></label>
-                        <input asp-for="OriginalPrice" type="number" class="form-control" />
+                        <input asp-for="OriginalPrice" data-type="number" type="text" class="form-control AddingCommas" />
                         <span asp-validation-for="OriginalPrice" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="Stock" class="control-label"></label>
-                        <input asp-for="Stock" type="number" class="form-control" />
+                        <input asp-for="Stock" data-type="number" type="text" class="form-control AddingCommas" />
                         <span asp-validation-for="Stock" class="text-danger"></span>
                     </div>
                     <div class="form-group">
@@ -100,7 +101,27 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="ThumbnailImage" class="control-label"></label>
-                        <input asp-for="ThumbnailImage" type="file" class="form-control" />
+
+                        @if (Model.ThumbnailImage != null && Model.ThumbnailImage.FileName != null && Model.ThumbnailImage.FileName != "no-image.jpg")
+                        {
+                            <img id="oldImg" src="@(Configuration["BaseAddress"] + Model.ThumbnailImage.FileName)" width="180" height="158" alt="@Model.ThumbnailImage.Name" />
+                            <br />
+                            <span style="color:red">
+                                Thay đổi ảnh
+                                <input asp-for="ThumbnailImage" type="file" accept="image/png, image/jpeg"
+                                       onchange="document.getElementById('blah').src = window.URL.createObjectURL(this.files[0])" />
+
+                                <img id="blah" alt="" width="100" height="100" />
+                            </span>
+                        }
+                        else
+                        {
+                            <input id="imgInp" asp-for="ThumbnailImage" type="file" accept="image/png, image/jpeg"
+                                   onchange="document.getElementById('blah').src = window.URL.createObjectURL(this.files[0])" />
+                            <img id="blah" alt="" width="100" height="100" />
+
+                        }
+
                         <span asp-validation-for="ThumbnailImage" class="text-danger"></span>
                     </div>
                     <div class="form-group">

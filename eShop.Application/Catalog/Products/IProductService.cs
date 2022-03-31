@@ -2,7 +2,7 @@
 using eShop.ViewModels.Catalog.Products;
 
 using eShop.ViewModels.Common;
-using Microsoft.AspNetCore.Http;
+using eShop.ViewModels.System.Users;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -47,5 +47,19 @@ namespace eShop.Application.Catalog.Products
         Task<List<ProductViewModel>> GetLatestProducts(string languageId, int take);
 
         Task<List<ProductViewModel>> GetRelatedProducts(string languageId, int take);
+
+        #region Lịch Công tác(Lâp trình tiên tiến)
+
+        Task<int> CreateWS(WorkingscheduleViewModel request);
+
+        Task<int> UpdateWS(WorkingscheduleViewModel request);
+
+        Task<int> DeleteWS(int requestId);
+
+        Task<WorkingscheduleViewModel> GetByIdWS(int requestId);
+
+        Task<PagedResult<WorkingscheduleViewModel>> GetAllPagingWS(GetUserPagingRequest request);
+
+        #endregion Lịch Công tác(Lâp trình tiên tiến)
     }
 }

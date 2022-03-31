@@ -6,10 +6,20 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @section Scripts{
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    
     <script>
         setTimeout(function () {
             $('#msgAlert').fadeOut('slow');
         }, 2000);
+    </script>
+
+    <script src="/js/controller/user/userController.js"></script>
+    <script>
+        var site = new UserController();
+        site.initialize();
     </script>
 }
 <div class="content-wrapper">
@@ -55,14 +65,14 @@
                 @* <div class="row">
 
                     <div class="col-md-12 ">
-                        @if (ViewBag.SuccessMsg != null)
-                        {
-                            <div id="msgAlert" class="alert alert-success text-center" role="alert">
-                                @ViewBag.SuccessMsg
-                            </div>
-                        }
+                    @if (ViewBag.SuccessMsg != null)
+                    {
+                    <div id="msgAlert" class="alert alert-success text-center" role="alert">
+                    @ViewBag.SuccessMsg
                     </div>
-                </div> *@
+                    }
+                    </div>
+                    </div> *@
                 <br />
 
                 <table class="table">
@@ -73,19 +83,16 @@
                                 ID
                             </th>
                             <th>
-                                Tên
-                            </th>
-                            <th>
-                                Họ
-                            </th>
-                            <th>
-                                Số Điện Thoại
+                                Họ Tên
                             </th>
                             <th>
                                 Tài Khoản
                             </th>
                             <th>
                                 Email
+                            </th>
+                            <th>
+                                Trạng Thái
                             </th>
                             <th></th>
                         </tr>
@@ -98,20 +105,31 @@
                                     @Html.DisplayFor(modelItem => item.Id)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.FirstName)
+                                    @item.FirstName  @item.LastName
                                 </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.LastName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.PhoneNumber)
-                                </td>
+
                                 <td>
                                     @Html.DisplayFor(modelItem => item.UserName)
                                 </td>
                                 <td>
+
                                     @Html.DisplayFor(modelItem => item.Email)
                                 </td>
+                                <td>
+
+                                    @{
+                                        if (item.LockoutEnabled)
+                                        {
+                                            <span class="Lockout badge bg-red" data-id="@item.Id">Locked</span>
+                                        }
+                                        else
+                                        {
+
+                                            <span class="EnabledLockout badge bg-green" data-id="@item.Id">Active</span>
+                                        }
+                                    }
+                                </td>
+
                                 <td>
                                     @Html.ActionLink("Sửa", "Edit", new { id = item.Id }) |
                                     @Html.ActionLink("Xem", "Details", new { id = item.Id }) |

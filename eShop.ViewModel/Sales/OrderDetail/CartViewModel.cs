@@ -1,7 +1,4 @@
 ﻿using eShop.ViewModels.Catalog.Products;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace eShop.ViewModels.Sales.OrderDetail
 {

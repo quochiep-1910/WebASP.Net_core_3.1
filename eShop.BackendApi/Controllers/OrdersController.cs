@@ -1,17 +1,9 @@
 ﻿using eShop.Application.Sales;
-using eShop.BackendApi.Models;
 using eShop.Data.EF;
 using eShop.ViewModels.Sales.Order;
 using eShop.ViewModels.Sales.RevenueStatistics;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace eShop.BackendApi.Controllers

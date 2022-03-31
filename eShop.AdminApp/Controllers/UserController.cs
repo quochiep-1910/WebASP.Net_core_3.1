@@ -2,19 +2,9 @@
 using eShop.ApiIntegration;
 using eShop.ViewModels.Common;
 using eShop.ViewModels.System.Users;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Logging;
-using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace eShop.AdminApp.Controllers
@@ -71,6 +61,7 @@ namespace eShop.AdminApp.Controllers
         {
             if (!ModelState.IsValid)
                 return View(request);
+            request.origin = Request.Headers["origin"];
             var result = await _userApiClient.RegisterUser(request);
             if (result.IsSuccessed)
             {
@@ -98,6 +89,7 @@ namespace eShop.AdminApp.Controllers
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     PhoneNumber = user.PhoneNumber,
+
                     Id = id
                 };
                 return View(updateRequest);//nếu thành công thì load dữ liệu ra
@@ -196,5 +188,29 @@ namespace eShop.AdminApp.Controllers
             }
             return roleAssignRequest;
         }
+
+        #region Two factor Authentication
+
+        [HttpGet]
+        public async Task<IActionResult> TwoFactorAuthentication()
+        {
+            var userId = await _userApiClient.GetByUserName(User.Identity.Name);
+            var resultAuthen = await _userApiClient.CheckTwoFactorAuthentication(userId.Id.ToString());
+            return View(resultAuthen);
+        }
+
+        #endregion Two factor Authentication
+
+        #region Enable Authenticator
+
+        [HttpGet]
+        public async Task<IActionResult> EnableAuthenticator()
+        {
+            var userId = await _userApiClient.GetByUserName(User.Identity.Name);
+            var resultAuthen = await _userApiClient.GetEnableAuthenticator(userId.Id.ToString());
+            return View(resultAuthen);
+        }
+
+        #endregion Enable Authenticator
     }
 }

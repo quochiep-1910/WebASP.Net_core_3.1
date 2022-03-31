@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+﻿using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
 namespace eShop.Application.Common
@@ -11,7 +8,7 @@ namespace eShop.Application.Common
         //save file và lấy thông tin file
         string GetFileUrl(string fileName);
 
-        Task SaveFileAsync(Stream mediaBinaryStream, string fileName);
+        Task<string> SaveFileAsync(IFormFile file);
 
         Task DeleteFileAsync(string fileName);
     }

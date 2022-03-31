@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace eShop.Utilities.Constants
+﻿namespace eShop.Utilities.Constants
 {
     public class SystemConstants
     {
@@ -47,6 +43,13 @@ namespace eShop.Utilities.Constants
             Shipping,
             Success,
             Canceled
+        }
+
+        public class UserTokenConstants
+        {
+            public const string AuthenticatorKey = "AuthenticatorKey";
+            public const string AspNetUserStore = "[AspNetUserStore]";
+            public const string RecoveryCodes = "RecoveryCodes";
         }
     }
 }

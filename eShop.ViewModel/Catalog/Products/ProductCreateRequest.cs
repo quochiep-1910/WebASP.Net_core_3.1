@@ -39,6 +39,7 @@ namespace eShop.ViewModels.Catalog.Products
         public bool? IsFeatured { set; get; }
 
         [Display(Name = "Ảnh thu nhỏ")]
+        [Required]
         public IFormFile ThumbnailImage { set; get; }
     }
 }

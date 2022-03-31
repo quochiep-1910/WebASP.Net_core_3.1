@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 using static eShop.Utilities.Constants.SystemConstants;
 
 namespace eShop.ViewModels.Sales.Order

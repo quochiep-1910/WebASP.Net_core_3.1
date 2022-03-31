@@ -6,13 +6,12 @@ using eShop.ViewModels.Catalog.ProductImages;
 using eShop.ViewModels.Catalog.Products;
 
 using eShop.ViewModels.Common;
+using eShop.ViewModels.System.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using static eShop.Utilities.Constants.SystemConstants;
 
@@ -123,11 +122,11 @@ namespace eShop.Application.Catalog.Products
                         from pic in ppic.DefaultIfEmpty()
                         join c in _context.Categories on pic.CategoryId equals c.Id into picc
                         from c in picc.DefaultIfEmpty()
-                            //join pi in _context.ProductImages on p.Id equals pi.ProductId into ppi
-                            //from pi in ppi.DefaultIfEmpty()
+                        join pi in _context.ProductImages on p.Id equals pi.ProductId into ppi
+                        from pi in ppi.DefaultIfEmpty()
                         where pt.LanguageId == request.LanguageId
-                        //pi.IsDefault == true
-                        select new { p, pt, pic };
+                        //& pi.IsDefault == true
+                        select new { p, pt, pic, pi };
             //2. filter
             if (!string.IsNullOrEmpty(request.Keyword))
                 query = query.Where(x => x.pt.Name.Contains(request.Keyword));
@@ -155,8 +154,8 @@ namespace eShop.Application.Catalog.Products
                     SeoDescription = x.pt.SeoDescription,
                     SeoTitle = x.pt.SeoTitle,
                     Stock = x.p.Stock,
-                    ViewCount = x.p.ViewCount
-                    //ThumbnailImage = x.pi.ImagePath,
+                    ViewCount = x.p.ViewCount,
+                    ThumbnailImage = x.pi.ImagePath
                     //Categories = x.ct.Name
                 }).ToListAsync();
 
@@ -193,7 +192,10 @@ namespace eShop.Application.Catalog.Products
             //Save image
             if (request.ThumbnailImage != null)
             {
-                var thumbnailImage = await _context.ProductImages.FirstOrDefaultAsync(i => i.IsDefault == true && i.ProductId == request.Id);
+                var thumbnailImage = await _context.ProductImages
+                    .FirstOrDefaultAsync(i => i.IsDefault == true && i.ProductId == request.Id);
+                //var result = thumbnailImage.Select(x => x.ImagePath.Split(";")).ToList();
+
                 if (thumbnailImage != null)
                 {
                     thumbnailImage.FileSize = request.ThumbnailImage.Length;
@@ -224,10 +226,7 @@ namespace eShop.Application.Catalog.Products
 
         private async Task<string> SaveFile(IFormFile file)
         {
-            var originalFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
-            await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
-            return "/" + USER_CONTENT_FOLDER_NAME + "/" + fileName;
+            return await _storageService.SaveFileAsync(file);
         }
 
         public async Task<ProductViewModel> GetById(int productId, string languageId)
@@ -576,6 +575,101 @@ namespace eShop.Application.Catalog.Products
                 }).ToListAsync();
 
             return data;
+        }
+
+        public async Task<int> CreateWS(WorkingscheduleViewModel request)
+        {
+            var workSchedule = new WorkingSchedule()
+            {
+                StartDate = request.StartDate,
+                EndDate = request.EndDate,
+                LyDo = request.LyDo,
+                Message = request.Message,
+                UserName = request.UserName
+            };
+
+            _context.WorkingSchedules.Add(workSchedule);
+            await _context.SaveChangesAsync();
+            return workSchedule.Id;
+        }
+
+        public async Task<int> UpdateWS(WorkingscheduleViewModel request)
+        {
+            var workingschedule = await _context.WorkingSchedules.FindAsync(request.Id);
+            if (workingschedule == null)
+            {
+                throw new EShopException($"Không thể tìm thấy một lịch công tác nào có tên là: {request.UserName}");
+            }
+
+            workingschedule.UserName = request.UserName;
+            workingschedule.StartDate = request.StartDate;
+            workingschedule.EndDate = request.EndDate;
+            workingschedule.LyDo = request.LyDo;
+            workingschedule.Message = request.Message;
+
+            return await _context.SaveChangesAsync();
+        }
+
+        public async Task<int> DeleteWS(int requestId)
+        {
+            var workingschedule = await _context.WorkingSchedules.FindAsync(requestId);
+
+            if (workingschedule == null) throw new EShopException($"Không thể tìm thấy một lịch công tác : {requestId}");
+
+            _context.WorkingSchedules.Remove(workingschedule);
+
+            return await _context.SaveChangesAsync();
+        }
+
+        public async Task<WorkingscheduleViewModel> GetByIdWS(int requestId)
+        {
+            var workingschedule = await _context.WorkingSchedules.FindAsync(requestId);
+            var workingscheduleViewModel = new WorkingscheduleViewModel()
+            {
+                Id = workingschedule.Id,
+                UserName = workingschedule.UserName,
+                EndDate = workingschedule.EndDate,
+                StartDate = workingschedule.StartDate,
+                LyDo = workingschedule.LyDo,
+                Message = workingschedule.Message
+            };
+            return workingscheduleViewModel;
+        }
+
+        public async Task<PagedResult<WorkingscheduleViewModel>> GetAllPagingWS(GetUserPagingRequest request)
+        {
+            //1. Select join
+            var query = from ws in _context.WorkingSchedules
+                        select new { ws };
+
+            //2. filter
+            if (!string.IsNullOrEmpty(request.Keyword))
+                query = query.Where(x => x.ws.UserName.Contains(request.Keyword));
+
+            //3. Paging
+            int totalRow = await query.CountAsync();
+
+            var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(x => new WorkingscheduleViewModel()
+                {
+                    Id = x.ws.Id,
+                    UserName = x.ws.UserName,
+                    LyDo = x.ws.LyDo,
+                    StartDate = x.ws.StartDate,
+                    EndDate = x.ws.EndDate,
+                    Message = x.ws.Message
+                }).ToListAsync();
+
+            //4. Select and projection
+            var pagedResult = new PagedResult<WorkingscheduleViewModel>()
+            {
+                TotalRecords = totalRow,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize,
+                Items = data
+            };
+            return pagedResult;
         }
     }
 }

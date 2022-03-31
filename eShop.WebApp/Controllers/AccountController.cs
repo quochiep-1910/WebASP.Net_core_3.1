@@ -10,9 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -81,7 +79,7 @@ namespace eShop.WebApp.Controllers
             if (!ModelState.IsValid)
 
                 return View(request);
-
+            request.origin = Request.Headers["origin"];
             var result = await _userApiClient.RegisterUser(request);
             if (!result.IsSuccessed)
             {

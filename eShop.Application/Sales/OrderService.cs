@@ -2,7 +2,6 @@
 using eShop.Data.Entities;
 using eShop.Data.Enums;
 using eShop.Utilities.Exceptions;
-using eShop.ViewModels.Catalog.Products;
 using eShop.ViewModels.Common;
 using eShop.ViewModels.Sales.Order;
 using eShop.ViewModels.Sales.OrderDetail;
@@ -12,12 +11,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace eShop.Application.Sales

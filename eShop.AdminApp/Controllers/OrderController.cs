@@ -1,15 +1,10 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using eShop.ApiIntegration;
-using eShop.Utilities.Constants;
 using eShop.ViewModels.Sales.Order;
 using eShop.ViewModels.Sales.RevenueStatistics;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace eShop.AdminApp.Controllers

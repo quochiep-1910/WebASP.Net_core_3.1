@@ -1,8 +1,5 @@
-﻿using eShop.ViewModels.System.Roles;
-using eShop.ViewModels.Utilities.Slides;
-using System;
+﻿using eShop.ViewModels.Utilities.Slides;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace eShop.Application.Utilities.Slides

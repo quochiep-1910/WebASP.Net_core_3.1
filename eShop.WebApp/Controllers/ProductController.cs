@@ -3,9 +3,6 @@
 using eShop.ViewModels.Catalog.Products;
 using eShop.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using static eShop.Utilities.Constants.SystemConstants;
 
@@ -49,5 +46,6 @@ namespace eShop.WebApp.Controllers
                  .GetRelatedProducts(ProductSettings.NumberOfRelatedProducts, culture)
             });
         }
+
     }
 }

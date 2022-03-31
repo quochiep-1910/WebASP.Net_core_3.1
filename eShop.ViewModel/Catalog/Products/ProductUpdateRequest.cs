@@ -41,6 +41,7 @@ namespace eShop.ViewModels.Catalog.Products
         public int Stock { set; get; }
 
         [Display(Name = "Ảnh thu nhỏ")]
+        [Required]
         public IFormFile ThumbnailImage { set; get; }
     }
 }
