@@ -110,7 +110,7 @@ namespace eShop.Application.Sales
                 ShipName = order.ShipName,
                 ShipPhoneNumber = order.ShipPhoneNumber,
                 Status = (eShop.Utilities.Constants.SystemConstants.OrderStatus)order.Status,
-                UserId = (Guid)order.UserId != null ? (Guid)order.UserId : Guid.Empty,
+                UserId = order.UserId != null ? order.UserId : Guid.Empty.ToString(),
                 OrderDetails = orderDetailVN
             };
             return orderViewModel;
@@ -137,7 +137,7 @@ namespace eShop.Application.Sales
                 {
                     //order
                     Id = x.o.Id,
-                    UserId = (Guid)x.o.UserId,
+                    UserId = x.o.UserId,
                     ShipName = x.o.ShipName,
                     ShipAddress = x.o.ShipAddress,
                     ShipEmail = x.o.ShipEmail,

@@ -29,7 +29,7 @@ namespace eShop.BackendApi.Extensions
             services.AddDbContext<EShopDbContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString(SystemConstants.MainConnecttionString)));
 
-            services.AddIdentity<AppUser, AppRole>()
+            services.AddIdentity<AppUser, IdentityRole<string>>()
               .AddEntityFrameworkStores<EShopDbContext>()
                 .AddDefaultTokenProviders();
             //khai báo DI
@@ -40,7 +40,6 @@ namespace eShop.BackendApi.Extensions
             services.AddTransient<IStorageService, FileStorageService>();
             services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();
             services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
-            services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<ISlideService, SlideService>();
             services.AddTransient<ILanguageService, LanguageService>();

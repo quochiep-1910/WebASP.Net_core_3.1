@@ -14,15 +14,15 @@ namespace eShop.ApiIntegration
 
         Task<ApiResult<bool>> RegisterUser(RegisterRequest registerRequestrequest);
 
-        Task<ApiResult<bool>> UpdateUser(Guid id, UserUpdateRequest userUpdate);
+        Task<ApiResult<bool>> UpdateUser(string id, UserUpdateRequest userUpdate);
 
-        Task<ApiResult<UserViewModel>> GetById(Guid id);
+        Task<ApiResult<UserViewModel>> GetById(string id);
 
         Task<UserViewModel> GetByUserName(string userName);
 
-        Task<ApiResult<bool>> Delete(Guid id);
+        Task<ApiResult<bool>> Delete(string id);
 
-        Task<ApiResult<bool>> RoleAssign(Guid id, RoleAssignRequest request);
+        Task<ApiResult<bool>> RoleAssign(string id, RoleAssignRequest request);
 
         Task<ApiResult<bool>> ChangeUserPassword(AppUserChangePasswordDTO appUserChangePassword);
 

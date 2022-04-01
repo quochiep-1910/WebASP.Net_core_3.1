@@ -12,17 +12,17 @@ namespace eShop.Application.System.Users
 
         Task<ApiResult<bool>> Register(RegisterRequest registerRequest, string origin);
 
-        Task<ApiResult<bool>> Update(Guid id, UserUpdateRequest registerRequest);
+        Task<ApiResult<bool>> Update(string id, UserUpdateRequest registerRequest);
 
         Task<ApiResult<PagedResult<UserViewModel>>> GetUserPaging(GetUserPagingRequest request);
 
-        Task<ApiResult<UserViewModel>> GetById(Guid id);
+        Task<ApiResult<UserViewModel>> GetById(string id);
 
         Task<ApiResult<UserViewModel>> GetByUserName(string userName);
 
-        Task<ApiResult<bool>> Delete(Guid id);
+        Task<ApiResult<bool>> Delete(string id);
 
-        Task<ApiResult<bool>> RoleAssign(Guid id, RoleAssignRequest request);
+        Task<ApiResult<bool>> RoleAssign(string id, RoleAssignRequest request);
 
         #region Identity
 

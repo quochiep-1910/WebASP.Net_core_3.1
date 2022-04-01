@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace eShop.ViewModels.System.Roles
+﻿namespace eShop.ViewModels.System.Roles
 {
     public class RoleViewModel
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
     }
