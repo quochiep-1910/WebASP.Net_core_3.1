@@ -233,6 +233,27 @@ namespace eShop.ApiIntegration
             return result;
         }
 
+        public async Task<ApiResult<EnableAuthenticatorViewModel>> PostEnableAuthenticator(EnableAuthenticatorRequest request, string userId)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions); //lấy token
+
+            var json = JsonConvert.SerializeObject(request); //convert json to string
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync($"/api/Users/PostEnableAuthenticator?userId={userId}", httpContent);
+            var result = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)//kiểm tra status code
+            {
+                return JsonConvert.DeserializeObject<ApiSuccessResult<EnableAuthenticatorViewModel>>(result);
+            }
+            return JsonConvert.DeserializeObject<ApiErrorResult<EnableAuthenticatorViewModel>>(result);
+        }
+
         #endregion Enable Authenticator
     }
 }

@@ -29,6 +29,12 @@ namespace eShop.ViewModels.System.Users
         [Display(Name = "Trạng Thái")]
         public bool LockoutEnabled { get; set; }
 
+        [Display(Name = "Trạng Thái Email")]
+        public bool EmailConfirmed { get; set; }
+
+        [Display(Name = "Ngày Mở Khoá Tài khoản")]
+        public DateTimeOffset? LockoutEnd { set; get; }
+
         public IList<string> Roles { get; set; }
     }
 }

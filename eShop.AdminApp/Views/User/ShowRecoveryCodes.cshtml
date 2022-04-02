@@ -1,0 +1,57 @@
+﻿@model ShowRecoveryCodes
+@{
+    ViewData["Title"] = "Recovery codes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Recovery codes</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active">Recovery codes</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <section class="content">
+
+        <!-- Default box -->
+        <div class="card">
+            <div class="card-header">
+               
+                <hr />
+                <h4>@ViewData["Title"]</h4>
+                <div class="alert alert-warning" role="alert">
+                    <p>
+                        <strong>Đặt những mã này ở một nơi an toàn.</strong>
+                    </p>
+                    <p>
+                        Nếu bạn bị mất thiết bị và không có mã khôi phục, bạn sẽ mất quyền truy cập vào tài khoản của mình.
+                    </p>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+
+                        @for (var row = 0; row < @Model.RecoveryCodes.Length; row += 2)
+                        {
+                            <code class="recovery-code">@Model.RecoveryCodes[row]</code><text>&nbsp;</text><code class="recovery-code">@Model.RecoveryCodes[row + 1]</code><br />
+                        }
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</div>
+
+

@@ -1,6 +1,9 @@
 ﻿using eShop.Application.System.Email;
 using eShop.Data.EF;
 using eShop.Data.Entities;
+using eShop.Utilities.Constants;
+using eShop.Utilities.Exceptions;
+using eShop.ViewModels.Common;
 using eShop.ViewModels.System.Auth;
 using eShop.ViewModels.System.Users;
 using Microsoft.AspNetCore.Identity;
@@ -51,7 +54,7 @@ namespace eShop.Application.System.Auth
 
                 if (user == null)
                 {
-                    throw new Exception($"Unable to load user.");
+                    throw new EShopException($"Unable to load user.");
                 }
                 var result = new TwoFactorAuthenticationViewModel();
 
@@ -79,21 +82,21 @@ namespace eShop.Application.System.Auth
 
             if (user == null)
             {
-                throw new Exception("Không thể tải người dùng có ID.");
+                throw new EShopException("Không thể tải người dùng có ID.");
             }
 
             return await LoadSharedKeyAndQrCodeUriAsync(userid);
         }
 
-        public async Task<EnableAuthenticatorViewModel> PostEnableAuthenticatorModel(EnableAuthenticatorRequest request, string userid)
+        public async Task<ApiResult<EnableAuthenticatorViewModel>> PostEnableAuthenticatorModel(EnableAuthenticatorRequest request, string userid)
         {
             var user = await _userManager.FindByIdAsync(userid.ToString());
+            var result = new EnableAuthenticatorViewModel();
             if (user == null)
             {
-                throw new Exception("Không thể tải người dùng có ID.");
+                return new ApiErrorResult<EnableAuthenticatorViewModel>(ResponseMessage.FindUserNotFound);
             }
 
-            var result = new EnableAuthenticatorViewModel();
             // Strip spaces and hypens
             var verificationCode = request.Input.Code.Replace(" ", string.Empty).Replace("-", string.Empty);
 
@@ -103,14 +106,15 @@ namespace eShop.Application.System.Auth
             if (!is2faTokenValid)
             {
                 await LoadSharedKeyAndQrCodeUriAsync(userid);
-                throw new Exception("Mã xác minh không hợp lệ.");
+
+                return new ApiErrorResult<EnableAuthenticatorViewModel>(ResponseMessage.ErrorCodeAuthentication);
             }
 
             await _userManager.SetTwoFactorEnabledAsync(user, true);
             var userId = await _userManager.GetUserIdAsync(user);
             _logger.LogInformation("Người dùng đã bật 2FA với một ứng dụng xác thực.", userId);
 
-            result.StatusMessage = "Ứng dụng xác thực của bạn đã được xác minh.";
+            result.StatusMessage = ResponseMessage.AuthenticatorHasBeenVerified;
 
             if (await _userManager.CountRecoveryCodesAsync(user) == 0)
             {
@@ -118,12 +122,12 @@ namespace eShop.Application.System.Auth
                 result.RecoveryCodes = recoveryCodes.ToArray();
 
                 //return {Show Recovery Codes}
-                return result;
+                return new ApiSuccessResult<EnableAuthenticatorViewModel>(result);
             }
             else
             {
                 //success
-                return result;
+                return new ApiSuccessResult<EnableAuthenticatorViewModel>(result);
             }
         }
 

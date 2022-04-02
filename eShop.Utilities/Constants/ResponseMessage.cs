@@ -33,6 +33,9 @@
 
         public const string FindUserNotFound = "Can't find out user";
 
+        public const string ErrorCodeAuthentication = "Mã xác minh không hợp lệ.";
+        public const string AuthenticatorHasBeenVerified = "Ứng dụng xác thực của bạn đã được xác minh.";
+
         public static string NotMatch { get; set; }
     }
 }

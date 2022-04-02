@@ -33,7 +33,9 @@ namespace eShop.BackendApi.Controllers
             }
 
             var result = await _userService.Authencate(request);
-            //result.Message == "RequiresTwoFactor";
+            if (result.Message == "RequiresTwoFactor")
+            {
+            }
 
             if (string.IsNullOrEmpty(result.ResultObj))
             {
@@ -178,7 +180,11 @@ namespace eShop.BackendApi.Controllers
                 return BadRequest(ModelState);
 
             var result = await _authService.PostEnableAuthenticatorModel(request, userId);
-            return Ok(result);
+            if (result.IsSuccessed)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
         }
     }
 }

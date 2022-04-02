@@ -71,7 +71,13 @@ namespace eShop.Application.System.Users
             {
                 return new ApiErrorResult<string>("Đăng nhập không đúng");
             }
+            var token = TokenHandler(loginRequest);
+            return new ApiSuccessResult<string>(token.Result);
+        }
 
+        private async Task<string> TokenHandler(LoginRequest loginRequest)
+        {
+            var user = await _userManager.FindByNameAsync(loginRequest.UserName);
             var roles = await _userManager.GetRolesAsync(user);
             var claims = new[]
             {
@@ -89,8 +95,8 @@ namespace eShop.Application.System.Users
                 claims,
                 expires: DateTime.Now.AddHours(3),
                 signingCredentials: creds);
-
-            return new ApiSuccessResult<string>(new JwtSecurityTokenHandler().WriteToken(token));
+            var stringToken = new JwtSecurityTokenHandler().WriteToken(token);
+            return stringToken;
         }
 
         public async Task<ApiResult<bool>> Delete(string id)
@@ -174,7 +180,9 @@ namespace eShop.Application.System.Users
                     FirstName = x.FirstName,
                     Id = x.Id,
                     LastName = x.LastName,
-                    LockoutEnabled = x.LockoutEnabled
+                    LockoutEnabled = x.LockoutEnabled,
+                    EmailConfirmed = x.EmailConfirmed,
+                    LockoutEnd = x.LockoutEnd
                 }).ToListAsync();
 
             //4. Select and projection

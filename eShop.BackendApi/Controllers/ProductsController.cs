@@ -26,6 +26,13 @@ namespace eShop.BackendApi.Controllers
             return Ok(product);
         }
 
+        [HttpGet("GetAllProduct")]
+        public async Task<IActionResult> GetAllProduct(string LanguageId)
+        {
+            var product = await _ProductService.GetAll(LanguageId);
+            return Ok(product);
+        }
+
         [HttpPost]
         [Consumes("multipart/form-data")]
         [Authorize]

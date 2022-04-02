@@ -39,6 +39,29 @@ namespace eShop.AdminApp.Controllers
         }
 
         [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromForm] OrderCreateRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View(request);
+            var result = await _orderService.CreateOrder(request);
+            if (result)
+            {
+                _notyf.Success("Thêm mới đơn hàng thành công");
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", "Thêm đơn hàng thất bại");
+
+            return View(request);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
             var result = await _orderService.GetById(id);

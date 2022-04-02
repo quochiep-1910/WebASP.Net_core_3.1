@@ -1,7 +1,6 @@
 ﻿using eShop.ViewModels.Common;
 using eShop.ViewModels.System.Auth;
 using eShop.ViewModels.System.Users;
-using System;
 using System.Threading.Tasks;
 
 namespace eShop.ApiIntegration
@@ -41,6 +40,8 @@ namespace eShop.ApiIntegration
         #region Enable Authenticator
 
         Task<EnableAuthenticatorViewModel> GetEnableAuthenticator(string userId);
+
+        Task<ApiResult<EnableAuthenticatorViewModel>> PostEnableAuthenticator(EnableAuthenticatorRequest request, string userId);
 
         #endregion Enable Authenticator
     }

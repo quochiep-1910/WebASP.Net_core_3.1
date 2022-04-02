@@ -1,8 +1,10 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using eShop.AdminApp.Models;
 using eShop.ApiIntegration;
 using eShop.ViewModels.Common;
 using eShop.ViewModels.System.Users;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 
@@ -206,10 +208,52 @@ namespace eShop.AdminApp.Controllers
         public async Task<IActionResult> EnableAuthenticator()
         {
             var userId = await _userApiClient.GetByUserName(User.Identity.Name);
-            var resultAuthen = await _userApiClient.GetEnableAuthenticator(userId.Id.ToString());
-            return View(resultAuthen);
+            var authen = await _userApiClient.GetEnableAuthenticator(userId.Id.ToString());
+            var result = new EnableAuthenViewModel()
+            {
+                EnableAuthenticatorViewModel = authen
+            };
+            return View(result);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EnableAuthenticator(EnableAuthenViewModel request)
+
+        {
+            var user = await _userApiClient.GetByUserName(User.Identity.Name);
+            var resultAuthen = await _userApiClient.PostEnableAuthenticator(request.EnableAuthenticatorRequest, user.Id);
+            if (resultAuthen.IsSuccessed)
+            {
+                if (resultAuthen.ResultObj.RecoveryCodes.Length != 0)
+                {
+                    var parameters = new RouteValueDictionary();
+                    for (int i = 0; i < resultAuthen.ResultObj.RecoveryCodes.Length; i++)
+                    {
+                        parameters["[" + i + "]"] = resultAuthen.ResultObj.RecoveryCodes[i];
+                    }
+
+                    return RedirectToAction("ShowRecoveryCodes", parameters);
+                }
+                _notyf.Success("Thêm Bảo mật 2 lớp thành công");
+                return RedirectToAction("TwoFactorAuthentication");
+            }
+            ModelState.AddModelError("", resultAuthen.Message);//key and message
+            _notyf.Error(resultAuthen.Message);
+            return RedirectToAction("EnableAuthenticator");
         }
 
         #endregion Enable Authenticator
+
+        [HttpGet]
+        public async Task<IActionResult> ShowRecoveryCodes(string[] RecoveryCodes)
+        {
+            var codes = new ShowRecoveryCodes() { RecoveryCodes = RecoveryCodes };
+
+            if (RecoveryCodes == null || RecoveryCodes.Length == 0)
+            {
+                return RedirectToPage("./TwoFactorAuthentication");
+            }
+            return View(codes);
+        }
     }
 }
