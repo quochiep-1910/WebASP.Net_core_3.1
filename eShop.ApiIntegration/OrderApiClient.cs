@@ -1,12 +1,14 @@
 ﻿using eShop.Utilities.Constants;
 using eShop.ViewModels.Common;
 using eShop.ViewModels.Sales.Order;
+using eShop.ViewModels.Sales.OrderDetail;
 using eShop.ViewModels.Sales.RevenueStatistics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -29,7 +31,7 @@ namespace eShop.ApiIntegration
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<bool> CreateOrder(OrderCreateRequest request)
+        public async Task<int> CreateOrder(OrderCreateRequest request)
         {
             //1.Khởi tạo
             var sessions = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
@@ -40,6 +42,22 @@ namespace eShop.ApiIntegration
             var json = JsonConvert.SerializeObject(request); //convert json to string
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await client.PostAsync($"/api/orders/", httpContent);
+            var orderId = response.Content.ReadAsStringAsync();
+            return Int32.Parse(orderId.Result);
+        }
+
+        public async Task<bool> CreateOrderDetail(List<OrderDetailViewModel> request)
+        {
+            //1.Khởi tạo
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration[SystemConstants.AppSettings.BaseAddress]);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions); //lấy token
+
+            var json = JsonConvert.SerializeObject(request); //convert json to string
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var orderId = request.Select(x => x.OrderId);
+            var response = await client.PostAsync($"/api/orders/postorderdetail?orderId={orderId}", httpContent);
 
             return response.IsSuccessStatusCode;
         }
@@ -62,6 +80,19 @@ namespace eShop.ApiIntegration
                  + $"{request.PageIndex}&pageSize={request.PageSize}" +
                  $"&keyword={request.Keyword}");
             return result;
+        }
+
+        public async Task<int> GetTotalOrder()
+        {
+            //1.Khởi tạo
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration[SystemConstants.AppSettings.BaseAddress]);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions); //lấy token
+
+            var response = await client.GetAsync($"/api/orders/totalOrder");
+            var totalOrder = response.Content.ReadAsStringAsync();
+            return Int32.Parse(totalOrder.Result);
         }
 
         public async Task<List<RevenueStatisticViewModel>> RevenueStatistic(StatisticsRequest request)

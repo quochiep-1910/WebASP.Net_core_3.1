@@ -31,8 +31,6 @@ namespace eShop.AdminApp.Controllers
 
         public async Task<IActionResult> Index(string keyword, int? categoryId, int pageIndex = 1, int pageSize = 5)
         {
-            var awd = User;
-
             var languageId = HttpContext.Session.GetString(SystemConstants.AppSettings.DefaultLanguageId);
             var request = new GetManageProductPagingRequest()
             {
@@ -57,6 +55,7 @@ namespace eShop.AdminApp.Controllers
             //     ViewBag.SuccessMsg = TempData["result"];
             // }
             TempData["TotalProducts"] = data.TotalRecords;
+
             return View(data);
         }
 

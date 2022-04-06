@@ -196,6 +196,17 @@ namespace eShop.Application.System.Users
             return new ApiSuccessResult<PagedResult<UserViewModel>>(pagedResult);
         }
 
+        public async Task<int> GetToTalUser()
+        {
+            var totalUser = await _userManager.Users.CountAsync();
+            if (totalUser < 0)
+            {
+                //Cannot find or error User
+                return 0;
+            }
+            return totalUser;
+        }
+
         public async Task<ApiResult<bool>> Register(RegisterRequest registerRequest, string origin)
         {
             var user = await _userManager.FindByNameAsync(registerRequest.UserName);

@@ -1,4 +1,5 @@
-﻿using eShop.ViewModels.Common;
+﻿using eShop.Utilities.Constants;
+using eShop.ViewModels.Common;
 using eShop.ViewModels.System.Auth;
 using eShop.ViewModels.System.Users;
 using Microsoft.AspNetCore.Http;
@@ -68,6 +69,18 @@ namespace eShop.ApiIntegration
         {
             var result = await GetByUserName<UserViewModel>($"/api/users?userName={userName}");
             return result;
+        }
+
+        public async Task<int> GetTotalUser()
+        {
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration[SystemConstants.AppSettings.BaseAddress]);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions); //lấy token
+
+            var response = await client.GetAsync($"/api/users/totalUser");
+            var totalOrder = response.Content.ReadAsStringAsync();
+            return Int32.Parse(totalOrder.Result);
         }
 
         public async Task<ApiResult<PagedResult<UserViewModel>>> GetUsersPagings(GetUserPagingRequest request)

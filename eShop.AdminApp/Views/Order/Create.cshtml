@@ -34,19 +34,7 @@
                 <hr />
                 <form asp-action="Create">
                     <div asp-validation-summary="All" class="text-danger"></div>
-
-                    @*<input asp-for="User" type="hidden" />*@
-
-                    <div class="form-group">
-                        <label asp-for="ProductId" class="control-label"></label>
-                        <input asp-for="ProductId" class="form-control" />
-                        <span asp-validation-for="ProductId" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="OrderDate" class="control-label"></label>
-                        <input asp-for="OrderDate" class="form-control" />
-                        <span asp-validation-for="OrderDate" class="text-danger"></span>
-                    </div>
+                    <input asp-for="UserId" type="hidden" />
                     <div class="form-group">
                         <label asp-for="ShipName" class="control-label"></label>
                         <input asp-for="ShipName" class="form-control" />
@@ -67,19 +55,16 @@
                         <input asp-for="ShipPhoneNumber" class="form-control" />
                         <span asp-validation-for="ShipPhoneNumber" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="Quantity" class="control-label"></label>
-                        <input asp-for="Quantity" class="form-control" />
-                        <span asp-validation-for="Quantity" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Price" class="control-label"></label>
-                        <input asp-for="Price" class="form-control" />
-                        <span asp-validation-for="Price" class="text-danger"></span>
-                    </div>
+
                     <div class="form-group">
                         <label asp-for="Status" class="control-label"></label>
-                        <input asp-for="Status" class="form-control" />
+                        <select asp-for="Status">
+                            <option value='0'>Đang Xử lý đơn</option>
+                            <option value='1'>Đã xác nhận bên bán còn hàng</option>
+                            <option value='2'>Đang chuyển hàng</option>
+                            <option value='3'>Thành Công</option>
+                            <option value='4'>Đã Huỷ</option>
+                        </select>
                         <span asp-validation-for="Status" class="text-danger"></span>
                     </div>
                     <div class="form-group">

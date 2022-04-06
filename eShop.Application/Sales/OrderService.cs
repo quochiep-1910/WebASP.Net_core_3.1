@@ -49,21 +49,61 @@ namespace eShop.Application.Sales
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
+            if (request.OrderDetails != null)
+            {
+                //2 Save the order detail into Order Detail table
+                foreach (var item in request.OrderDetails)
+                {
+                    OrderDetail orderDetails = new OrderDetail()
+                    {
+                        OrderId = order.Id,
+                        ProductId = item.ProductId,
+                        Quantity = item.Quantity,
+                        Price = item.Price
+                    };
+                    await ProductReduction(item.Quantity, item.ProductId);
+                    _context.OrderDetails.Add(orderDetails);
+                }
+                await _context.SaveChangesAsync();
+            }
+            return order.Id;
+        }
+
+        public async Task<int> CreateOrderDetail(List<OrderDetailViewModel> request)
+        {
             //2 Save the order detail into Order Detail table
-            foreach (var item in request.OrderDetails)
+            foreach (var item in request)
             {
                 OrderDetail orderDetails = new OrderDetail()
                 {
-                    OrderId = order.Id,
+                    OrderId = item.OrderId,
                     ProductId = item.ProductId,
                     Quantity = item.Quantity,
                     Price = item.Price
                 };
+                await ProductReduction(item.Quantity, item.ProductId);
                 _context.OrderDetails.Add(orderDetails);
             }
 
             await _context.SaveChangesAsync();
-            return order.Id;
+            return request.Select(x => x.OrderId).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Giảm số lượng sản phẩm nếu mua thành công
+        /// </summary>
+        /// <param name="quantity"></param>
+        /// <returns></returns>
+        private async Task<int> ProductReduction(int quantity, int productId)
+        {
+            var product = await _context.Products.FindAsync(productId);
+            product.Stock -= quantity;
+            if (product.Stock <= 0)
+            {
+                product.Stock = 0;
+            }
+            await _context.SaveChangesAsync();
+            return product.Stock;
         }
 
         public async Task<int> Delete(int orderId)
@@ -159,6 +199,17 @@ namespace eShop.Application.Sales
                 Items = data
             };
             return pagedResult;
+        }
+
+        public async Task<int> GetTotalOrder()
+        {
+            var totalOrder = await _context.Orders.CountAsync();
+            if (totalOrder < 0)
+            {
+                //cannot find or error
+                return 0;
+            }
+            return totalOrder;
         }
 
         [Obsolete]

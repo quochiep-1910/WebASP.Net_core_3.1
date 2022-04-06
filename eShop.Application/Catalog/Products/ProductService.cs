@@ -36,6 +36,49 @@ namespace eShop.Application.Catalog.Products
             await _context.SaveChangesAsync();
         }
 
+        public async Task<PagedResult<ProductViewModel>> GetTopProductSelling(GetManageProductPagingRequest request)
+        {
+            var query = from p in _context.Products.Include(x => x.ProductImages)
+
+                        join pt in _context.ProductTranslations on p.Id equals pt.ProductId
+                        join od in _context.OrderDetails on p.Id equals od.ProductId
+                        join pi in _context.ProductImages on p.Id equals pi.ProductId into ppi
+                        from pi in ppi.DefaultIfEmpty()
+                        where pt.LanguageId == request.LanguageId
+                        select new { p, pt, od, pi };
+
+            var productSelling = await query.OrderByDescending(x => x.od.Quantity).Skip((request.PageIndex - 1) * request.PageSize)
+               .Take(request.PageSize)
+               .Select(x => new ProductViewModel()
+               {
+                   Id = x.p.Id,
+                   LanguageId = x.pt.LanguageId,
+                   DateCreated = x.p.DateCreated,
+                   Description = x.pt.Description,
+                   Details = x.pt.Details,
+                   IsFeatured = x.p.IsFeatured,
+                   Name = x.pt.Name,
+                   OriginalPrice = x.p.OriginalPrice,
+                   Price = x.p.Price,
+                   SeoAlias = x.pt.SeoAlias,
+                   SeoDescription = x.pt.SeoDescription,
+                   SeoTitle = x.pt.SeoTitle,
+                   Stock = x.od.Quantity,
+                   ViewCount = x.p.ViewCount,
+                   ThumbnailImage = x.pi.ImagePath
+               }).ToListAsync();
+            //3. Paging
+            int totalRow = await query.CountAsync();
+            var pagedResult = new PagedResult<ProductViewModel>()
+            {
+                TotalRecords = totalRow,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize,
+                Items = productSelling
+            };
+            return pagedResult;
+        }
+
         public async Task<int> Create(ProductCreateRequest request)
         {
             var languages = _context.Languages;
@@ -74,7 +117,8 @@ namespace eShop.Application.Catalog.Products
                 Stock = request.Stock,
                 ViewCount = 0,
                 DateCreated = DateTime.Now,
-                ProductTranslations = translations
+                ProductTranslations = translations,
+                IsFeatured = request.IsFeatured
             };
             //Save image
             if (request.ThumbnailImage != null)
@@ -381,6 +425,16 @@ namespace eShop.Application.Catalog.Products
             return data;
         }
 
+        public async Task<int> GetTotalProduct()
+        {
+            var totalProduct = await _context.Products.CountAsync();
+            if (totalProduct < 0)
+            {
+                return 0;
+            }
+            return totalProduct;
+        }
+
         public async Task<PagedResult<ProductViewModel>> GetAllByCategoryId(string languageId, GetPublicProductPagingRequest request)
         {
             //1. Select join
@@ -491,8 +545,8 @@ namespace eShop.Application.Catalog.Products
                     SeoTitle = x.pt.SeoTitle,
                     Stock = x.p.Stock,
                     ViewCount = x.p.ViewCount,
-                    ThumbnailImage = x.pi.ImagePath
-
+                    ThumbnailImage = x.pi.ImagePath,
+                    IsFeatured = x.p.IsFeatured
                     //Categories = x.ct.Name
                 }).ToListAsync();
 
@@ -530,7 +584,8 @@ namespace eShop.Application.Catalog.Products
                     SeoTitle = x.pt.SeoTitle,
                     Stock = x.p.Stock,
                     ViewCount = x.p.ViewCount,
-                    ThumbnailImage = x.pi.ImagePath
+                    ThumbnailImage = x.pi.ImagePath,
+                    IsFeatured = x.p.IsFeatured
 
                     //Categories = x.ct.Name
                 }).ToListAsync();

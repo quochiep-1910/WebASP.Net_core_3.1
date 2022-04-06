@@ -26,11 +26,25 @@ namespace eShop.BackendApi.Controllers
             return Ok(product);
         }
 
+        [HttpGet("GetTopProductSelling")]
+        public async Task<IActionResult> GetTopProductSelling([FromQuery] GetManageProductPagingRequest request)
+        {
+            var productSelling = await _ProductService.GetTopProductSelling(request);
+            return Ok(productSelling);
+        }
+
         [HttpGet("GetAllProduct")]
         public async Task<IActionResult> GetAllProduct(string LanguageId)
         {
             var product = await _ProductService.GetAll(LanguageId);
             return Ok(product);
+        }
+
+        [HttpGet("GetTotalProduct")]
+        public async Task<IActionResult> GetTotalProduct()
+        {
+            var totalProduct = await _ProductService.GetTotalProduct();
+            return Ok(totalProduct);
         }
 
         [HttpPost]
@@ -97,6 +111,13 @@ namespace eShop.BackendApi.Controllers
             if (product == null)
                 return BadRequest("Không tim thấy product");
             return Ok(product);
+        }
+
+        [HttpGet("AddViewCount")]
+        public async Task<bool> AddViewcount([FromQuery] int productId)
+        {
+            await _ProductService.AddViewcount(productId);
+            return true;
         }
 
         [HttpPost("{productId}/images")]

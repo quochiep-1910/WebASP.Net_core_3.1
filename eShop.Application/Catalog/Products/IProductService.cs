@@ -36,9 +36,22 @@ namespace eShop.Application.Catalog.Products
 
         Task<ProductImageViewModel> GetImageById(int imageId);
 
+        /// <summary>
+        /// Get all total Product Now
+        /// </summary>
+        /// <returns></returns>
+        Task<int> GetTotalProduct();
+
         Task<List<ProductViewModel>> GetAll(string LanguageId);
 
         Task<PagedResult<ProductViewModel>> GetAllByCategoryId(string languageId, GetPublicProductPagingRequest request);
+
+        /// <summary>
+        /// Lấy ra top sản phẩm bán chạy nhất
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<PagedResult<ProductViewModel>> GetTopProductSelling(GetManageProductPagingRequest request);
 
         Task<ApiResult<bool>> CategoryAssign(int id, CategoryAssignRequest request);
 

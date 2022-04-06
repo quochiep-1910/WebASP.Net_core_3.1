@@ -1,9 +1,12 @@
 ﻿using eShop.Application.Sales;
 using eShop.Data.EF;
 using eShop.ViewModels.Sales.Order;
+using eShop.ViewModels.Sales.OrderDetail;
 using eShop.ViewModels.Sales.RevenueStatistics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace eShop.BackendApi.Controllers
@@ -33,7 +36,22 @@ namespace eShop.BackendApi.Controllers
                 return BadRequest();//400
             var order = await _OrderService.GetById(orderId);
 
-            return CreatedAtAction(nameof(GetById), new { id = orderId }, order);
+            return Ok(orderId);
+        }
+
+        [HttpPost("postorderdetail")]
+        public async Task<IActionResult> CreateOrderDetail([FromBody] List<OrderDetailViewModel> request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _OrderService.CreateOrderDetail(request);
+            if (result == 0)
+                return BadRequest();//400
+            var order = await _OrderService.GetById(request.Select(x => x.OrderId).FirstOrDefault());
+
+            return CreatedAtAction(nameof(GetById), new { id = request.Select(x => x.OrderId).FirstOrDefault() }, order);
         }
 
         [HttpGet("{orderId}")]
@@ -63,6 +81,15 @@ namespace eShop.BackendApi.Controllers
             var order = await _OrderService.GetOrderPaging(request);
 
             return Ok(order);
+        }
+
+        [HttpGet("totalOrder")]
+        [Authorize]
+        public async Task<IActionResult> GetTotalOrder()
+        {
+            var totalOrder = await _OrderService.GetTotalOrder();
+
+            return Ok(totalOrder);
         }
 
         [HttpPut("{orderId}")]

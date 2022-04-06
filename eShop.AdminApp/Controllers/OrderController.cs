@@ -1,10 +1,12 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using eShop.ApiIntegration;
 using eShop.ViewModels.Sales.Order;
+using eShop.ViewModels.Sales.OrderDetail;
 using eShop.ViewModels.Sales.RevenueStatistics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace eShop.AdminApp.Controllers
@@ -12,14 +14,16 @@ namespace eShop.AdminApp.Controllers
     public class OrderController : BaseController
     {
         private readonly IConfiguration _configuration;
+        private readonly IUserApiClient _userApiClient;
         private IOrderApiClient _orderService;
         private readonly INotyfService _notyf;
 
-        public OrderController(IOrderApiClient orderService, IConfiguration configuration, INotyfService notyf)
+        public OrderController(IOrderApiClient orderService, IConfiguration configuration, INotyfService notyf, IUserApiClient userApiClient)
         {
             _orderService = orderService;
             _configuration = configuration;
             _notyf = notyf;
+            _userApiClient = userApiClient;
         }
 
         public async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 15)
@@ -39,9 +43,14 @@ namespace eShop.AdminApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var user = await _userApiClient.GetByUserName(User.Identity.Name);
+            var result = new OrderCreateRequest()
+            {
+                UserId = user.Id
+            };
+            return View(result);
         }
 
         [HttpPost]
@@ -49,11 +58,10 @@ namespace eShop.AdminApp.Controllers
         {
             if (!ModelState.IsValid)
                 return View(request);
-            var result = await _orderService.CreateOrder(request);
-            if (result)
+            int orderId = await _orderService.CreateOrder(request);
+            if (orderId != 0)
             {
-                _notyf.Success("Thêm mới đơn hàng thành công");
-                return RedirectToAction("Index");
+                return RedirectToAction("CreateOrderDetail", new { orderId = orderId });
             }
 
             ModelState.AddModelError("", "Thêm đơn hàng thất bại");
@@ -62,9 +70,39 @@ namespace eShop.AdminApp.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> CreateOrderDetail([FromQuery] int orderId)
+        {
+            var result = new OrderDetailViewModel()
+            {
+                OrderId = orderId
+            };
+            return View(result);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateOrderDetail([FromForm] OrderDetailViewModel request)
+        {
+            if (!ModelState.IsValid)
+                return View(request);
+            var listOrderDetail = new List<OrderDetailViewModel>();
+            listOrderDetail.Add(request);
+            var result = await _orderService.CreateOrderDetail(listOrderDetail);
+            if (result)
+            {
+                _notyf.Information("Thêm mới sản phẩm vào đơn hàng thành công");
+                return RedirectToAction("CreateOrderDetail", new { orderId = request.OrderId });
+            }
+
+            ModelState.AddModelError("", "Thêm mới sản phẩm đơn hàng thất bại");
+
+            return View(request);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
             var result = await _orderService.GetById(id);
+
             return View(result);
         }
 

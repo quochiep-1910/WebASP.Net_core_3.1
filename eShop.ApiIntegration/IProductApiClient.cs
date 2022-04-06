@@ -10,6 +10,8 @@ namespace eShop.ApiIntegration
     {
         Task<PagedResult<ProductViewModel>> GetPagings(GetManageProductPagingRequest request);
 
+        Task<PagedResult<ProductViewModel>> GetTopProductSelling(GetManageProductPagingRequest request);
+
         Task<bool> CreateProduct(ProductCreateRequest request);
 
         Task<ApiResult<bool>> CategoryAssign(int id, CategoryAssignRequest request);
@@ -24,7 +26,20 @@ namespace eShop.ApiIntegration
 
         Task<List<ProductViewModel>> GetRelatedProducts(int take, string languageId);
 
+        /// <summary>
+        /// Get total products now
+        /// </summary>
+        /// <returns></returns>
+        Task<int> GetTotalProduct();
+
         Task<bool> UpdateProduct(ProductUpdateRequest productUpdate);
+
+        /// <summary>
+        /// Add view Count for product
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<bool> AddViewCount(int id);
 
         Task<bool> DeleteProduct(int id);
 

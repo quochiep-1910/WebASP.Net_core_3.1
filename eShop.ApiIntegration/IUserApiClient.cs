@@ -19,6 +19,12 @@ namespace eShop.ApiIntegration
 
         Task<UserViewModel> GetByUserName(string userName);
 
+        /// <summary>
+        /// Get total user now
+        /// </summary>
+        /// <returns></returns>
+        Task<int> GetTotalUser();
+
         Task<ApiResult<bool>> Delete(string id);
 
         Task<ApiResult<bool>> RoleAssign(string id, RoleAssignRequest request);

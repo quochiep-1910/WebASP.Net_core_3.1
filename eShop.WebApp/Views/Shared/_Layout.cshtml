@@ -362,9 +362,15 @@
     <script src="/js/main.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="/js/site.js"></script>
+    <script src="~/lib/Mustache/mustache.js"></script>
     <script>
         var site = new SiteController();
         site.initialize();
+    </script>
+    <script src="~/js/homeController/viewCategoryInHome.js"></script>
+    <script>
+        var categoryHome = new CategoryHomeController();
+        categoryHome.initialize();
     </script>
     @await Component.InvokeAsync("Notyf")
     @RenderSection("scripts", required: false)

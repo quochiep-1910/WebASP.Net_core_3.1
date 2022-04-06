@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="/css/adminlte.min.css">
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    @RenderSection("TopScripts", required: false)
 </head>
 <body class="hold-transition sidebar-mini">
     <!-- Site wrapper -->
@@ -24,7 +25,7 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="../../index3.html" class="brand-link">
+            <a href="/" class="brand-link">
                 <img src="/img/AdminLTELogo.png"
                      alt="AdminLTE Logo"
                      class="brand-image img-circle elevation-3"
@@ -187,7 +188,7 @@
 
                                 <li class="nav-item">
                                     <form method="post" asp-controller="Login" asp-action="Logout">
-                                        <button type="submit" class="nav-link">
+                                        <button type="submit" class="nav-link" style="background-color: #343a40;color:white;border:none;">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p>Đăng Xuất</p>
                                         </button>
@@ -207,7 +208,7 @@
         </aside>
 
         <!-- Content Wrapper. Contains page content -->
-        @RenderBody();
+        @RenderBody()
         <!-- /.content-wrapper -->
 
         <footer class="main-footer">
@@ -244,6 +245,6 @@
         AddingCommasWhenTyping.initialize();
     </script>
     @await Component.InvokeAsync("Notyf")
-    @RenderSection("Scripts", required: false);
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

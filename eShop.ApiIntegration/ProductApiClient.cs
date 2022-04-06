@@ -54,12 +54,14 @@ namespace eShop.ApiIntegration
             requestContent.Add(new StringContent(request.Price.ToString()), "price");
             requestContent.Add(new StringContent(request.OriginalPrice.ToString()), "OriginalPrice");
             requestContent.Add(new StringContent(request.Stock.ToString()), "Stock");
+            requestContent.Add(new StringContent(request.IsFeatured.ToString()), "IsFeatured");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Name) ? "" : request.Name.ToString()), "Name");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Description) ? "" : request.Description.ToString()), "Description");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Details) ? "" : request.Details.ToString()), "Details");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.SeoDescription) ? "" : request.SeoDescription.ToString()), "SeoDescription");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.SeoTitle) ? "" : request.SeoTitle.ToString()), "SeoTitle");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.SeoAlias) ? "" : request.SeoAlias.ToString()), "SeoAlias");
+
             requestContent.Add(new StringContent(languageId), "LanguageId");
 
             var response = await client.PostAsync($"/api/products/", requestContent);
@@ -75,6 +77,24 @@ namespace eShop.ApiIntegration
                 $"&languageId={ request.LanguageId}" +
                 $"&categoryId={request.CategoryId}");
             return result;
+        }
+
+        public async Task<PagedResult<ProductViewModel>> GetTopProductSelling(GetManageProductPagingRequest request)
+        {
+            var result = await GetAsync<PagedResult<ProductViewModel>>(
+              "/api/products/GetTopProductSelling?pageIndex="
+               + $"{request.PageIndex}&pageSize={request.PageSize}" +
+               $"&keyword={request.Keyword}" +
+               $"&languageId={ request.LanguageId}" +
+               $"&categoryId={request.CategoryId}");
+            return result;
+        }
+
+        public async Task<int> GetTotalProduct()
+        {
+            //1.Khởi tạo
+            var totalProduct = await GetAsync<int>("/api/products/GetTotalProduct");
+            return totalProduct;
         }
 
         public async Task<ApiResult<bool>> CategoryAssign(int id, CategoryAssignRequest request)
@@ -101,6 +121,12 @@ namespace eShop.ApiIntegration
         public async Task<ProductViewModel> GetById(int id, string languageId)
         {
             var data = await GetAsync<ProductViewModel>($"/api/products/{id}/{languageId}");
+            return data;
+        }
+
+        public async Task<bool> AddViewCount(int id)
+        {
+            var data = await GetAsync<bool>($"/api/Products/AddViewCount?productId={id}");
             return data;
         }
 

@@ -19,28 +19,31 @@ namespace eShop.WebApp.Controllers
         private readonly ISharedCultureLocalizer _loc;
         private readonly ISlideApiClient _slideApiClient;
         private readonly IProductApiClient _productApiClient;
+        private readonly ICategoryApiClient _categoryApiClient;
 
         public HomeController(ILogger<HomeController> logger, ISharedCultureLocalizer loc,
-            ISlideApiClient slideApiClient, IProductApiClient productApiClient)
+            ISlideApiClient slideApiClient, IProductApiClient productApiClient, ICategoryApiClient categoryApiClient)
         {
             _logger = logger;
             _loc = loc;
             _slideApiClient = slideApiClient;
             _productApiClient = productApiClient;
+            _categoryApiClient = categoryApiClient;
         }
 
         public async Task<IActionResult> Index()
         {
-            //var msg = _loc.GetLocalizedString("Nike"); //get key
-            var culture = CultureInfo.CurrentCulture.Name;
+            var languageId = CultureInfo.CurrentCulture.Name;
             var viewModel = new HomeViewModel
             {
                 Slides = await _slideApiClient.GetAll(),
                 FeaturedProducts = await _productApiClient
-                .GetFeaturedProducts(ProductSettings.NumberOfFeatureProducts, culture),
+                .GetFeaturedProducts(ProductSettings.NumberOfFeatureProducts, languageId),
                 LastestProducts = await _productApiClient
-                .GetLatestProducts(ProductSettings.NumberOfLastestProducts, culture),
+                .GetLatestProducts(ProductSettings.NumberOfLastestProducts, languageId),
+                CategoryList = await _categoryApiClient.GetAll(languageId),
             };
+
             return View(viewModel);
         }
 

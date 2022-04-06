@@ -18,6 +18,12 @@ namespace eShop.Application.System.Users
 
         Task<ApiResult<UserViewModel>> GetById(string id);
 
+        /// <summary>
+        /// Get Total User Now
+        /// </summary>
+        /// <returns></returns>
+        Task<int> GetToTalUser();
+
         Task<ApiResult<UserViewModel>> GetByUserName(string userName);
 
         Task<ApiResult<bool>> Delete(string id);

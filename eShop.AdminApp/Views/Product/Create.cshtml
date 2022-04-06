@@ -53,12 +53,12 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="Price" class="control-label"></label>
-                        <input asp-for="Price"  class="form-control InputAddingCommas" />
+                        <input asp-for="Price" class="form-control InputAddingCommas" />
                         <span asp-validation-for="Price" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="OriginalPrice" class="control-label"></label>
-                        <input asp-for="OriginalPrice"  class="form-control InputAddingCommas" />
+                        <input asp-for="OriginalPrice" class="form-control InputAddingCommas" />
                         <span asp-validation-for="OriginalPrice" class="text-danger"></span>
                     </div>
                     <div class="form-group">
@@ -87,15 +87,17 @@
                         <input asp-for="SeoTitle" class="form-control" />
                         <span asp-validation-for="SeoTitle" class="text-danger"></span>
                     </div>
+
                     <div class="form-group">
                         <label asp-for="SeoAlias" class="control-label"></label>
                         <input asp-for="SeoAlias" class="form-control" />
                         <span asp-validation-for="SeoAlias" class="text-danger"></span>
                     </div>
-                    @*<div class="form-group">
-                            <label asp-for="IsFeatured" class="control-label"></label>
-                            <input type="checkbox" />
-                        </div>*@
+                    <div class="form-group">
+                        <label asp-for="IsFeatured" class="control-label"></label>
+                        @Html.CheckBox("IsFeatured")
+                        <span asp-validation-for="IsFeatured" class="text-danger"></span>
+                    </div>
                     <div class="form-group">
                         <label asp-for="ThumbnailImage" class="control-label"></label>
                         <input asp-for="ThumbnailImage" type="file" class="form-control" />

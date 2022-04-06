@@ -65,8 +65,15 @@ namespace eShop.BackendApi.Controllers
         [HttpGet("paging")]
         public async Task<IActionResult> GetAllPaging([FromQuery] GetUserPagingRequest request)
         {
-            var products = await _userService.GetUserPaging(request);
-            return Ok(products);
+            var userPaging = await _userService.GetUserPaging(request);
+            return Ok(userPaging);
+        }
+
+        [HttpGet("totalUser")]
+        public async Task<IActionResult> GetTotalUser()
+        {
+            var totalUser = await _userService.GetToTalUser();
+            return Ok(totalUser);
         }
 
         [HttpPut("{id}")]
