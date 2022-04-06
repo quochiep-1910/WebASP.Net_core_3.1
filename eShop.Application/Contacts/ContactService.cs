@@ -1,21 +1,20 @@
 ﻿using eShop.Data.EF;
-using eShop.ViewModels.Contact;
-using System;
-using System.Threading.Tasks;
 using eShop.Data.Entities;
-using static eShop.Utilities.Constants.SystemConstants;
 using eShop.Utilities.Exceptions;
-using System.Collections.Generic;
-using Microsoft.Data.SqlClient;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using eShop.ViewModels.Common;
+using eShop.ViewModels.Contact;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using static eShop.Utilities.Constants.SystemConstants;
 
 namespace eShop.Application.Contacts
 {
     public class ContactService : IContactService
     {
         private readonly EShopDbContext _eShopDbContext;
+
         public ContactService(EShopDbContext eShopDbContext)
         {
             _eShopDbContext = eShopDbContext;
@@ -49,6 +48,7 @@ namespace eShop.Application.Contacts
                              .Take(request.PageSize)
                              .Select(x => new ContactViewModel()
                              {
+                                 Id = x.Id,
                                  Name = x.Name,
                                  Email = x.Email,
                                  PhoneNumber = x.PhoneNumber,
@@ -65,7 +65,7 @@ namespace eShop.Application.Contacts
             return result;
         }
 
-        public Task<int> Create(ContactCreateViewModel request)
+        public async Task<int> Create(ContactCreateViewModel request)
         {
             var contact = new Contact()
             {
@@ -76,7 +76,8 @@ namespace eShop.Application.Contacts
                 Status = request.Status
             };
             _eShopDbContext.Add(contact);
-            return _eShopDbContext.SaveChangesAsync();
+            await _eShopDbContext.SaveChangesAsync();
+            return contact.Id;
         }
 
         public async Task<int> Delete(int contactId)
@@ -89,7 +90,6 @@ namespace eShop.Application.Contacts
             _eShopDbContext.Contacts.Remove(existingContact);
             return await _eShopDbContext.SaveChangesAsync();
         }
-
 
         public async Task<ContactViewModel> GetById(int contactId)
         {
@@ -121,7 +121,6 @@ namespace eShop.Application.Contacts
             existingContact.Message = request.Message;
             existingContact.Status = request.Status;
             return await _eShopDbContext.SaveChangesAsync();
-
         }
     }
 }

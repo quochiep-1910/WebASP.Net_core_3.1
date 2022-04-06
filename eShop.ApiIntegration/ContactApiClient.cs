@@ -1,5 +1,4 @@
 ﻿using eShop.Utilities.Constants;
-using eShop.ViewModels.Catalog.ProductCategory;
 using eShop.ViewModels.Common;
 using eShop.ViewModels.Contact;
 using Microsoft.AspNetCore.Http;
@@ -8,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace eShop.ApiIntegration
@@ -18,6 +16,7 @@ namespace eShop.ApiIntegration
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
+
         public ContactApiClient(IHttpClientFactory httpClientFactory
             , IConfiguration configuration
             , IHttpContextAccessor httpContextAccessor) : base(httpClientFactory, configuration, httpContextAccessor)
@@ -26,6 +25,7 @@ namespace eShop.ApiIntegration
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
         }
+
         public async Task<bool> Create(ContactCreateViewModel request)
         {
             var sessions = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
@@ -38,7 +38,7 @@ namespace eShop.ApiIntegration
             requestContent.Add(new StringContent(request.Status.ToString()), "status");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Name) ? "" : request.Name.ToString()), "Name");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Email) ? "" : request.Email.ToString()), "Email");
-            requestContent.Add(new StringContent(string.IsNullOrEmpty(request.PhoneNumber) ? "" : request.PhoneNumber.ToString()), "Phone number");
+            requestContent.Add(new StringContent(string.IsNullOrEmpty(request.PhoneNumber) ? "" : request.PhoneNumber.ToString()), "PhoneNumber");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Message) ? "" : request.Message.ToString()), "Message");
 
             var response = await client.PostAsync($"/api/Contacts/", requestContent);
@@ -53,7 +53,6 @@ namespace eShop.ApiIntegration
         public async Task<List<ContactViewModel>> GetAll()
         {
             return await GetListAsync<ContactViewModel>("/api/Contacts");
-
         }
 
         public async Task<PagedResult<ContactViewModel>> GetAllPaging(ContactPagingRequest request)
