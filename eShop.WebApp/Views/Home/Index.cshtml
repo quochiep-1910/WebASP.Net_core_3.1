@@ -100,12 +100,12 @@
         <div class="col-sm-12">
             <ul class="nav nav-tabs">
 
-                    @foreach (var category in Model.CategoryList)
-                    {
-                        <li>
-                            <a class="handleCategory"  data-id="@category.Id" href="#" data-toggle="tab">@category.Name</a>
-                        </li>
-                    }
+                @foreach (var category in Model.CategoryList)
+                {
+                    <li>
+                        <a class="handleCategory" data-id="@category.Id" href="#" data-toggle="tab">@category.Name</a>
+                    </li>
+                }
             </ul>
         </div>
         <div class="tab-content">
