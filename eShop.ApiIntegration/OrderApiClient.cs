@@ -98,7 +98,7 @@ namespace eShop.ApiIntegration
         public async Task<List<RevenueStatisticViewModel>> RevenueStatistic(StatisticsRequest request)
         {
             //add Data
-            request.FromDate = "01-01-2021";
+            request.FromDate = "01-01-2022";
             request.ToDate = "01-01-2023";
 
             var result = await GetListAsync<RevenueStatisticViewModel>("/api/Orders/getrevenue?fromDate="

@@ -3,6 +3,7 @@ using eShop.ApiIntegration;
 using eShop.Utilities.Constants;
 using eShop.ViewModels.Catalog.Products;
 using eShop.ViewModels.Common;
+using eShop.ViewModels.Sales.RevenueStatistics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -18,14 +19,16 @@ namespace eShop.AdminApp.Controllers
         private readonly IOrderApiClient _orderApiClient;
         private readonly IUserApiClient _userApiClient;
         private readonly IProductApiClient _productApiClient;
+        private readonly IOrderApiClient _orderService;
 
         public HomeController(ILogger<HomeController> logger,
-            IOrderApiClient orderApiClient, IUserApiClient userApiClient, IProductApiClient productApiClient)
+            IOrderApiClient orderApiClient, IUserApiClient userApiClient, IProductApiClient productApiClient, IOrderApiClient orderService)
         {
             _logger = logger;
             _orderApiClient = orderApiClient;
             _userApiClient = userApiClient;
             _productApiClient = productApiClient;
+            _orderService = orderService;
         }
 
         public async Task<IActionResult> Index(string keyword, int? categoryId, int pageIndex = 1, int pageSize = 5)
@@ -53,12 +56,14 @@ namespace eShop.AdminApp.Controllers
                 //TotalRecords = product.TotalRecords,
                 //PageSize = product.PageSize
             };
+            var Revenue = await _orderService.RevenueStatistic(new StatisticsRequest());
             var homeModel = new HomeViewModel()
             {
                 TotalOrder = await _orderApiClient.GetTotalOrder(),
                 TotalUser = await _userApiClient.GetTotalUser(),
                 TotalProducts = await _productApiClient.GetTotalProduct(),
-                ListProductTopSelling = optionProductModel
+                ListProductTopSelling = optionProductModel,
+                RevenueStatisticViews = Revenue
             };
             return View(homeModel);
         }
