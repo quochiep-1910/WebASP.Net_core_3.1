@@ -1,6 +1,7 @@
 ﻿using eShop.Application.Catalog.Categories;
 using eShop.Application.Catalog.Products;
 using eShop.Application.Common;
+using eShop.Application.Contacts;
 using eShop.Application.Sales;
 using eShop.Application.System.Auth;
 using eShop.Application.System.Email;
@@ -47,6 +48,7 @@ namespace eShop.BackendApi.Extensions
             services.AddTransient<IOrderService, OrderService>();
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IAuthService, AuthService>();
+            services.AddTransient<IContactService, ContactService>();
 
             //services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
             //services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidator>();
