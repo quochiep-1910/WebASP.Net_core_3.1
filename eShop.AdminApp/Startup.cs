@@ -61,6 +61,7 @@ namespace eShop.AdminApp
             services.AddTransient<IProductApiClient, ProductApiClient>();
             services.AddTransient<ICategoryApiClient, CategoryApiClient>();
             services.AddTransient<IOrderApiClient, OrderApiClient>();
+            services.AddTransient<IContactApiClient, ContactApiClient>();
             services.AddCors(options =>
 
             {

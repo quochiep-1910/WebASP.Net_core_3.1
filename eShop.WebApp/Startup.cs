@@ -90,6 +90,7 @@ namespace eShop.WebApp
             services.AddTransient<ICategoryApiClient, CategoryApiClient>();
             services.AddTransient<IUserApiClient, UserApiClient>();
             services.AddTransient<IOrderApiClient, OrderApiClient>();
+            services.AddTransient<IContactApiClient, ContactApiClient>();
             //biên dịch razor view
             IMvcBuilder builder = services.AddRazorPages();
         }
