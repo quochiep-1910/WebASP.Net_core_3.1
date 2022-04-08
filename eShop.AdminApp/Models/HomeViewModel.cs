@@ -10,6 +10,8 @@ namespace eShop.AdminApp.Models
         public int TotalOrder { get; set; }
         public int TotalUser { get; set; }
         public int TotalProducts { get; set; }
+        public int TotalContact { get; set; }
+
         public List<RevenueStatisticViewModel> RevenueStatisticViews { get; set; }
 
         /// <summary>

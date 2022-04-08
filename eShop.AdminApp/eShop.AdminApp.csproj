@@ -29,8 +29,4 @@
     <ProjectReference Include="..\eShop.ViewModel\eShop.ViewModels.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\js\paging\" />
-  </ItemGroup>
-
 </Project>

@@ -40,6 +40,15 @@ namespace eShop.BackendApi.Controllers
             return Ok(contact);
         }
 
+        [HttpGet("totalContact")]
+        [Authorize]
+        public async Task<IActionResult> GetTotalContact()
+        {
+            var totalContact = await _contactService.GetTotalContact();
+
+            return Ok(totalContact);
+        }
+
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Create([FromForm] ContactCreateViewModel request)

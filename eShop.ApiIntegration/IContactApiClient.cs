@@ -1,8 +1,6 @@
 ﻿using eShop.ViewModels.Common;
 using eShop.ViewModels.Contact;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace eShop.ApiIntegration
@@ -14,9 +12,13 @@ namespace eShop.ApiIntegration
         Task<bool> Update(ContactViewModel request);
 
         Task<bool> DeleteContact(int contactId);
+
         Task<List<ContactViewModel>> GetAll();
+
         Task<PagedResult<ContactViewModel>> GetAllPaging(ContactPagingRequest request);
 
         Task<ContactViewModel> GetById(int contactId);
+
+        Task<int> GetTotalContact();
     }
 }

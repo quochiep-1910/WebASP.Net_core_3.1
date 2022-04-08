@@ -23,5 +23,7 @@ namespace eShop.Application.Contacts
         Task<PagedResult<ContactViewModel>> GetAllPaging(ContactPagingRequest request);
 
         Task<ContactViewModel> GetById(int contactId);
+
+        Task<int> GetTotalContact();
     }
 }

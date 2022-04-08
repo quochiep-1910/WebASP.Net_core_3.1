@@ -91,6 +91,17 @@ namespace eShop.Application.Contacts
             return await _eShopDbContext.SaveChangesAsync();
         }
 
+        public async Task<int> GetTotalContact()
+        {
+            var totalContacts = await _eShopDbContext.Contacts.CountAsync();
+            if (totalContacts < 0)
+            {
+                //cannot find or error
+                return 0;
+            }
+            return totalContacts;
+        }
+
         public async Task<ContactViewModel> GetById(int contactId)
         {
             var existingContact = await _eShopDbContext.Contacts.FindAsync(contactId);

@@ -20,15 +20,17 @@ namespace eShop.AdminApp.Controllers
         private readonly IUserApiClient _userApiClient;
         private readonly IProductApiClient _productApiClient;
         private readonly IOrderApiClient _orderService;
+        private readonly IContactApiClient _contactApiClient;
 
         public HomeController(ILogger<HomeController> logger,
-            IOrderApiClient orderApiClient, IUserApiClient userApiClient, IProductApiClient productApiClient, IOrderApiClient orderService)
+            IOrderApiClient orderApiClient, IUserApiClient userApiClient, IProductApiClient productApiClient, IOrderApiClient orderService, IContactApiClient contactApiClient)
         {
             _logger = logger;
             _orderApiClient = orderApiClient;
             _userApiClient = userApiClient;
             _productApiClient = productApiClient;
             _orderService = orderService;
+            _contactApiClient = contactApiClient;
         }
 
         public async Task<IActionResult> Index(string keyword, int? categoryId, int pageIndex = 1, int pageSize = 5)
@@ -63,7 +65,8 @@ namespace eShop.AdminApp.Controllers
                 TotalUser = await _userApiClient.GetTotalUser(),
                 TotalProducts = await _productApiClient.GetTotalProduct(),
                 ListProductTopSelling = optionProductModel,
-                RevenueStatisticViews = Revenue
+                RevenueStatisticViews = Revenue,
+                TotalContact = await _contactApiClient.GetTotalContact()
             };
             return View(homeModel);
         }

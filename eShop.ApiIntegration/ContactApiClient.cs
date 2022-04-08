@@ -86,5 +86,18 @@ namespace eShop.ApiIntegration
             var response = await client.PutAsync($"/api/Contacts/" + request.Id, requestContent);
             return response.IsSuccessStatusCode;
         }
+
+        public async Task<int> GetTotalContact()
+        {
+            //1.Khởi tạo
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration[SystemConstants.AppSettings.BaseAddress]);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions); //lấy token
+
+            var response = await client.GetAsync($"/api/Contacts/totalContact");
+            var totalOrder = response.Content.ReadAsStringAsync();
+            return Int32.Parse(totalOrder.Result);
+        }
     }
 }
