@@ -100,6 +100,7 @@ namespace eShop.Application.Contacts
             }
             var contact = new ContactViewModel()
             {
+                Id = existingContact.Id,
                 Name = existingContact.Name,
                 Email = existingContact.Email,
                 PhoneNumber = existingContact.PhoneNumber,
@@ -120,7 +121,9 @@ namespace eShop.Application.Contacts
             existingContact.PhoneNumber = request.PhoneNumber;
             existingContact.Message = request.Message;
             existingContact.Status = request.Status;
-            return await _eShopDbContext.SaveChangesAsync();
+             _eShopDbContext.Contacts.Update(existingContact);
+            await _eShopDbContext.SaveChangesAsync();
+            return existingContact.Id;
         }
     }
 }

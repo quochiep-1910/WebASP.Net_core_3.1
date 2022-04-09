@@ -58,15 +58,15 @@ namespace eShop.BackendApi.Controllers
         }
 
         [HttpPut("{contactId}")]
-        [Consumes("multipart/form-data")]
+      
         [Authorize]
-        public async Task<IActionResult> Update([FromRoute] int contactId, [FromForm] ContactViewModel request)
+        public async Task<IActionResult> Update([FromForm] ContactViewModel request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            request.Id = contactId;
+
             var affectedResult = await _contactService.Update(request);
             if (affectedResult == 0)
                 return BadRequest();

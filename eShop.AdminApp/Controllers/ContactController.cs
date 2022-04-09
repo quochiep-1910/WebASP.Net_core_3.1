@@ -13,6 +13,7 @@ using static eShop.Utilities.Constants.SystemConstants;
 
 namespace eShop.AdminApp.Controllers
 {
+
     public class ContactController : Controller
     {
         private readonly IConfiguration _configuration;
@@ -40,9 +41,9 @@ namespace eShop.AdminApp.Controllers
             return View(data);
         }
         [HttpGet]
-        public async Task<IActionResult> Details(int contactId)
+        public async Task<IActionResult> Details(int id)
         {
-            var result = await _contactApiClient.GetById(contactId);
+            var result = await _contactApiClient.GetById(id);
 
             return View(result);
         }
@@ -69,9 +70,9 @@ namespace eShop.AdminApp.Controllers
             return View(request);
         }
         [HttpGet]
-        public async Task<IActionResult> Edit(int contactId)
+        public async Task<IActionResult> Edit(int id)
         {
-            var contact = await _contactApiClient.GetById(contactId);
+            var contact = await _contactApiClient.GetById(id);
             ViewBag.categories = contact;
             var editingContact = new ContactViewModel()
             {  
@@ -85,7 +86,6 @@ namespace eShop.AdminApp.Controllers
             return View(editingContact);
         }
         [HttpPost]
-        [Consumes("multipart/form-data")]
         public async Task<IActionResult> Edit([FromForm] ContactViewModel request)
         {
             if (!ModelState.IsValid)
@@ -102,11 +102,11 @@ namespace eShop.AdminApp.Controllers
             return View(request);
         }
         [HttpGet]
-        public IActionResult Delete(int contactId)
+        public IActionResult Delete(int id)
         {
             return View(new ContactDeleteViewModel()
             {
-                Id = contactId
+                Id = id
             });
         }
         [HttpPost]

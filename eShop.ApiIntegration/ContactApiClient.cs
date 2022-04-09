@@ -77,11 +77,11 @@ namespace eShop.ApiIntegration
             client.BaseAddress = new Uri(_configuration[SystemConstants.AppSettings.BaseAddress]);
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
             var requestContent = new MultipartFormDataContent();
-
+            requestContent.Add(new StringContent(request.Id.ToString()), "Id");
             requestContent.Add(new StringContent(request.Status.ToString()), "status");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Name) ? "" : request.Name.ToString()), "Name");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Email) ? "" : request.Email.ToString()), "Email");
-            requestContent.Add(new StringContent(string.IsNullOrEmpty(request.PhoneNumber) ? "" : request.PhoneNumber.ToString()), "Phone number");
+            requestContent.Add(new StringContent(string.IsNullOrEmpty(request.PhoneNumber) ? "" : request.PhoneNumber.ToString()), "PhoneNumber");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Message) ? "" : request.Message.ToString()), "Message");
             var response = await client.PutAsync($"/api/Contacts/" + request.Id, requestContent);
             return response.IsSuccessStatusCode;
