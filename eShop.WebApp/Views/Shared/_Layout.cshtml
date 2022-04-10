@@ -114,10 +114,23 @@
                     </div>
                     <div class="col-md-8 clearfix">
                         <div class="shop-menu clearfix pull-right">
+
                             <ul class="nav navbar-nav">
                                 @if (User.Identity.IsAuthenticated)
                                 {
-                                    <li><a href=""><i class="fa fa-user"></i>Welcome <strong>@User.Identity.Name</strong> </a></li>
+                                    <li>
+                                        <div class="dropdown">
+                                            <button class="btn dropdown-toggle" style="margin-top:3px" type="button" data-toggle="dropdown">
+                                                <i class="fa fa-user"></i>Welcome
+                                                <strong>@User.Identity.Name</strong>
+                                                <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a asp-action="ChangePassword" asp-controller="Account">Change password</a></li>
+                                             
+                                            </ul>
+                                        </div>
+                                    </li>
                                     <li><a href=""><i class="fa fa-star"></i> Wishlist</a></li>
                                     <li>
                                         <form action="/@culture/Account/Logout" method="post">

@@ -1,6 +1,8 @@
 ﻿using eShop.ApiIntegration;
 using eShop.WebApp.Models;
 using LazZiya.ExpressLocalization;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using static eShop.Utilities.Constants.SystemConstants;
 
@@ -33,6 +36,13 @@ namespace eShop.WebApp.Controllers
 
         public async Task<IActionResult> Index()
         {
+            var token = HttpContext.Session.GetString("Token");
+            if (token == null)
+            {
+                HttpContext.User = new GenericPrincipal(new GenericIdentity(string.Empty), null);
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            }
+
             var languageId = CultureInfo.CurrentCulture.Name;
             var viewModel = new HomeViewModel
             {

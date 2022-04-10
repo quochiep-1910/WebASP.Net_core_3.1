@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace eShop.BackendApi.Extensions
 {
@@ -28,9 +29,15 @@ namespace eShop.BackendApi.Extensions
         {
             //kết nối database
             services.AddDbContext<EShopDbContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString(SystemConstants.MainConnecttionString)));
+            options.UseSqlServer(Configuration.GetConnectionString(SystemConstants.MainConnecttionString))
+            );
 
-            services.AddIdentity<AppUser, IdentityRole<string>>()
+            services.AddIdentity<AppUser, IdentityRole<string>>(opt =>
+            {
+                opt.Lockout.AllowedForNewUsers = true;
+                opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2);
+                opt.Lockout.MaxFailedAccessAttempts = 3;
+            })
               .AddEntityFrameworkStores<EShopDbContext>()
                 .AddDefaultTokenProviders();
             //khai báo DI

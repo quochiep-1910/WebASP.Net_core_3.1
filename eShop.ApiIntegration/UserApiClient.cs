@@ -65,6 +65,37 @@ namespace eShop.ApiIntegration
             return result;
         }
 
+        public async Task<ApiResult<string>> PostLoginWith2Fa(LoginWith2fa request)
+        {
+            var json = JsonConvert.SerializeObject(request); //convert json to string
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            var response = await client.PostAsync($"/api/Users/LoginWith2Fa?TwoFactorCode", httpContent);
+            var result = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+                return JsonConvert.DeserializeObject<ApiSuccessResult<string>>(result);
+
+            return JsonConvert.DeserializeObject<ApiErrorResult<string>>(result);
+        }
+
+        public async Task<ApiResult<bool>> Disable2Fa()
+        {
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions); //lấy token
+            var response = await client.GetAsync("/api/users/Disable2Fa");
+            var result = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)//kiểm tra status code
+            {
+                return JsonConvert.DeserializeObject<ApiSuccessResult<bool>>(result);
+            }
+            return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
+        }
+
         public async Task<UserViewModel> GetByUserName(string userName)
         {
             var result = await GetByUserName<UserViewModel>($"/api/users?userName={userName}");

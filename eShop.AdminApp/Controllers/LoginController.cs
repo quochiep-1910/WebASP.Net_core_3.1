@@ -32,7 +32,7 @@ namespace eShop.AdminApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             //    await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
@@ -59,6 +59,11 @@ namespace eShop.AdminApp.Controllers
             {
                 ModelState.AddModelError("", result.Message);
                 return View();
+            }
+
+            if (result.ResultObj == "RequiresTwoFactor")
+            {
+                return RedirectToAction("LoginWith2Fa", new { request.RememberMe, request.UserName });
             }
 
             var userPrincipal = this.ValidateToken(result.ResultObj);
@@ -105,7 +110,7 @@ namespace eShop.AdminApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ForgotPassword()
+        public IActionResult ForgotPassword()
         {
             return View();
         }
@@ -130,7 +135,7 @@ namespace eShop.AdminApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ResetPassword([FromQuery] string Token)
+        public IActionResult ResetPassword([FromQuery] string Token)
         {
             if (!ModelState.IsValid)
                 return View();
@@ -164,7 +169,7 @@ namespace eShop.AdminApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> VerifyEmail([FromQuery] string Token)
+        public IActionResult VerifyEmail([FromQuery] string Token)
         {
             if (!ModelState.IsValid)
                 return View();
@@ -196,6 +201,69 @@ namespace eShop.AdminApp.Controllers
             ModelState.AddModelError("", "Reset mật khẩu thất bại");//key and message
 
             return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult LoginWith2Fa(bool rememberMe, string userName)
+        {
+            var login2Fa = new LoginWith2fa { RememberMe = rememberMe, UserName = userName };
+            return View(login2Fa);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LoginWith2Fa(LoginWith2fa request)
+        {
+            if (!ModelState.IsValid)
+                return View(request);
+            var result = await _userApiClient.PostLoginWith2Fa(request);
+
+            if (result.IsSuccessed)
+            {
+                var userPrincipal = this.ValidateToken(result.ResultObj);
+
+                //xác thực và thời hạn của phiên đăng nhập
+                var authProperties = new AuthenticationProperties
+                {
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
+
+                    IsPersistent = false
+                };
+                var cookieOptions = new CookieOptions
+                {
+                    HttpOnly = false,
+                    Expires = DateTime.UtcNow.AddDays(7)
+                };
+                HttpContext.Session.SetString(SystemConstants.AppSettings.DefaultLanguageId, _configuration[SystemConstants.AppSettings.DefaultLanguageId]);
+                HttpContext.Session.SetString(SystemConstants.AppSettings.Token, result.ResultObj);
+                HttpContext!.Response.Cookies.Append("Token", result.ResultObj, cookieOptions);
+
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, authProperties);
+                _notyf.Success($"Xin chào {request.UserName}");
+                return RedirectToAction("Index", "Home");
+            }
+
+            TempData["Error"] = result.Message;
+            return RedirectToAction("LoginWith2Fa", new { request.RememberMe, request.UserName });
+        }
+
+        [HttpGet]
+        public IActionResult Disable2Fa()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Disable2Faa()
+        {
+            var result = await _userApiClient.Disable2Fa();
+            if (result.IsSuccessed)
+            {
+                _notyf.Success("Bạn đã tắt bảo mật thành công");
+                return RedirectToAction("TwoFactorAuthentication", "User");
+            }
+            ModelState.AddModelError("", "Bạn đã tắt bảo mật thất bại");//key and message
+            return View();
         }
     }
 }

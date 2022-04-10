@@ -12,6 +12,7 @@
             $('#msgAlert').fadeOut('slow');
         }, 2000);
     </script>
+    <script src="~/js/controller/category/pagingCategoryController.js"></script>
 }
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -19,12 +20,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Danh sách sản phẩm</h1>
+                    <h1>Danh mục sản phẩm</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="/">Home</a></li>
-                        <li class="breadcrumb-item active">Danh sách sản phẩm</li>
+                        <li class="breadcrumb-item active">Danh mục sản phẩm</li>
                     </ol>
                 </div>
             </div>
@@ -40,31 +41,21 @@
                         <a class="btn btn-success" asp-action="Create" asp-controller="Category">Tạo Mới </a>
                     </div>
                     <div class="col-md-6 col-xs-12">
-                        <form asp-action="Index" method="get">
+                        <form id="btnSearch">
                             <div class="row">
                                 <div class=" col-md-3">
-                                    <input type="text" value="@ViewBag.Keyword" name="keyword" class="form-control" />
+                                    <input type="text" id="Keyword" value="@ViewBag.Keyword" name="keyword" class="form-control" />
                                 </div>
 
                                 <div class=" col-md-3">
                                     <button type="submit" class="btn btn-primary">Tìm</button>
-                                    <button type="button" onclick="window.location.href='/Category/Index'" class="btn btn-dark">Reset</button>
+                                    <button type="button" id="btnResetCategory" class="btn btn-dark">Reset</button>
                                 </div>
                             </div>
                         </form>
                     </div>
                 </div>
-                @* <div class="row">
 
-                    <div class="col-md-12 ">
-                        @if (ViewBag.SuccessMsg != null)
-                        {
-                            <div id="msgAlert" class="alert alert-success text-center" role="alert">
-                                @ViewBag.SuccessMsg
-                            </div>
-                        }
-                    </div>
-                </div> *@
                 <br />
 
                 <table class="table">
@@ -97,45 +88,45 @@
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody>
-                        @foreach (var item in Model.Items)
-                        {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Id)
-                                </td>
-
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Name)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.SeoDescription)
-                                </td>
-
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.SeoAlias)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.SortOrder)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.IsShowOnHome)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ParentId)
-                                </td>
-
-                                <td>
-                                    @Html.ActionLink("Sửa", "Edit", new { id = item.CategoryId }) |
-                                    @Html.ActionLink("Xem", "Details", new { id = item.CategoryId }) |
-                                    @Html.ActionLink("Xoá", "Delete", new { id = item.CategoryId }) |
-                                </td>
-                            </tr>
-                        }
+                    <tbody id="categoryTopBody">
+                       
+                        
                     </tbody>
                 </table>
+                <div class="Pager paginationPager"></div>
             </div>
-            @await Component.InvokeAsync("Pager", Model)
         </div>
     </section>
 </div>
+<script id="tplCategoryTop" type="x-tmpl-mustache">
+           <tr>
+                                <td>
+                                   {{id}}
+                                </td>
+                                <td>
+                              {{Name}}
+                                </td>
+                                <td>
+                                {{SeoDescription}}
+                                </td>
+
+                                <td>
+                               {{SeoAlias}}
+                                </td>
+                                <td>
+                                 {{SortOrder}}
+                                </td>
+                                <td>
+                             {{IsShowOnHome}}
+                                </td>
+                                <td>
+                               {{ParentId}}
+                                </td>
+
+                                <td>
+                            <a href="/Category/Edit/{{CategoryId}}">Sửa</a> |
+                            <a href="/Category/Details/{{CategoryId}}">Xem</a> |
+                            <a href="/Category/Delete/{{CategoryId}}">Xoá</a> |
+                                </td>
+                            </tr>
+</script>

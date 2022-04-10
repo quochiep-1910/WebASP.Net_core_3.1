@@ -35,6 +35,7 @@ namespace eShop.BackendApi.Controllers
             var result = await _userService.Authencate(request);
             if (result.Message == "RequiresTwoFactor")
             {
+                return Ok(result.Message);
             }
 
             if (string.IsNullOrEmpty(result.ResultObj))
@@ -187,6 +188,38 @@ namespace eShop.BackendApi.Controllers
                 return BadRequest(ModelState);
 
             var result = await _authService.PostEnableAuthenticatorModel(request, userId);
+            if (result.IsSuccessed)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpPost("LoginWith2Fa")]
+        [AllowAnonymous]
+        public async Task<IActionResult> LoginWith2Fa([FromBody] LoginWith2fa request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(request);
+            }
+            var result = await _userService.LoginWith2Fa(request);
+            if (result.IsSuccessed)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpGet("Disable2Fa")]
+        public async Task<IActionResult> Disable2Fa()
+        {
+            var user = User.Identity.Name;
+            if (user == null)
+            {
+                return BadRequest();
+            }
+            var result = await _userService.Disable2Fa(user);
             if (result.IsSuccessed)
             {
                 return Ok(result);

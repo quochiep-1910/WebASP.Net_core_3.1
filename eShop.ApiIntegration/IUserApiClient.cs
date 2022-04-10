@@ -50,5 +50,9 @@ namespace eShop.ApiIntegration
         Task<ApiResult<EnableAuthenticatorViewModel>> PostEnableAuthenticator(EnableAuthenticatorRequest request, string userId);
 
         #endregion Enable Authenticator
+
+        Task<ApiResult<string>> PostLoginWith2Fa(LoginWith2fa request);
+
+        Task<ApiResult<bool>> Disable2Fa();
     }
 }

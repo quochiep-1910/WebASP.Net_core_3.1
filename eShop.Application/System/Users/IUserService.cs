@@ -44,6 +44,10 @@ namespace eShop.Application.System.Users
 
         Task<bool> VerifyEmail(string token);
 
+        Task<ApiResult<string>> LoginWith2Fa(LoginWith2fa login2Fa);
+
+        Task<ApiResult<bool>> Disable2Fa(string userName);
+
         #endregion Identity
     }
 }

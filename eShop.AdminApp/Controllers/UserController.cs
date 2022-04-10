@@ -1,6 +1,7 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using eShop.AdminApp.Models;
 using eShop.ApiIntegration;
+using eShop.Utilities.Constants;
 using eShop.ViewModels.Common;
 using eShop.ViewModels.System.Users;
 using Microsoft.AspNetCore.Mvc;
@@ -222,7 +223,12 @@ namespace eShop.AdminApp.Controllers
         {
             var user = await _userApiClient.GetByUserName(User.Identity.Name);
             var resultAuthen = await _userApiClient.PostEnableAuthenticator(request.EnableAuthenticatorRequest, user.Id);
-            if (resultAuthen.IsSuccessed)
+            if (resultAuthen.ResultObj.StatusMessage == ResponseMessage.AuthenticatorHasBeenVerified)
+            {
+                _notyf.Success("Thêm Bảo mật 2 lớp thành công");
+                return RedirectToAction("TwoFactorAuthentication");
+            }
+            else if (resultAuthen.IsSuccessed)
             {
                 if (resultAuthen.ResultObj.RecoveryCodes.Length != 0)
                 {
@@ -245,7 +251,7 @@ namespace eShop.AdminApp.Controllers
         #endregion Enable Authenticator
 
         [HttpGet]
-        public async Task<IActionResult> ShowRecoveryCodes(string[] RecoveryCodes)
+        public IActionResult ShowRecoveryCodes(string[] RecoveryCodes)
         {
             var codes = new ShowRecoveryCodes() { RecoveryCodes = RecoveryCodes };
 

@@ -55,11 +55,6 @@ namespace eShop.Application.System.Users
             {
                 var checkUser = await _signInManager.GetTwoFactorAuthenticationUserAsync();
 
-                if (checkUser == null)
-                {
-                    return new ApiErrorResult<string>($"Không thể tải người dùng xác thực hai yếu tố.");
-                }
-
                 return new ApiSuccessResult<string>("RequiresTwoFactor");
             }
             if (result.IsLockedOut)
@@ -71,20 +66,20 @@ namespace eShop.Application.System.Users
             {
                 return new ApiErrorResult<string>("Đăng nhập không đúng");
             }
-            var token = TokenHandler(loginRequest);
+            var token = TokenHandler(loginRequest.UserName);
             return new ApiSuccessResult<string>(token.Result);
         }
 
-        private async Task<string> TokenHandler(LoginRequest loginRequest)
+        private async Task<string> TokenHandler(string UserName)
         {
-            var user = await _userManager.FindByNameAsync(loginRequest.UserName);
+            var user = await _userManager.FindByNameAsync(UserName);
             var roles = await _userManager.GetRolesAsync(user);
             var claims = new[]
             {
                 new Claim (ClaimTypes.Email,user.Email),
                 new Claim(ClaimTypes.GivenName,user.FirstName),
                 new Claim(ClaimTypes.Role, string.Join(";",roles)),
-                new Claim(ClaimTypes.Name,loginRequest.UserName)
+                new Claim(ClaimTypes.Name,UserName)
             };
             //mã hoá claim
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
@@ -444,6 +439,51 @@ namespace eShop.Application.System.Users
                 throw;
             }
         }
+
+        #region Login With two factor
+
+        public async Task<ApiResult<string>> LoginWith2Fa(LoginWith2fa login2Fa)
+        {
+            var authenticatorCode = login2Fa.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
+
+            var result = await _signInManager
+                .TwoFactorAuthenticatorSignInAsync(authenticatorCode, login2Fa.RememberMe, login2Fa.RememberMachine);
+
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("Người dùng đã đăng nhập bằng 2fa thành công.");
+
+                var token = TokenHandler(login2Fa.UserName);
+                return new ApiSuccessResult<string>(token.Result);
+            }
+            else if (result.IsLockedOut)
+            {
+                _logger.LogWarning("User with ID '{UserId}' account locked out.");
+                return new ApiErrorResult<string>("User with ID account locked out");
+            }
+            else
+            {
+                _logger.LogWarning("Mã xác thực không hợp lệ ");
+                return new ApiErrorResult<string>("Mã xác thực không hợp lệ");
+            }
+        }
+
+        public async Task<ApiResult<bool>> Disable2Fa(string userName)
+        {
+            var user = await _userManager.FindByNameAsync(userName);
+            if (user == null)
+            {
+                return new ApiErrorResult<bool>($"Không tìm thấy User:{userName}.");
+            }
+            var disable2faResult = await _userManager.SetTwoFactorEnabledAsync(user, false);
+            if (!disable2faResult.Succeeded)
+            {
+                return new ApiErrorResult<bool>("Đã xảy ra lỗi không mong muốn khi tắt 2FA");
+            }
+            return new ApiErrorResult<bool>();
+        }
+
+        #endregion Login With two factor
 
         #region Set up Token
 
