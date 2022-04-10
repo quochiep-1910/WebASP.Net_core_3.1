@@ -14,12 +14,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Danh sách contact</h1>
+                    <h1>Danh sách thông tin liên lạc</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="/">Home</a></li>
-                        <li class="breadcrumb-item active">Danh sách contact</li>
+                        <li class="breadcrumb-item active">Danh sách thông tin liên lạc</li>
                     </ol>
                 </div>
             </div>
@@ -51,70 +51,46 @@
                 </div>
                 <br />
 
-                <table class="table">
+                <div class="row">
+                    @foreach (var item in Model.Items)
+                    {
+                        <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch flex-column">
+                            <div class="card bg-light d-flex flex-fill">
+                                <div class="card-header text-muted border-bottom-0">
+                                    <b> Mã liên lạc: </b>  @Html.DisplayFor(modelItem => item.Id)
+                                </div>
+                                <div class="card-body pt-0">
+                                    <div class="row">
+                                        <div class="col-7">
+                                            <p class="text-muted text-sm"><b>Tên khách hàng: </b> @Html.DisplayFor(modelItem => item.Name) </p>
+                                            <p class="text-muted text-sm"><b>Tin nhắn: </b> @Html.DisplayFor(modelItem => item.Message) </p>
+                                            <ul class="ml-4 mb-0 fa-ul text-muted">
+                                                <li class="small"><span class="fa-li"><i class="fas fa-mail-bulk"></i></span> <b>Email: </b>@Html.DisplayFor(modelItem => item.Email) </li>
+                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-phone"></i></span> <b>Số điện thoại: </b>@Html.DisplayFor(modelItem => item.PhoneNumber) </li>
+                                                <li class="small"><span class="fa-li"><i class="fas fa fa-lock"></i></span> <b>Trạng thái: </b>@Html.DisplayFor(modelItem => item.Status) </li>
+                                            </ul>
+                                        </div>
 
-                    <thead>
-                        <tr>
-                            <th>
-                                Mã contact
-                            </th>
-
-                            <th>
-                                Tên khách hàng
-                            </th>
-                            <th>
-                                Địa chỉ email
-                            </th>
-
-                            <th>
-                                Số điện thoại
-                            </th>
-                            <th>
-                                Lời nhắn
-                            </th>
-                            <th>
-                                Trạng thái
-                            </th>                            
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model.Items)
-                        {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Id)
-                                </td>
-
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Name)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Email)
-                                </td>
-
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.PhoneNumber)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Message)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Status)
-                                </td>
-                                
-
-                                <td>
-                                    @Html.ActionLink("Sửa", "Edit", new { id = item.Id }) |
-                                    @Html.ActionLink("Xem", "Details", new { id = item.Id }) |
-                                    @Html.ActionLink("Xoá", "Delete", new { id = item.Id }) |
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="text-right">
+                                        <a asp-action="Details" asp-controller="Contact" asp-route-id="@item.Id" class="btn btn-sm bg-teal">
+                                            <i class='fa fa-eye'></i> Chi tiết
+                                        </a>
+                                        <a asp-action="Edit" asp-controller="Contact" asp-route-id="@item.Id" class="btn btn-sm bg-teal">
+                                            <i class='fa fa-gavel'></i> Sửa
+                                        </a>
+                                        <a asp-action="Delete" asp-controller="Contact" asp-route-id="@item.Id" class="btn btn-sm bg-teal">
+                                            <i class='fa fa-trash'></i> Xóa
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                @await Component.InvokeAsync("Pager", Model)
             </div>
-            @await Component.InvokeAsync("Pager", Model)
-        </div>
     </section>
 </div>
