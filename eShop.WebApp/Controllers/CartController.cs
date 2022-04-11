@@ -183,6 +183,8 @@ namespace eShop.WebApp.Controllers
                 ModelState.AddModelError("", "Đơn đặt hàng thất bại");
                 return View();
             }
+            //remove session cart
+            HttpContext.Session.Remove(SystemConstants.CartSession);
             _notyf.Information("Đơn đặt hàng thành công");
             TempData["SuccessMsg"] = "Đơn đặt hàng thành công";
             return View(model);

@@ -23,15 +23,18 @@ namespace eShop.WebApp.Controllers
         private readonly ISlideApiClient _slideApiClient;
         private readonly IProductApiClient _productApiClient;
         private readonly ICategoryApiClient _categoryApiClient;
+        private readonly IUserApiClient _userApiClient;
 
         public HomeController(ILogger<HomeController> logger, ISharedCultureLocalizer loc,
-            ISlideApiClient slideApiClient, IProductApiClient productApiClient, ICategoryApiClient categoryApiClient)
+            ISlideApiClient slideApiClient, IProductApiClient productApiClient,
+            ICategoryApiClient categoryApiClient, IUserApiClient userApiClient)
         {
             _logger = logger;
             _loc = loc;
             _slideApiClient = slideApiClient;
             _productApiClient = productApiClient;
             _categoryApiClient = categoryApiClient;
+            _userApiClient = userApiClient;
         }
 
         public async Task<IActionResult> Index()
@@ -77,6 +80,18 @@ namespace eShop.WebApp.Controllers
                 );
 
             return LocalRedirect(returnUrl);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Profile()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var userId = await _userApiClient.GetByUserName(User.Identity.Name);
+                var listProductBought = await _productApiClient.GetProductUserBought(userId.Id);
+                return View(listProductBought);
+            }
+            return View();
         }
     }
 }

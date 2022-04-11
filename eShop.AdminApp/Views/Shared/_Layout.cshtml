@@ -61,7 +61,7 @@
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                     <a asp-controller="User" asp-action="Index" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
+                                        <i class="fas fa-users"></i>
                                         <p>Danh Sách Tài Khoản</p>
                                     </a>
                                 </li>
@@ -69,7 +69,7 @@
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                     <a asp-controller="User" asp-action="TwoFactorAuthentication" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
+                                        <i class="fas fa-fingerprint"></i>
                                         <p>Two-factor authentication</p>
                                     </a>
                                 </li>
@@ -146,12 +146,12 @@
                             </ul>
 
                         <ul class="nav nav-treeview">
-                            <li class="nav-item has-treeview">
+                            <li class="nav-item">
                                 <a asp-controller="Contact" asp-action="Index"class="nav-link">
-                                    <i class="nav-icon fas fa-copy"></i>
+                                    <i class="far fa-id-card"></i>
                                     <p>
                                         Thông tin liên lạc
-                                        <i class="right fas fa-angle-left"></i>
+                                        
                                     </p>
                                 </a>                               
                             </li>
@@ -170,7 +170,7 @@
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                     <a asp-controller="Order" asp-action="GetRevenue" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
+                                        <i class="nav-icon fas fa-chart-pie"></i>
                                         <p>Biểu đồ doanh thu</p>
                                     </a>
                                 </li>
@@ -178,7 +178,7 @@
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                     <a asp-controller="Order" asp-action="Index" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
+                                        <i class="nav-icon fas fa-edit"></i>
                                         <p>Đơn hàng</p>
                                         <span class="badge badge-info right">@TempData["TotalOrder"]</span>
                                     </a>
@@ -201,7 +201,7 @@
                                 <li class="nav-item">
                                     <form method="post" asp-controller="Login" asp-action="Logout">
                                         <button type="submit" class="nav-link" style="background-color: #343a40;color:white;border:none;">
-                                            <i class="far fa-circle nav-icon"></i>
+                                            <i class="fas fa-sign-out-alt"></i>
                                             <p>Đăng Xuất</p>
                                         </button>
                                         <a href="../layout/collapsed-sidebar.html" class="nav-link">

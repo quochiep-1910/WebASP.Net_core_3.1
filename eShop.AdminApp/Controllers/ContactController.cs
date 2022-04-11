@@ -1,24 +1,19 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using eShop.ApiIntegration;
-using eShop.Utilities.Constants;
 using eShop.ViewModels.Contact;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using static eShop.Utilities.Constants.SystemConstants;
 
 namespace eShop.AdminApp.Controllers
 {
-
     public class ContactController : Controller
     {
         private readonly IConfiguration _configuration;
         private readonly IContactApiClient _contactApiClient;
         private readonly INotyfService _notyf;
+
         public ContactController(IConfiguration configuration
             , IContactApiClient contactApiClient
             , INotyfService notyfService)
@@ -27,6 +22,7 @@ namespace eShop.AdminApp.Controllers
             _contactApiClient = contactApiClient;
             _notyf = notyfService;
         }
+
         public async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 5)
         {
             var request = new ContactPagingRequest()
@@ -40,6 +36,7 @@ namespace eShop.AdminApp.Controllers
             TempData["TotalCategorys"] = data.TotalRecords;
             return View(data);
         }
+
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
@@ -47,11 +44,13 @@ namespace eShop.AdminApp.Controllers
 
             return View(result);
         }
+
         [HttpGet]
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
             return View();
         }
+
         [HttpPost]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> Create([FromForm] ContactCreateViewModel request)
@@ -69,13 +68,14 @@ namespace eShop.AdminApp.Controllers
             ModelState.AddModelError("", "Thêm contact thất bại");
             return View(request);
         }
+
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             var contact = await _contactApiClient.GetById(id);
             ViewBag.categories = contact;
             var editingContact = new ContactViewModel()
-            {  
+            {
                 Id = contact.Id,
                 Name = contact.Name,
                 Email = contact.Email,
@@ -85,6 +85,7 @@ namespace eShop.AdminApp.Controllers
             };
             return View(editingContact);
         }
+
         [HttpPost]
         public async Task<IActionResult> Edit([FromForm] ContactViewModel request)
         {
@@ -101,6 +102,7 @@ namespace eShop.AdminApp.Controllers
             ModelState.AddModelError("", "Cập nhập contact thất bại");
             return View(request);
         }
+
         [HttpGet]
         public IActionResult Delete(int id)
         {
@@ -109,6 +111,7 @@ namespace eShop.AdminApp.Controllers
                 Id = id
             });
         }
+
         [HttpPost]
         public async Task<IActionResult> Delete(ContactDeleteViewModel request)
         {

@@ -158,6 +158,13 @@ namespace eShop.WebApp
                action = "Checkout"
            });
             endpoints.MapControllerRoute(
+          name: "Profile",
+          pattern: "/home/profile", new
+          {
+              controller = "Home",
+              action = "Profile"
+          });
+            endpoints.MapControllerRoute(
                 name: "default",
                 pattern: "{culture=vi}/{controller=Home}/{action=Index}/{id?}");
         });

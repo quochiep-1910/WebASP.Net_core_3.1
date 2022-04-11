@@ -3,9 +3,6 @@ using eShop.ApiIntegration;
 using eShop.ViewModels.Contact;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace eShop.WebApp.Controllers
@@ -15,6 +12,7 @@ namespace eShop.WebApp.Controllers
         private readonly IConfiguration _configuration;
         private readonly IContactApiClient _contactApiClient;
         private readonly INotyfService _notyf;
+
         public ContactController(IConfiguration configuration
             , IContactApiClient contactApiClient
             , INotyfService notyfService)
@@ -25,10 +23,11 @@ namespace eShop.WebApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
             return View();
         }
+
         [HttpPost]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> Create([FromForm] ContactCreateViewModel request)

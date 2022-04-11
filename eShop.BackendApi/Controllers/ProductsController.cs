@@ -104,6 +104,16 @@ namespace eShop.BackendApi.Controllers
             return BadRequest();
         }
 
+        [HttpGet("GetProductBought")]
+        [Authorize]
+        public async Task<IActionResult> GetProductBought(string userId)
+        {
+            var products = await _ProductService.GetAllProductUserBought(userId);
+            if (products == null)
+                return BadRequest("Bạn chưa mua sản phẩm nào");
+            return Ok(products);
+        }
+
         [HttpGet("{productId}/{languageId}")]
         public async Task<IActionResult> GetById(int productId, string languageId)
         {

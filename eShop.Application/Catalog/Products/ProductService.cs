@@ -6,6 +6,8 @@ using eShop.ViewModels.Catalog.ProductImages;
 using eShop.ViewModels.Catalog.Products;
 
 using eShop.ViewModels.Common;
+using eShop.ViewModels.Sales.Order;
+using eShop.ViewModels.Sales.OrderDetail;
 using eShop.ViewModels.System.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -630,6 +632,48 @@ namespace eShop.Application.Catalog.Products
                 }).ToListAsync();
 
             return data;
+        }
+
+        public async Task<OrderViewModel> GetAllProductUserBought(string userId)
+        {
+            var query = await (from o in _context.Orders
+                               join od in _context.OrderDetails on o.Id equals od.OrderId
+                               join pt in _context.ProductTranslations on od.ProductId equals pt.ProductId
+                               join pi in _context.ProductImages on od.ProductId equals pi.ProductId into ppi
+                               from pi in ppi.DefaultIfEmpty()
+                               where o.UserId == userId && pt.LanguageId == "vi-VN"
+                               select new { o, od, pt, pi }).ToListAsync();
+            List<OrderDetailViewModel> orderDetailVN = new List<OrderDetailViewModel>();
+            {
+                foreach (var item in query)
+                {
+                    orderDetailVN.Add(new OrderDetailViewModel()
+                    {
+                        Price = item.od.Price,
+                        ProductId = item.od.ProductId,
+                        Quantity = item.od.Quantity,
+                        Name = item.pt.Name,
+                        Description = item.pt.Description,
+                        ThumbnailImage = item.pi.ImagePath
+                    });
+                }
+            };
+
+            var orderViewModel = query.Select(x => new OrderViewModel()
+            {
+                Id = x.o.Id,
+                OrderDate = x.o.OrderDate,
+
+                ShipAddress = x.o.ShipAddress,
+                ShipEmail = x.o.ShipEmail,
+                ShipName = x.o.ShipName,
+                ShipPhoneNumber = x.o.ShipPhoneNumber,
+                Status = (OrderStatus)x.o.Status,
+                UserId = x.o.UserId != null ? x.o.UserId : Guid.Empty.ToString(),
+                OrderDetails = orderDetailVN,
+            }).FirstOrDefault();
+
+            return orderViewModel;
         }
 
         public async Task<int> CreateWS(WorkingscheduleViewModel request)

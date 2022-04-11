@@ -125,17 +125,20 @@ namespace eShop.Application.Sales
 
             var orderDetails = await (from o in _context.Orders
                                       join od in _context.OrderDetails on o.Id equals od.OrderId
-                                      where od.OrderId == orderId
-                                      select od).ToListAsync();
+                                      join pt in _context.ProductTranslations on od.ProductId equals pt.ProductId
+                                      where od.OrderId == orderId && pt.LanguageId == "vi-VN"
+                                      select new { od, pt }).ToListAsync();
             List<OrderDetailViewModel> orderDetailVN = new List<OrderDetailViewModel>();
             {
                 foreach (var item in orderDetails)
                 {
                     orderDetailVN.Add(new OrderDetailViewModel()
                     {
-                        Price = item.Price,
-                        ProductId = item.ProductId,
-                        Quantity = item.Quantity
+                        Price = item.od.Price,
+                        ProductId = item.od.ProductId,
+                        Quantity = item.od.Quantity,
+                        Name = item.pt.Name,
+                        Description = item.pt.Description
                     });
                 }
             };
@@ -151,7 +154,7 @@ namespace eShop.Application.Sales
                 ShipPhoneNumber = order.ShipPhoneNumber,
                 Status = (eShop.Utilities.Constants.SystemConstants.OrderStatus)order.Status,
                 UserId = order.UserId != null ? order.UserId : Guid.Empty.ToString(),
-                OrderDetails = orderDetailVN
+                OrderDetails = orderDetailVN,
             };
             return orderViewModel;
         }

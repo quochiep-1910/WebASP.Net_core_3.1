@@ -2,6 +2,7 @@
 using eShop.ViewModels.Catalog.Products;
 
 using eShop.ViewModels.Common;
+using eShop.ViewModels.Sales.Order;
 using eShop.ViewModels.System.Users;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -35,6 +36,13 @@ namespace eShop.Application.Catalog.Products
         Task<List<ProductImageViewModel>> GetListImages(int productId);
 
         Task<ProductImageViewModel> GetImageById(int imageId);
+
+        /// <summary>
+        /// Lấy tất cả các sản phẩm mà user đó đã mua
+        /// </summary>
+        /// <param name="userId">user id</param>
+        /// <returns></returns>
+        Task<OrderViewModel> GetAllProductUserBought(string userId);
 
         /// <summary>
         /// Get all total Product Now

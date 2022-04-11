@@ -1,6 +1,7 @@
 ﻿using eShop.Utilities.Constants;
 using eShop.ViewModels.Catalog.Products;
 using eShop.ViewModels.Common;
+using eShop.ViewModels.Sales.Order;
 using eShop.ViewModels.System.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -77,6 +78,13 @@ namespace eShop.ApiIntegration
                 $"&languageId={ request.LanguageId}" +
                 $"&categoryId={request.CategoryId}");
             return result;
+        }
+
+        public async Task<OrderViewModel> GetProductUserBought(string userId)
+        {
+            var response = await GetAsync<OrderViewModel>($"/api/Products/GetProductBought?userId={userId}");
+
+            return response;
         }
 
         public async Task<PagedResult<ProductViewModel>> GetTopProductSelling(GetManageProductPagingRequest request)

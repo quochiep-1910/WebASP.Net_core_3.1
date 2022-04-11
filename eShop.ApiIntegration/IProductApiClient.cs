@@ -1,5 +1,6 @@
 ﻿using eShop.ViewModels.Catalog.Products;
 using eShop.ViewModels.Common;
+using eShop.ViewModels.Sales.Order;
 using eShop.ViewModels.System.Users;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -17,6 +18,8 @@ namespace eShop.ApiIntegration
         Task<ApiResult<bool>> CategoryAssign(int id, CategoryAssignRequest request);
 
         Task<ProductViewModel> GetById(int id, string languageId);
+
+        Task<OrderViewModel> GetProductUserBought(string userId);
 
         Task<ProductImageViewModel> GetImageById(int productId, int imageId);
 
