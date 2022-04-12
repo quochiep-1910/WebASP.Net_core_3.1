@@ -223,6 +223,12 @@ namespace eShop.AdminApp.Controllers
         {
             var user = await _userApiClient.GetByUserName(User.Identity.Name);
             var resultAuthen = await _userApiClient.PostEnableAuthenticator(request.EnableAuthenticatorRequest, user.Id);
+            if (resultAuthen.Message == ResponseMessage.ErrorCodeAuthentication)
+            {
+                ModelState.AddModelError("", resultAuthen.Message);//key and message
+                _notyf.Error(resultAuthen.Message);
+                return RedirectToAction("EnableAuthenticator");
+            }
             if (resultAuthen.ResultObj.StatusMessage == ResponseMessage.AuthenticatorHasBeenVerified)
             {
                 _notyf.Success("Thêm Bảo mật 2 lớp thành công");
