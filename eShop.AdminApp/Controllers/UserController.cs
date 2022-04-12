@@ -148,6 +148,11 @@ namespace eShop.AdminApp.Controllers
             return View(request);
         }
 
+        public IActionResult Forbidden()
+        {
+            return View();
+        }
+
         [HttpGet]
         public async Task<IActionResult> RoleAssign(string id)
         {

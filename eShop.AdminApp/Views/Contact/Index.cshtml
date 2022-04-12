@@ -6,8 +6,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
-
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -43,7 +41,7 @@
 
                                 <div class=" col-md-3">
                                     <button type="submit" class="btn btn-primary">Tìm</button>
-                                    <button type="button" onclick="window.location.href='/Category/Index'" class="btn btn-dark">Reset</button>
+                                    <button type="button" onclick="window.location.href='/Contact/Index'" class="btn btn-dark">Reset</button>
                                 </div>
                             </div>
                         </form>
@@ -70,7 +68,6 @@
                                                 <li class="small"><span class="fa-li"><i class="fas fa fa-lock"></i></span> <b>Trạng thái: </b>@Html.DisplayFor(modelItem => item.Status) </li>
                                             </ul>
                                         </div>
-
                                     </div>
                                 </div>
                                 <div class="card-footer">
@@ -92,5 +89,6 @@
                 </div>
                 @await Component.InvokeAsync("Pager", Model)
             </div>
+        </div>
     </section>
 </div>
