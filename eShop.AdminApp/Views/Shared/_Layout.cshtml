@@ -145,18 +145,17 @@
                                 </li>
                             </ul>
 
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a asp-controller="Contact" asp-action="Index"class="nav-link">
-                                    <i class="far fa-id-card"></i>
-                                    <p>
-                                        Thông tin liên lạc
-                                        
-                                    </p>
-                                </a>                               
-                            </li>
-                        </ul>
-                    </li>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a asp-controller="Contact" asp-action="Index" class="nav-link">
+                                        <i class="far fa-id-card"></i>
+                                        <p>
+                                            Thông tin liên lạc
+                                        </p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
 
@@ -248,17 +247,17 @@
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <!-- AdminLTE for demo purposes -->
-    <script src="/js/demo.js"></script>
-    <script src="~/js/AddingCommasWhenTyping.js"></script>
+    <script src="~/js/demo.min.js"></script>
+    <script src="~/js/AddingCommasWhenTyping.min.js"></script>
     <script>
         var AddingCommasWhenTyping = new AddingCommas();
         AddingCommasWhenTyping.initialize();
     </script>
 
     <!--Paging -->
-    <script src="~/libs/Mustache/mustache.js"></script>
-    <link href="~/libs/AspSnippets_paging/PagingCss.css" rel="stylesheet" />
-    <script src="/libs/AspSnippets_paging/ASPSnippets_Pager.min.js"></script>
+    <script src="~/libs/Mustache/mustache.min.js"></script>
+    <link href="~/libs/AspSnippets_paging/PagingCss.min.css" rel="stylesheet" />
+    <script src="~/libs/AspSnippets_paging/ASPSnippets_Pager.min.js"></script>
     <!--Paging -->
 
     @await Component.InvokeAsync("Notyf")

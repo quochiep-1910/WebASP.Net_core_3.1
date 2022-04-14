@@ -1,0 +1,74 @@
+[
+  {
+    "outputFileName": "wwwroot/css/authen2Facss.min.css",
+    "inputFiles": [
+      "wwwroot/css/authen2Facss.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/TichXanh.min.css",
+    "inputFiles": [
+      "wwwroot/css/TichXanh.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/ResetPassword.min.css",
+    "inputFiles": [
+      "wwwroot/css/ResetPassword.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/libs/AspSnippets_paging/PagingCss.min.css",
+    "inputFiles": [
+      "wwwroot/libs/AspSnippets_paging/PagingCss.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/libs/AspSnippets_paging/ASPSnippets_Pager.min.js",
+    "inputFiles": [
+      "wwwroot/libs/AspSnippets_paging/ASPSnippets_Pager.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/libs/Mustache/mustache.min.js",
+    "inputFiles": [
+      "wwwroot/libs/Mustache/mustache.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/AddingCommasWhenTyping.min.js",
+    "inputFiles": [
+      "wwwroot/js/AddingCommasWhenTyping.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/demo.min.js",
+    "inputFiles": [
+      "wwwroot/js/demo.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/controller/product/pagingProductController.min.js",
+    "inputFiles": [
+      "wwwroot/js/controller/product/pagingProductController.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/controller/order/pagingOrderController.min.js",
+    "inputFiles": [
+      "wwwroot/js/controller/order/pagingOrderController.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/controller/home/pagingHomeController.min.js",
+    "inputFiles": [
+      "wwwroot/js/controller/home/pagingHomeController.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/controller/category/pagingCategoryController.min.js",
+    "inputFiles": [
+      "wwwroot/js/controller/category/pagingCategoryController.js"
+    ]
+  }
+]

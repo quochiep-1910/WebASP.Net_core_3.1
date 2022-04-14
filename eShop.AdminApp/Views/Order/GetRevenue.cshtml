@@ -6,11 +6,19 @@
     var ZValues = Newtonsoft.Json.JsonConvert.SerializeObject(Model.Select(x => x.Revenues).ToList());
     ViewData["Title"] = "Thống kê";
     Layout = "~/Views/Shared/_Layout.cshtml";
-}
 
+}
+<style>
+    #infinite-table {
+        height: 300px;
+        overflow: auto;
+    }
+</style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-
+<script>
+    const div = document.querySelector("#infinite-table");
+</script>
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -64,8 +72,8 @@
                                 </h3>
                             </div>
                             <div class="card-body">
-                                <div style="height: 500px; width: 100%;">
-                                    <table class="table table-bordered">
+                                <div style="height: 500px; width: 100%;" id="infinite-table">
+                                    <table id="scrollRevenue" class="table table-bordered">
                                         <thead>
                                             <tr>
                                                 <td>Ngày</td>
