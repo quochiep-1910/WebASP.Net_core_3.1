@@ -3,11 +3,13 @@ using eShop.ViewModels.Common;
 using eShop.ViewModels.Sales.Order;
 using eShop.ViewModels.Sales.OrderDetail;
 using eShop.ViewModels.Sales.RevenueStatistics;
+using eShop.ViewModels.Utilities.Mail;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -58,6 +60,36 @@ namespace eShop.ApiIntegration
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
             var orderId = request.Select(x => x.OrderId);
             var response = await client.PostAsync($"/api/orders/postorderdetail?orderId={orderId}", httpContent);
+
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> CreateSendEmail(SendMailViewModel sendMailViewModel)
+        {
+            //1.Khởi tạo
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration[SystemConstants.AppSettings.BaseAddress]);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions); //lấy token
+
+            var requestContent = new MultipartFormDataContent
+            {
+                { new StringContent(sendMailViewModel.ToEmail.ToString()), "ToEmail" },
+                { new StringContent(sendMailViewModel.Subject.ToString()), "Subject" },
+                { new StringContent(sendMailViewModel.Content.ToString()), "Content" },
+                //{ new StringContent(sendMailViewModel.Attachments), "Attachments" },
+            };
+            foreach (var file in sendMailViewModel.Attachments)
+            {
+                byte[] data;
+                using (var br = new BinaryReader(file.OpenReadStream()))
+                {
+                    data = br.ReadBytes((int)file.OpenReadStream().Length);
+                }
+                ByteArrayContent bytes = new ByteArrayContent(data);
+                requestContent.Add(bytes, "Attachments", file.FileName);
+            }
+            var response = await client.PostAsync($"/api/Orders/SendEmail", requestContent);
 
             return response.IsSuccessStatusCode;
         }

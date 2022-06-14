@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\FilesSendMail\" />
     <Folder Include="wwwroot\user-content\" />
   </ItemGroup>
 

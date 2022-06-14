@@ -78,6 +78,35 @@ namespace eShop.AdminApp.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> Profile()
+        {
+            if (User.Identity.Name != null)
+            {
+                var user = await _userApiClient.GetByUserName(User.Identity.Name);
+                return View(user);
+            }
+            return RedirectToAction("Error", "Home");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateProfile(UserUpdateRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+            var result = await _userApiClient.UpdateUser(request.Id, request);
+
+            if (result.IsSuccessed)
+            {
+                //TempData["result"] = "Cập nhập tài khoản quản trị thành công";
+                _notyf.Success("Cập nhập thông tin tài khoản");
+                return RedirectToAction("Profile");
+            }
+            ModelState.AddModelError("", result.Message);//key and message
+
+            return View(request);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
             var result = await _userApiClient.GetById(id);

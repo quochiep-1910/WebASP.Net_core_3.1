@@ -1,6 +1,7 @@
 ﻿using eShop.ViewModels.Common;
 using eShop.ViewModels.System.Auth;
 using eShop.ViewModels.System.Users;
+using eShop.ViewModels.Utilities.Mail;
 using System;
 using System.Threading.Tasks;
 
@@ -8,6 +9,8 @@ namespace eShop.Application.System.Users
 {
     public interface IUserService
     {
+        Task<bool> SendEmailRequest(SendMailViewModel sendMailViewModel);
+
         Task<ApiResult<string>> Authencate(LoginRequest loginRequest);
 
         Task<ApiResult<bool>> Register(RegisterRequest registerRequest, string origin);

@@ -70,5 +70,11 @@
     "inputFiles": [
       "wwwroot/js/controller/category/pagingCategoryController.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/js/controller/order/loadingTimlineOrder.min.js",
+    "inputFiles": [
+      "wwwroot/js/controller/order/loadingTimlineOrder.js"
+    ]
   }
 ]

@@ -41,7 +41,7 @@
                         <img src="/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
                     </div>
                     <div class="info">
-                        <a href="/Profile/Index" class="d-block">@User.Identity.Name</a>
+                        <a asp-controller="User" asp-action="Profile" class="d-block">@User.Identity.Name</a>
                     </div>
                 </div>
 
@@ -108,54 +108,64 @@
                                     </li>
                                 </ul>
                             </li>*@
-                        <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon far fa-calendar-alt"></i>
-                                <p>
-                                    Danh Mục
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
+                    <li class="nav-item has-treeview">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon far fa-calendar-alt"></i>
+                            <p>
+                                Danh Mục
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
 
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item has-treeview">
-                                    <a href="#" class="nav-link">
-                                        <i class="nav-icon fas fa-copy"></i>
-                                        <p>
-                                            Sản phẩm
-                                            <i class="right fas fa-angle-left"></i>
-                                        </p>
-                                    </a>
-                                    <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a asp-controller="Product" asp-action="Index" class="nav-link">
-                                                <i class="far fa-circle nav-icon"></i>
-                                                <p>Sản phẩm</p>
-                                                <span class="badge badge-info right">@TempData["TotalProducts"]</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a asp-controller="Category" asp-action="Index" class="nav-link">
-                                                <i class="far fa-circle nav-icon"></i>
-                                                <p>Danh mục sản phẩm</p>
-                                                <span class="badge badge-info right">@TempData["TotalCategorys"]</span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item has-treeview">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon fas fa-copy"></i>
+                                    <p>
+                                        Sản phẩm
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a asp-controller="Product" asp-action="Index" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Sản phẩm</p>
+                                            <span class="badge badge-info right">@TempData["TotalProducts"]</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a asp-controller="Category" asp-action="Index" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Danh mục sản phẩm</p>
+                                            <span class="badge badge-info right">@TempData["TotalCategorys"]</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
 
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a asp-controller="Contact" asp-action="Index" class="nav-link">
-                                        <i class="far fa-id-card"></i>
-                                        <p>
-                                            Thông tin liên lạc
-                                        </p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a asp-controller="Contact" asp-action="Index" class="nav-link">
+                                    <i class="far fa-id-card"></i>
+                                    <p>
+                                        Thông tin liên lạc
+                                    </p>
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a asp-controller="Order" asp-action="ComposeEmail" class="nav-link">
+                                    <i class="fas fa-mail-bulk"></i>
+                                    <p>
+                                        Gửi mail
+                                    </p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
 
@@ -203,10 +213,6 @@
                                             <i class="fas fa-sign-out-alt"></i>
                                             <p>Đăng Xuất</p>
                                         </button>
-                                        <a href="../layout/collapsed-sidebar.html" class="nav-link">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Collapsed Sidebar</p>
-                                        </a>
                                     </form>
                                 </li>
                             </ul>

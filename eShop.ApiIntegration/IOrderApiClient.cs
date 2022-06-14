@@ -2,6 +2,7 @@
 using eShop.ViewModels.Sales.Order;
 using eShop.ViewModels.Sales.OrderDetail;
 using eShop.ViewModels.Sales.RevenueStatistics;
+using eShop.ViewModels.Utilities.Mail;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -28,5 +29,12 @@ namespace eShop.ApiIntegration
         /// </summary>
         /// <returns></returns>
         Task<int> GetTotalOrder();
+
+        /// <summary>
+        /// send email with sendgrid
+        /// </summary>
+        /// <param name="sendMailViewModel"></param>
+        /// <returns></returns>
+        Task<bool> CreateSendEmail(SendMailViewModel sendMailViewModel);
     }
 }

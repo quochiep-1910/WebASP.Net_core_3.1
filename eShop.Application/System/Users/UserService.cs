@@ -5,6 +5,7 @@ using eShop.Utilities.Exceptions;
 using eShop.ViewModels.Common;
 using eShop.ViewModels.System.Auth;
 using eShop.ViewModels.System.Users;
+using eShop.ViewModels.Utilities.Mail;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -481,6 +482,12 @@ namespace eShop.Application.System.Users
                 return new ApiErrorResult<bool>("Đã xảy ra lỗi không mong muốn khi tắt 2FA");
             }
             return new ApiErrorResult<bool>();
+        }
+
+        public async Task<bool> SendEmailRequest(SendMailViewModel sendMailViewModel)
+        {
+            await _emailService.SenderEmailAsync(sendMailViewModel.ToEmail, sendMailViewModel.Subject, sendMailViewModel.Content, sendMailViewModel.Attachments);
+            return true;
         }
 
         #endregion Login With two factor

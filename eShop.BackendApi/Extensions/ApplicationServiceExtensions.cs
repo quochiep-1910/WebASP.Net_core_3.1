@@ -61,6 +61,7 @@ namespace eShop.BackendApi.Extensions
             //services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidator>();
 
             services.AddAutoMapper(typeof(MapperConfig)); //automapper
+            services.AddControllersWithViews();
             services.AddControllers()
                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>()); //đăng kí tất cả class nào có Validator
 

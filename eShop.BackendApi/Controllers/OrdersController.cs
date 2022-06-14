@@ -1,8 +1,10 @@
 ﻿using eShop.Application.Sales;
+using eShop.Application.System.Users;
 using eShop.Data.EF;
 using eShop.ViewModels.Sales.Order;
 using eShop.ViewModels.Sales.OrderDetail;
 using eShop.ViewModels.Sales.RevenueStatistics;
+using eShop.ViewModels.Utilities.Mail;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -17,11 +19,13 @@ namespace eShop.BackendApi.Controllers
     {
         private readonly EShopDbContext _context;
         private readonly IOrderService _OrderService;
+        private readonly IUserService _userService;
 
-        public OrdersController(IOrderService OrderService, EShopDbContext context)
+        public OrdersController(IOrderService OrderService, EShopDbContext context, IUserService userService)
         {
             _OrderService = OrderService;
             _context = context;
+            _userService = userService;
         }
 
         [HttpPost]
@@ -92,6 +96,15 @@ namespace eShop.BackendApi.Controllers
             return Ok(totalOrder);
         }
 
+        [HttpGet("GetTotalOrderById")]
+        [Authorize]
+        public async Task<IActionResult> GetTotalOrderById(string id)
+        {
+            var totalOrderById = await _OrderService.GetTotalOrderById(id);
+
+            return Ok(totalOrderById);
+        }
+
         [HttpPut("{orderId}")]
         [Consumes("multipart/form-data")]
         [Authorize]
@@ -116,6 +129,13 @@ namespace eShop.BackendApi.Controllers
             var affectedResult = await _OrderService.GetRevenueStatistic(request);
 
             return Ok(affectedResult);
+        }
+
+        [HttpPost("SendEmail")]
+        public async Task<IActionResult> SendEmail([FromForm] SendMailViewModel sendMailViewModel)
+        {
+            var sendEmailRequest = await _userService.SendEmailRequest(sendMailViewModel);
+            return Ok();
         }
     }
 }

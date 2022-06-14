@@ -3,6 +3,7 @@ using eShop.ApiIntegration;
 using eShop.ViewModels.Sales.Order;
 using eShop.ViewModels.Sales.OrderDetail;
 using eShop.ViewModels.Sales.RevenueStatistics;
+using eShop.ViewModels.Utilities.Mail;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -41,6 +42,8 @@ namespace eShop.AdminApp.Controllers
             TempData["TotalOrder"] = data.TotalRecords;
             return View(data);
         }
+
+        #region CRUD
 
         [HttpGet]
         public async Task<IActionResult> Create()
@@ -173,6 +176,8 @@ namespace eShop.AdminApp.Controllers
             return View(request);
         }
 
+        #endregion CRUD
+
         [HttpGet]
         public async Task<IActionResult> PrintOrder(int id)
         {
@@ -194,6 +199,8 @@ namespace eShop.AdminApp.Controllers
             return View(printData);
         }
 
+        #region Revenue
+
         [HttpGet]
         public async Task<IActionResult> GetRevenue(StatisticsRequest request)
         {
@@ -210,5 +217,29 @@ namespace eShop.AdminApp.Controllers
             public double yValue1;
             public double yValue2;
         }
+
+        #endregion Revenue
+
+        #region Send Email
+
+        [HttpGet]
+        public async Task<IActionResult> ComposeEmail()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ComposeEmail(SendMailViewModel sendMailView)
+        {
+            var result = await _orderApiClient.CreateSendEmail(sendMailView);
+            if (result)
+            {
+                _notyf.Success("Gửi email thành công");
+                return RedirectToAction("ComposeEmail");
+            }
+            return View();
+        }
+
+        #endregion Send Email
     }
 }

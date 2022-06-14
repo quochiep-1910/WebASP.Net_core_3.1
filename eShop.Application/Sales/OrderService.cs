@@ -1,4 +1,5 @@
-﻿using eShop.Data.EF;
+﻿using AutoMapper;
+using eShop.Data.EF;
 using eShop.Data.Entities;
 using eShop.Data.Enums;
 using eShop.Utilities.Exceptions;
@@ -20,11 +21,13 @@ namespace eShop.Application.Sales
     {
         private readonly EShopDbContext _context;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IMapper _mapper;
 
-        public OrderService(EShopDbContext context, UserManager<AppUser> userManager)
+        public OrderService(EShopDbContext context, UserManager<AppUser> userManager, IMapper mapper)
         {
             _context = context;
             _userManager = userManager;
+            _mapper = mapper;
         }
 
         public async Task<int> Create(OrderCreateRequest request)
@@ -126,8 +129,9 @@ namespace eShop.Application.Sales
             var orderDetails = await (from o in _context.Orders
                                       join od in _context.OrderDetails on o.Id equals od.OrderId
                                       join pt in _context.ProductTranslations on od.ProductId equals pt.ProductId
+                                      join pi in _context.ProductImages on pt.ProductId equals pi.ProductId
                                       where od.OrderId == orderId && pt.LanguageId == "vi-VN"
-                                      select new { od, pt }).ToListAsync();
+                                      select new { od, pt, pi }).ToListAsync();
             List<OrderDetailViewModel> orderDetailVN = new List<OrderDetailViewModel>();
             {
                 foreach (var item in orderDetails)
@@ -138,7 +142,8 @@ namespace eShop.Application.Sales
                         ProductId = item.od.ProductId,
                         Quantity = item.od.Quantity,
                         Name = item.pt.Name,
-                        Description = item.pt.Description
+                        Description = item.pt.Description,
+                        ThumbnailImage = item.pi.ImagePath
                     });
                 }
             };
@@ -213,6 +218,52 @@ namespace eShop.Application.Sales
                 return 0;
             }
             return totalOrder;
+        }
+
+        public async Task<OrderTimeLineViewModel> GetTotalOrderById(string id)
+        {
+            //var totalOrder = await _context.Orders.Where(x => x.UserId == id)
+            //    .Include(x => x.OrderDetails).ToListAsync();
+            var totalOrder = await (from o in _context.Orders
+                                    join od in _context.OrderDetails on o.Id equals od.OrderId
+                                    join pt in _context.ProductTranslations on od.ProductId equals pt.ProductId
+                                    join pi in _context.ProductImages on pt.ProductId equals pi.ProductId
+                                    where o.UserId == id && pt.LanguageId == "vi-VN"
+                                    select new { o, od, pt, pi }).ToListAsync();
+            if (totalOrder.Count() > 0)
+            {
+                List<OrderDetailTimeLineViewModel> orderDetailVN = new List<OrderDetailTimeLineViewModel>();
+                {
+                    foreach (var item in totalOrder)
+                    {
+                        orderDetailVN.Add(new OrderDetailTimeLineViewModel()
+                        {
+                            UserId = item.o.UserId,
+                            ShipName = item.o.ShipName,
+                            ShipAddress = item.o.ShipAddress,
+                            ShipEmail = item.o.ShipEmail,
+                            ShipPhoneNumber = item.o.ShipPhoneNumber,
+                            Price = item.od.Price,
+                            ProductId = item.od.ProductId,
+                            Quantity = item.od.Quantity,
+                            Name = item.pt.Name,
+                            Description = item.pt.Description,
+                            ThumbnailImage = item.pi.ImagePath,
+                            OrderId = item.od.OrderId,
+                            OrderDate = item.o.OrderDate,
+                            Status = (eShop.Utilities.Constants.SystemConstants.OrderStatus)item.o.Status,
+                        });
+                    }
+                };
+
+                var orderViewModel = new OrderTimeLineViewModel()
+                {
+                    OrderDetails = orderDetailVN
+                };
+
+                return orderViewModel;
+            }
+            return new OrderTimeLineViewModel();
         }
 
         [Obsolete]
