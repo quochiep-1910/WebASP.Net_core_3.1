@@ -79,16 +79,20 @@ namespace eShop.ApiIntegration
                 { new StringContent(sendMailViewModel.Content.ToString()), "Content" },
                 //{ new StringContent(sendMailViewModel.Attachments), "Attachments" },
             };
-            foreach (var file in sendMailViewModel.Attachments)
+            if (sendMailViewModel.Attachments != null)
             {
-                byte[] data;
-                using (var br = new BinaryReader(file.OpenReadStream()))
+                foreach (var file in sendMailViewModel.Attachments)
                 {
-                    data = br.ReadBytes((int)file.OpenReadStream().Length);
+                    byte[] data;
+                    using (var br = new BinaryReader(file.OpenReadStream()))
+                    {
+                        data = br.ReadBytes((int)file.OpenReadStream().Length);
+                    }
+                    ByteArrayContent bytes = new ByteArrayContent(data);
+                    requestContent.Add(bytes, "Attachments", file.FileName);
                 }
-                ByteArrayContent bytes = new ByteArrayContent(data);
-                requestContent.Add(bytes, "Attachments", file.FileName);
             }
+
             var response = await client.PostAsync($"/api/Orders/SendEmail", requestContent);
 
             return response.IsSuccessStatusCode;
