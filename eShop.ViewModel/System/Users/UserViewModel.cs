@@ -6,7 +6,7 @@ namespace eShop.ViewModels.System.Users
 {
     public class UserViewModel
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         [Display(Name = "Tên")]
         public string FirstName { get; set; }
@@ -28,6 +28,12 @@ namespace eShop.ViewModels.System.Users
 
         [Display(Name = "Trạng Thái")]
         public bool LockoutEnabled { get; set; }
+
+        [Display(Name = "Trạng Thái Email")]
+        public bool EmailConfirmed { get; set; }
+
+        [Display(Name = "Ngày Mở Khoá Tài khoản")]
+        public DateTimeOffset? LockoutEnd { set; get; }
 
         public IList<string> Roles { get; set; }
     }

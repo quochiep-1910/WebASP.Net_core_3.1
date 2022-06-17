@@ -10,7 +10,7 @@ namespace eShop.AdminApp.Controllers
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            //kiểm tra session
+            //kiểm tra sessioN
             var sessions = context.HttpContext.Session.GetString("Token");
             if (sessions == null)
             {

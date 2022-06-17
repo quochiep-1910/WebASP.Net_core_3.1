@@ -1,0 +1,94 @@
+﻿@using eShop.ViewModels.Common
+@model PagedResult<eShop.ViewModels.Contact.ContactViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Danh sách thông tin liên lạc</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active">Danh sách thông tin liên lạc</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+    <section class="content">
+
+        <!-- Default box -->
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-6 col-xs-12">
+                        <a class="btn btn-success" asp-action="Create" asp-controller="Contact">Tạo Mới </a>
+                    </div>
+                    <div class="col-md-6 col-xs-12">
+                        <form asp-action="Index" method="get">
+                            <div class="row">
+                                <div class=" col-md-3">
+                                    <input type="text" value="@ViewBag.Keyword" name="keyword" class="form-control" />
+                                </div>
+
+                                <div class=" col-md-3">
+                                    <button type="submit" class="btn btn-primary">Tìm</button>
+                                    <button type="button" onclick="window.location.href='/Contact/Index'" class="btn btn-dark">Reset</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <br />
+
+                <div class="row">
+                    @foreach (var item in Model.Items)
+                    {
+                        <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch flex-column">
+                            <div class="card bg-light d-flex flex-fill">
+                                <div class="card-header text-muted border-bottom-0">
+                                    <b> Mã liên lạc: </b>  @Html.DisplayFor(modelItem => item.Id)
+                                </div>
+                                <div class="card-body pt-0">
+                                    <div class="row">
+                                        <div class="col-7">
+                                            <p class="text-muted text-sm"><b>Tên khách hàng: </b> @Html.DisplayFor(modelItem => item.Name) </p>
+                                            <p class="text-muted text-sm"><b>Tin nhắn: </b> @Html.DisplayFor(modelItem => item.Message) </p>
+                                            <ul class="ml-4 mb-0 fa-ul text-muted">
+                                                <li class="small"><span class="fa-li"><i class="fas fa-mail-bulk"></i></span> <b>Email: </b>@Html.DisplayFor(modelItem => item.Email) </li>
+                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-phone"></i></span> <b>Số điện thoại: </b>@Html.DisplayFor(modelItem => item.PhoneNumber) </li>
+                                                <li class="small"><span class="fa-li"><i class="fas fa fa-lock"></i></span> <b>Trạng thái: </b>@Html.DisplayFor(modelItem => item.Status) </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="text-right">
+                                        <a asp-action="Details" asp-controller="Contact" asp-route-id="@item.Id" class="btn btn-sm bg-teal">
+                                            <i class='fa fa-eye'></i> Chi tiết
+                                        </a>
+                                        <a asp-action="Edit" asp-controller="Contact" asp-route-id="@item.Id" class="btn btn-sm bg-teal">
+                                            <i class='fa fa-gavel'></i> Sửa
+                                        </a>
+                                        <a asp-action="Delete" asp-controller="Contact" asp-route-id="@item.Id" class="btn btn-sm bg-teal">
+                                            <i class='fa fa-trash'></i> Xóa
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                @await Component.InvokeAsync("Pager", Model)
+            </div>
+        </div>
+    </section>
+</div>

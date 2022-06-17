@@ -9,7 +9,7 @@
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    
+
     <script>
         setTimeout(function () {
             $('#msgAlert').fadeOut('slow');
@@ -21,6 +21,8 @@
         var site = new UserController();
         site.initialize();
     </script>
+    <link href="~/css/TichXanh.min.css" rel="stylesheet" />
+
 }
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -52,7 +54,7 @@
                         <form asp-action="Index" method="get">
                             <div class="row">
                                 <div class=" col-md-9">
-                                    <input type="text" value="@ViewBag.Keyword" name="keyword" class="form-control" />
+                                    <input type="text" style="width: auto;float: right;" value="@ViewBag.Keyword" name="keyword" class="form-control" />
                                 </div>
                                 <div class=" col-md-3">
                                     <button type="submit" class="btn btn-primary">Tìm</button>
@@ -114,13 +116,38 @@
                                 <td>
 
                                     @Html.DisplayFor(modelItem => item.Email)
+                                    &nbsp;   &nbsp;
+                                    @if (item.EmailConfirmed)
+                                    {
+                                        <div class="EmailVerified">
+
+                                            <div class="tooltip">
+                                                <span class="verified-EmailVerified-icon">
+
+                                                    <svg focusable="false" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+
+                                                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z">
+                                                        </path>
+                                                    </svg>
+                                                </span>
+                                                <span class="tooltiptext">Email đã được xác minh</span>
+                                            </div>
+                                        </div>
+                                    }
                                 </td>
                                 <td>
 
                                     @{
                                         if (item.LockoutEnabled)
                                         {
-                                            <span class="Lockout badge bg-red" data-id="@item.Id">Locked</span>
+                                            <span class="Lockout badge bg-red" data-id="@item.Id">
+                                                Locked
+                                            </span>
+                                            <div class="tooltip">
+                                                ...
+                                                <span class="tooltiptext">@item.LockoutEnd</span>
+                                            </div>
+
                                         }
                                         else
                                         {

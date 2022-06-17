@@ -6,6 +6,8 @@ using eShop.ViewModels.Catalog.ProductImages;
 using eShop.ViewModels.Catalog.Products;
 
 using eShop.ViewModels.Common;
+using eShop.ViewModels.Sales.Order;
+using eShop.ViewModels.Sales.OrderDetail;
 using eShop.ViewModels.System.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -34,6 +36,49 @@ namespace eShop.Application.Catalog.Products
             var product = await _context.Products.FindAsync(productId);
             product.ViewCount += 1;
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<PagedResult<ProductViewModel>> GetTopProductSelling(GetManageProductPagingRequest request)
+        {
+            var query = from p in _context.Products.Include(x => x.ProductImages)
+
+                        join pt in _context.ProductTranslations on p.Id equals pt.ProductId
+                        join od in _context.OrderDetails on p.Id equals od.ProductId
+                        join pi in _context.ProductImages on p.Id equals pi.ProductId into ppi
+                        from pi in ppi.DefaultIfEmpty()
+                        where pt.LanguageId == request.LanguageId
+                        select new { p, pt, od, pi };
+
+            var productSelling = await query.OrderByDescending(x => x.od.Quantity).Skip((request.PageIndex - 1) * request.PageSize)
+               .Take(request.PageSize)
+               .Select(x => new ProductViewModel()
+               {
+                   Id = x.p.Id,
+                   LanguageId = x.pt.LanguageId,
+                   DateCreated = x.p.DateCreated,
+                   Description = x.pt.Description,
+                   Details = x.pt.Details,
+                   IsFeatured = x.p.IsFeatured,
+                   Name = x.pt.Name,
+                   OriginalPrice = x.p.OriginalPrice,
+                   Price = x.p.Price,
+                   SeoAlias = x.pt.SeoAlias,
+                   SeoDescription = x.pt.SeoDescription,
+                   SeoTitle = x.pt.SeoTitle,
+                   Stock = x.od.Quantity,
+                   ViewCount = x.p.ViewCount,
+                   ThumbnailImage = x.pi.ImagePath
+               }).ToListAsync();
+            //3. Paging
+            int totalRow = await query.CountAsync();
+            var pagedResult = new PagedResult<ProductViewModel>()
+            {
+                TotalRecords = totalRow,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize,
+                Items = productSelling
+            };
+            return pagedResult;
         }
 
         public async Task<int> Create(ProductCreateRequest request)
@@ -74,7 +119,8 @@ namespace eShop.Application.Catalog.Products
                 Stock = request.Stock,
                 ViewCount = 0,
                 DateCreated = DateTime.Now,
-                ProductTranslations = translations
+                ProductTranslations = translations,
+                IsFeatured = request.IsFeatured
             };
             //Save image
             if (request.ThumbnailImage != null)
@@ -381,6 +427,16 @@ namespace eShop.Application.Catalog.Products
             return data;
         }
 
+        public async Task<int> GetTotalProduct()
+        {
+            var totalProduct = await _context.Products.CountAsync();
+            if (totalProduct < 0)
+            {
+                return 0;
+            }
+            return totalProduct;
+        }
+
         public async Task<PagedResult<ProductViewModel>> GetAllByCategoryId(string languageId, GetPublicProductPagingRequest request)
         {
             //1. Select join
@@ -491,8 +547,8 @@ namespace eShop.Application.Catalog.Products
                     SeoTitle = x.pt.SeoTitle,
                     Stock = x.p.Stock,
                     ViewCount = x.p.ViewCount,
-                    ThumbnailImage = x.pi.ImagePath
-
+                    ThumbnailImage = x.pi.ImagePath,
+                    IsFeatured = x.p.IsFeatured
                     //Categories = x.ct.Name
                 }).ToListAsync();
 
@@ -530,7 +586,8 @@ namespace eShop.Application.Catalog.Products
                     SeoTitle = x.pt.SeoTitle,
                     Stock = x.p.Stock,
                     ViewCount = x.p.ViewCount,
-                    ThumbnailImage = x.pi.ImagePath
+                    ThumbnailImage = x.pi.ImagePath,
+                    IsFeatured = x.p.IsFeatured
 
                     //Categories = x.ct.Name
                 }).ToListAsync();
@@ -575,6 +632,48 @@ namespace eShop.Application.Catalog.Products
                 }).ToListAsync();
 
             return data;
+        }
+
+        public async Task<OrderViewModel> GetAllProductUserBought(string userId)
+        {
+            var query = await (from o in _context.Orders
+                               join od in _context.OrderDetails on o.Id equals od.OrderId
+                               join pt in _context.ProductTranslations on od.ProductId equals pt.ProductId
+                               join pi in _context.ProductImages on od.ProductId equals pi.ProductId into ppi
+                               from pi in ppi.DefaultIfEmpty()
+                               where o.UserId == userId && pt.LanguageId == "vi-VN"
+                               select new { o, od, pt, pi }).ToListAsync();
+            List<OrderDetailViewModel> orderDetailVN = new List<OrderDetailViewModel>();
+            {
+                foreach (var item in query)
+                {
+                    orderDetailVN.Add(new OrderDetailViewModel()
+                    {
+                        Price = item.od.Price,
+                        ProductId = item.od.ProductId,
+                        Quantity = item.od.Quantity,
+                        Name = item.pt.Name,
+                        Description = item.pt.Description,
+                        ThumbnailImage = item.pi.ImagePath
+                    });
+                }
+            };
+
+            var orderViewModel = query.Select(x => new OrderViewModel()
+            {
+                Id = x.o.Id,
+                OrderDate = x.o.OrderDate,
+
+                ShipAddress = x.o.ShipAddress,
+                ShipEmail = x.o.ShipEmail,
+                ShipName = x.o.ShipName,
+                ShipPhoneNumber = x.o.ShipPhoneNumber,
+                Status = (OrderStatus)x.o.Status,
+                UserId = x.o.UserId != null ? x.o.UserId : Guid.Empty.ToString(),
+                OrderDetails = orderDetailVN,
+            }).FirstOrDefault();
+
+            return orderViewModel;
         }
 
         public async Task<int> CreateWS(WorkingscheduleViewModel request)

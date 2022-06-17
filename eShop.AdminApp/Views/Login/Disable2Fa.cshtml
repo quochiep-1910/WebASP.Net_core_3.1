@@ -1,0 +1,50 @@
+﻿
+@{
+    ViewData["Title"] = "Disable2Fa";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+}
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Disable 2 factor</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active">Disable 2 factor</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <section class="content">
+
+        <!-- Default box -->
+        <div class="card">
+            <div class="card-header">
+
+                <div class="alert alert-warning" role="alert">
+                    <p>
+                        <strong>This action only disables 2FA.</strong>
+                    </p>
+                    <p>
+                        Disabling 2FA does not change the keys used in authenticator apps. If you wish to change the key
+                        used in an authenticator app you should <a asp-action="ResetAuthenticator">reset your authenticator keys.</a>
+                    </p>
+                </div>
+
+                <div>
+                    <form asp-action="Disable2Faa" method="post" class="form-group">
+                        <button class="btn btn-danger" type="submit">Disable 2FA</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

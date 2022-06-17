@@ -1,4 +1,5 @@
-﻿using eShop.ViewModels.Common;
+﻿using eShop.Utilities.Constants;
+using eShop.ViewModels.Common;
 using eShop.ViewModels.System.Auth;
 using eShop.ViewModels.System.Users;
 using Microsoft.AspNetCore.Http;
@@ -44,7 +45,7 @@ namespace eShop.ApiIntegration
             return JsonConvert.DeserializeObject<ApiErrorResult<string>>(await response.Content.ReadAsStringAsync());//get token
         }
 
-        public async Task<ApiResult<bool>> Delete(Guid id)
+        public async Task<ApiResult<bool>> Delete(string id)
         {
             var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
             var client = _httpClientFactory.CreateClient();
@@ -58,16 +59,59 @@ namespace eShop.ApiIntegration
             return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(body);
         }
 
-        public async Task<ApiResult<UserViewModel>> GetById(Guid id)
+        public async Task<ApiResult<UserViewModel>> GetById(string id)
         {
             var result = await GetById<ApiResult<UserViewModel>>($"/api/users/GetId?id={id}");
             return result;
+        }
+
+        public async Task<ApiResult<string>> PostLoginWith2Fa(LoginWith2fa request)
+        {
+            var json = JsonConvert.SerializeObject(request); //convert json to string
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            var response = await client.PostAsync($"/api/Users/LoginWith2Fa?TwoFactorCode", httpContent);
+            var result = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+                return JsonConvert.DeserializeObject<ApiSuccessResult<string>>(result);
+
+            return JsonConvert.DeserializeObject<ApiErrorResult<string>>(result);
+        }
+
+        public async Task<ApiResult<bool>> Disable2Fa()
+        {
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions); //lấy token
+            var response = await client.GetAsync("/api/users/Disable2Fa");
+            var result = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)//kiểm tra status code
+            {
+                return JsonConvert.DeserializeObject<ApiSuccessResult<bool>>(result);
+            }
+            return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
         }
 
         public async Task<UserViewModel> GetByUserName(string userName)
         {
             var result = await GetByUserName<UserViewModel>($"/api/users?userName={userName}");
             return result;
+        }
+
+        public async Task<int> GetTotalUser()
+        {
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration[SystemConstants.AppSettings.BaseAddress]);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions); //lấy token
+
+            var response = await client.GetAsync($"/api/users/totalUser");
+            var totalOrder = response.Content.ReadAsStringAsync();
+            return Int32.Parse(totalOrder.Result);
         }
 
         public async Task<ApiResult<PagedResult<UserViewModel>>> GetUsersPagings(GetUserPagingRequest request)
@@ -100,7 +144,7 @@ namespace eShop.ApiIntegration
             return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
         }
 
-        public async Task<ApiResult<bool>> RoleAssign(Guid id, RoleAssignRequest request)
+        public async Task<ApiResult<bool>> RoleAssign(string id, RoleAssignRequest request)
         {
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);
@@ -121,7 +165,7 @@ namespace eShop.ApiIntegration
             return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
         }
 
-        public async Task<ApiResult<bool>> UpdateUser(Guid id, UserUpdateRequest userUpdate)
+        public async Task<ApiResult<bool>> UpdateUser(string id, UserUpdateRequest userUpdate)
         {
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);
@@ -231,6 +275,27 @@ namespace eShop.ApiIntegration
             var result = await GetAsync<EnableAuthenticatorViewModel>
                 ($"/api/users/GetEnableAuthenticator?userId={userId}");
             return result;
+        }
+
+        public async Task<ApiResult<EnableAuthenticatorViewModel>> PostEnableAuthenticator(EnableAuthenticatorRequest request, string userId)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions); //lấy token
+
+            var json = JsonConvert.SerializeObject(request); //convert json to string
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync($"/api/Users/PostEnableAuthenticator?userId={userId}", httpContent);
+            var result = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)//kiểm tra status code
+            {
+                return JsonConvert.DeserializeObject<ApiSuccessResult<EnableAuthenticatorViewModel>>(result);
+            }
+            return JsonConvert.DeserializeObject<ApiErrorResult<EnableAuthenticatorViewModel>>(result);
         }
 
         #endregion Enable Authenticator

@@ -7,6 +7,8 @@
   <ItemGroup>
     <Compile Remove="Migrations\20210323080300_AspNetCoreIdentityDatebase.cs" />
     <Compile Remove="Migrations\20210323080300_AspNetCoreIdentityDatebase.Designer.cs" />
+    <Compile Remove="Migrations\20220331130740_Update-identity-User.cs" />
+    <Compile Remove="Migrations\20220331130740_Update-identity-User.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

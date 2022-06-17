@@ -5,7 +5,11 @@
     ViewData["Title"] = "Danh sách đơn hàng";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@section Scripts{
 
+    <script src="~/js/controller/order/pagingOrderController.min.js"></script>
+
+}
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -33,31 +37,21 @@
                         <a class="btn btn-success" asp-action="Create" asp-controller="Order">Tạo Mới </a>
                     </div>
                     <div class="col-md-6 col-xs-12">
-                        <form asp-action="Index" method="get">
+                        <form id="btnSearch">
                             <div class="row">
                                 <div class=" col-md-3">
-                                    <input type="text" value="@ViewBag.Keyword" name="keyword" class="form-control" />
+                                    <input type="text" id="Keyword" value="@ViewBag.Keyword" name="keyword" class="form-control" />
                                 </div>
 
                                 <div class=" col-md-3">
                                     <button type="submit" class="btn btn-primary">Tìm</button>
-                                    <button type="button" onclick="window.location.href='/Order/Index'" class="btn btn-dark">Reset</button>
+                                    <button type="button" id="btnResetOrder" class="btn btn-dark">Reset</button>
                                 </div>
                             </div>
                         </form>
                     </div>
                 </div>
-                @* <div class="row">
 
-                        <div class="col-md-12 ">
-                            @if (ViewBag.SuccessMsg != null)
-                            {
-                                <div id="msgAlert" class="alert alert-success text-center" role="alert">
-                                    @ViewBag.SuccessMsg
-                                </div>
-                            }
-                        </div>
-                    </div> *@
                 <br />
 
                 <table class="table">
@@ -82,37 +76,38 @@
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody>
-                        @foreach (var item in Model.Items)
-                        {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Id)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ShipName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ShipAddress)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.OrderDate)
-                                </td>
-                                <td>
-
-                                    @Html.DisplayFor(modelItem => item.Status)
-                                </td>
-                                <td>
-                                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-                                </td>
-                            </tr>
-                        }
+                    <tbody id="orderTopBody">
                     </tbody>
                 </table>
+                <div class="Pager paginationPager"></div>
             </div>
-            @await Component.InvokeAsync("Pager", Model)
+            @*@await Component.InvokeAsync("Pager", Model)*@
         </div>
     </section>
 </div>
+
+<script id="tplOrderTop" type="x-tmpl-mustache">
+        <tr>
+              <td>
+                {{id}}
+              </td>
+              <td>
+                 {{ShipName}}
+              </td>
+              <td>
+              {{ShipAddress}}
+              </td>
+              <td>
+               {{OrderDate}}
+              </td>
+              <td>
+            {{ Status}}
+              </td>
+              <td>
+                <a href="/Order/Edit/{{id}}">Sửa</a> |
+                <a href="/Order/Details/{{id}}">Xem</a> |
+                <a href="/Order/Delete/{{id}}">Xoá</a> |
+                <a href="/Order/PrintOrder/{{id}}"><i class="fas fa-print"></i></a>
+              </td>
+         </tr>
+</script>

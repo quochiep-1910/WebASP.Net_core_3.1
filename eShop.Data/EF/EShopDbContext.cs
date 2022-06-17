@@ -4,18 +4,18 @@ using eShop.Data.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace eShop.Data.EF
 {
-    public class EShopDbContext : IdentityDbContext<AppUser, AppRole, Guid>
+    public class EShopDbContext : IdentityDbContext<AppUser, IdentityRole<string>, string>
     {
-        public EShopDbContext(DbContextOptions options) : base(options)
+        public EShopDbContext(DbContextOptions<EShopDbContext> options) : base(options)
         {
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             // Configure entity with Fluent API
             modelBuilder.ApplyConfiguration(new CartConfiguration());
 
@@ -35,23 +35,17 @@ namespace eShop.Data.EF
             modelBuilder.ApplyConfiguration(new SlideConfiguration());
 
             modelBuilder.ApplyConfiguration(new AppUserConfiguration());
-            modelBuilder.ApplyConfiguration(new AppRoleConfiguration());
 
             //Lập trình tiên tiến
             modelBuilder.ApplyConfiguration(new WorkingScheduleConfiguration());
-
-            modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("AppUserClaims");
-            modelBuilder.Entity<IdentityUserRole<Guid>>().ToTable("AppUserRoles").HasKey(x => new { x.UserId, x.RoleId });
-            modelBuilder.Entity<IdentityUserLogin<Guid>>().ToTable("AppUserLogins").HasKey(x => x.UserId);
-
-            modelBuilder.Entity<IdentityRoleClaim<Guid>>().ToTable("AppRoleClaims");
-            modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("AppUserTokens").HasKey(x => x.UserId);
 
             modelBuilder.Entity<RevenueStatistic>(entity =>
             {
                 entity.HasNoKey();
             });
-
+            modelBuilder.Entity<AppUser>()
+            .Property(e => e.Id)
+            .ValueGeneratedOnAdd();
             //Data seeding
             modelBuilder.Seed();
             //base.OnModelCreating(modelBuilder);

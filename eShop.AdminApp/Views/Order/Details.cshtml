@@ -105,26 +105,33 @@
                             <th>
                                 Giá
                             </th>
+                            <th>
+                                Ảnh sản phẩm
+                            </th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var item in Model.OrderDetails)
                         {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => Model.Id)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ProductId)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Quantity)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Price)
-                                </td>
-                            </tr>
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => Model.Id)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ProductId)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Quantity)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Price)
+                            </td>
+                            <td>
+                                <img src="@(Configuration["BaseAddress"]  +item.ThumbnailImage)"
+                                    style="width:100px" />
+                            </td>
+                        </tr>
                         }
                     </tbody>
                 </table>

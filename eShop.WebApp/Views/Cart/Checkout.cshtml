@@ -8,12 +8,12 @@
 
 @section scripts{
 
-    <script src="/js/HiddenSibar.js"></script>
+    <script src="~/js/HiddenSibar.min.js"></script>
     <script>
         var hidden = new Hidden();
         hidden.initialize();
     </script>
-    <script src="/js/cart.js"></script>
+    <script src="~/js/cart.min.js"></script>
 
     <script>
         var cartController = new CartController();
@@ -70,10 +70,10 @@
                             <div class="shopper-info">
                                 <form class="form-horizontal" asp-action="Checkout" asp-controller="Cart" method="post">
                                     <input asp-for="CheckoutModel.UserId" type="hidden">
-                                    <input asp-for="CheckoutModel.ShipName" id="txtName" type="text" placeholder="Tên">
-                                    <input asp-for="CheckoutModel.ShipEmail" id="txtEmail" type="email" placeholder="Email">
-                                    <input asp-for="CheckoutModel.ShipAddress" type="text" placeholder="Địa chỉ">
-                                    <input asp-for="CheckoutModel.ShipPhoneNumber" id="txtPhone" type="number" placeholder="Số điện thoại">
+                                    <input asp-for="CheckoutModel.ShipName" required id="txtName" type="text" placeholder="Tên">
+                                    <input asp-for="CheckoutModel.ShipEmail" required id="txtEmail" type="email" placeholder="Email">
+                                    <input asp-for="CheckoutModel.ShipAddress" required type="text" placeholder="Địa chỉ">
+                                    <input asp-for="CheckoutModel.ShipPhoneNumber" required id="txtPhone" type="number" placeholder="Số điện thoại">
 
                                     <button type="submit" class="btn btn-primary">Purchase</button>
                                 </form>

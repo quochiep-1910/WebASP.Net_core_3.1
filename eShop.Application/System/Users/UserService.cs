@@ -5,6 +5,7 @@ using eShop.Utilities.Exceptions;
 using eShop.ViewModels.Common;
 using eShop.ViewModels.System.Auth;
 using eShop.ViewModels.System.Users;
+using eShop.ViewModels.Utilities.Mail;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -24,7 +25,6 @@ namespace eShop.Application.System.Users
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
-        private readonly RoleManager<AppRole> _roleManager;
         private readonly IConfiguration _config;
         private readonly ILogger<UserService> _logger;
         private readonly IEmailService _emailService;
@@ -32,13 +32,11 @@ namespace eShop.Application.System.Users
         public UserService(UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
 
-            RoleManager<AppRole> roleManager,
             IConfiguration config, ILogger<UserService> logger, IEmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
 
-            _roleManager = roleManager;
             _config = config;
             _logger = logger;
             _emailService = emailService;
@@ -54,7 +52,12 @@ namespace eShop.Application.System.Users
             }
 
             var result = await _signInManager.PasswordSignInAsync(user, loginRequest.Password, loginRequest.RememberMe, lockoutOnFailure: true);
+            if (result.RequiresTwoFactor)
+            {
+                var checkUser = await _signInManager.GetTwoFactorAuthenticationUserAsync();
 
+                return new ApiSuccessResult<string>("RequiresTwoFactor");
+            }
             if (result.IsLockedOut)
             {
                 _logger.LogWarning("User account locked out.");
@@ -64,14 +67,20 @@ namespace eShop.Application.System.Users
             {
                 return new ApiErrorResult<string>("Đăng nhập không đúng");
             }
+            var token = TokenHandler(loginRequest.UserName);
+            return new ApiSuccessResult<string>(token.Result);
+        }
 
+        private async Task<string> TokenHandler(string UserName)
+        {
+            var user = await _userManager.FindByNameAsync(UserName);
             var roles = await _userManager.GetRolesAsync(user);
             var claims = new[]
             {
                 new Claim (ClaimTypes.Email,user.Email),
                 new Claim(ClaimTypes.GivenName,user.FirstName),
                 new Claim(ClaimTypes.Role, string.Join(";",roles)),
-                new Claim(ClaimTypes.Name,loginRequest.UserName)
+                new Claim(ClaimTypes.Name,UserName)
             };
             //mã hoá claim
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
@@ -82,11 +91,11 @@ namespace eShop.Application.System.Users
                 claims,
                 expires: DateTime.Now.AddHours(3),
                 signingCredentials: creds);
-
-            return new ApiSuccessResult<string>(new JwtSecurityTokenHandler().WriteToken(token));
+            var stringToken = new JwtSecurityTokenHandler().WriteToken(token);
+            return stringToken;
         }
 
-        public async Task<ApiResult<bool>> Delete(Guid id)
+        public async Task<ApiResult<bool>> Delete(string id)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
             if (user == null)
@@ -101,7 +110,7 @@ namespace eShop.Application.System.Users
             return new ApiErrorResult<bool>("Xoá Không Thành công");
         }
 
-        public async Task<ApiResult<UserViewModel>> GetById(Guid id)
+        public async Task<ApiResult<UserViewModel>> GetById(string id)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
             if (user == null)
@@ -167,7 +176,9 @@ namespace eShop.Application.System.Users
                     FirstName = x.FirstName,
                     Id = x.Id,
                     LastName = x.LastName,
-                    LockoutEnabled = x.LockoutEnabled
+                    LockoutEnabled = x.LockoutEnabled,
+                    EmailConfirmed = x.EmailConfirmed,
+                    LockoutEnd = x.LockoutEnd
                 }).ToListAsync();
 
             //4. Select and projection
@@ -179,6 +190,17 @@ namespace eShop.Application.System.Users
                 Items = data
             };
             return new ApiSuccessResult<PagedResult<UserViewModel>>(pagedResult);
+        }
+
+        public async Task<int> GetToTalUser()
+        {
+            var totalUser = await _userManager.Users.CountAsync();
+            if (totalUser < 0)
+            {
+                //Cannot find or error User
+                return 0;
+            }
+            return totalUser;
         }
 
         public async Task<ApiResult<bool>> Register(RegisterRequest registerRequest, string origin)
@@ -218,7 +240,7 @@ namespace eShop.Application.System.Users
             return new ApiErrorResult<bool>(result.Errors.FirstOrDefault()?.Description);
         }
 
-        public async Task<ApiResult<bool>> RoleAssign(Guid id, RoleAssignRequest request)
+        public async Task<ApiResult<bool>> RoleAssign(string id, RoleAssignRequest request)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
             if (user == null)
@@ -248,7 +270,7 @@ namespace eShop.Application.System.Users
             return new ApiSuccessResult<bool>();
         }
 
-        public async Task<ApiResult<bool>> Update(Guid id, UserUpdateRequest registerRequest)
+        public async Task<ApiResult<bool>> Update(string id, UserUpdateRequest registerRequest)
         {
             if (await _userManager.Users.AnyAsync(x => x.Email == registerRequest.Email && x.Id != id))
             {
@@ -418,6 +440,57 @@ namespace eShop.Application.System.Users
                 throw;
             }
         }
+
+        #region Login With two factor
+
+        public async Task<ApiResult<string>> LoginWith2Fa(LoginWith2fa login2Fa)
+        {
+            var authenticatorCode = login2Fa.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
+
+            var result = await _signInManager
+                .TwoFactorAuthenticatorSignInAsync(authenticatorCode, login2Fa.RememberMe, login2Fa.RememberMachine);
+
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("Người dùng đã đăng nhập bằng 2fa thành công.");
+
+                var token = TokenHandler(login2Fa.UserName);
+                return new ApiSuccessResult<string>(token.Result);
+            }
+            else if (result.IsLockedOut)
+            {
+                _logger.LogWarning("User with ID '{UserId}' account locked out.");
+                return new ApiErrorResult<string>("User with ID account locked out");
+            }
+            else
+            {
+                _logger.LogWarning("Mã xác thực không hợp lệ ");
+                return new ApiErrorResult<string>("Mã xác thực không hợp lệ");
+            }
+        }
+
+        public async Task<ApiResult<bool>> Disable2Fa(string userName)
+        {
+            var user = await _userManager.FindByNameAsync(userName);
+            if (user == null)
+            {
+                return new ApiErrorResult<bool>($"Không tìm thấy User:{userName}.");
+            }
+            var disable2faResult = await _userManager.SetTwoFactorEnabledAsync(user, false);
+            if (!disable2faResult.Succeeded)
+            {
+                return new ApiErrorResult<bool>("Đã xảy ra lỗi không mong muốn khi tắt 2FA");
+            }
+            return new ApiErrorResult<bool>();
+        }
+
+        public async Task<bool> SendEmailRequest(SendMailViewModel sendMailViewModel)
+        {
+            await _emailService.SenderEmailAsync(sendMailViewModel.ToEmail, sendMailViewModel.Subject, sendMailViewModel.Content, sendMailViewModel.Attachments);
+            return true;
+        }
+
+        #endregion Login With two factor
 
         #region Set up Token
 

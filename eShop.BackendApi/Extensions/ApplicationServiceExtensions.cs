@@ -1,6 +1,7 @@
 ﻿using eShop.Application.Catalog.Categories;
 using eShop.Application.Catalog.Products;
 using eShop.Application.Common;
+using eShop.Application.Contacts;
 using eShop.Application.Sales;
 using eShop.Application.System.Auth;
 using eShop.Application.System.Email;
@@ -18,6 +19,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace eShop.BackendApi.Extensions
 {
@@ -27,9 +29,15 @@ namespace eShop.BackendApi.Extensions
         {
             //kết nối database
             services.AddDbContext<EShopDbContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString(SystemConstants.MainConnecttionString)));
+            options.UseSqlServer(Configuration.GetConnectionString(SystemConstants.MainConnecttionString))
+            );
 
-            services.AddIdentity<AppUser, AppRole>()
+            services.AddIdentity<AppUser, IdentityRole<string>>(opt =>
+            {
+                opt.Lockout.AllowedForNewUsers = true;
+                opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2);
+                opt.Lockout.MaxFailedAccessAttempts = 3;
+            })
               .AddEntityFrameworkStores<EShopDbContext>()
                 .AddDefaultTokenProviders();
             //khai báo DI
@@ -40,7 +48,6 @@ namespace eShop.BackendApi.Extensions
             services.AddTransient<IStorageService, FileStorageService>();
             services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();
             services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
-            services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<ISlideService, SlideService>();
             services.AddTransient<ILanguageService, LanguageService>();
@@ -48,11 +55,13 @@ namespace eShop.BackendApi.Extensions
             services.AddTransient<IOrderService, OrderService>();
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IAuthService, AuthService>();
+            services.AddTransient<IContactService, ContactService>();
 
             //services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
             //services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidator>();
 
             services.AddAutoMapper(typeof(MapperConfig)); //automapper
+            services.AddControllersWithViews();
             services.AddControllers()
                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>()); //đăng kí tất cả class nào có Validator
 

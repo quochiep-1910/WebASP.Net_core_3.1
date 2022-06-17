@@ -38,7 +38,7 @@ namespace eShop.WebApp.Controllers
         public async Task<IActionResult> Detail(int id, string culture)
         {
             var product = await _productApiClient.GetById(id, culture);
-
+            var addViewCount = await _productApiClient.AddViewCount(id);
             return View(new ProductDetailViewModel()
             {
                 Product = product,
@@ -46,6 +46,5 @@ namespace eShop.WebApp.Controllers
                  .GetRelatedProducts(ProductSettings.NumberOfRelatedProducts, culture)
             });
         }
-
     }
 }

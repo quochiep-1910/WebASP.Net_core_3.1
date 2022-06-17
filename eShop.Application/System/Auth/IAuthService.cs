@@ -1,4 +1,5 @@
-﻿using eShop.ViewModels.System.Auth;
+﻿using eShop.ViewModels.Common;
+using eShop.ViewModels.System.Auth;
 using eShop.ViewModels.System.Users;
 using System.Threading.Tasks;
 
@@ -26,6 +27,6 @@ namespace eShop.Application.System.Auth
         /// <param name="request"></param>
         /// <param name="userid"></param>
         /// <returns></returns>
-        Task<EnableAuthenticatorViewModel> PostEnableAuthenticatorModel(EnableAuthenticatorRequest request, string userid);
+        Task<ApiResult<EnableAuthenticatorViewModel>> PostEnableAuthenticatorModel(EnableAuthenticatorRequest request, string userid);
     }
 }

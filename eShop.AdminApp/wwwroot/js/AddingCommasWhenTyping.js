@@ -4,7 +4,7 @@
     }
     function regsiterEvents() {
         $(document).ready(function () {
-            $("input[type='text']").keyup(function (event) {
+            $('input.InputAddingCommas').keyup(function (event) {
                 // skip for arrow keys
                 if (event.which >= 37 && event.which <= 40) {
                     event.preventDefault();

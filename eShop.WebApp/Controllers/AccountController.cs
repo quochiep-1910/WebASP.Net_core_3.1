@@ -1,6 +1,7 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using eShop.ApiIntegration;
 using eShop.Utilities.Constants;
+using eShop.ViewModels.System.Auth;
 using eShop.ViewModels.System.Users;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -68,6 +69,37 @@ namespace eShop.WebApp.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> ChangePassword()
+        {
+            var userId = await _userApiClient.GetByUserName(User.Identity.Name);
+            if (userId == null)
+            {
+                ModelState.AddModelError("", "Không lấy được id");
+                return View();
+            }
+            var user = new AppUserChangePasswordDTO()
+            {
+                Id = userId.Id
+            };
+            return View(user);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(AppUserChangePasswordDTO request)
+        {
+            if (!ModelState.IsValid)
+                return View(request);
+            var result = await _userApiClient.ChangeUserPassword(request);
+            if (result.IsSuccessed)
+            {
+                _notyf.Success("Đổi mật khẩu thành công");
+                return RedirectToAction("Index", "Home");
+            }
+            ModelState.AddModelError("", "Đổi mật khẩu thất bại");
+            return View(request);
+        }
+
+        [HttpGet]
         public IActionResult Register()
         {
             return View();
@@ -109,6 +141,64 @@ namespace eShop.WebApp.Controllers
                 CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, authProperties);
             _notyf.Success($"Xin chào {request.UserName}");
             return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+            model.origin = Request.Headers["origin"];
+            var result = await _userApiClient.ForgotPassword(model);
+
+            if (result)
+            {
+                ViewBag.SendEmailSuccess = $"Chúng tôi đã gửi một email tới {model.EmailAddress}";
+                return View();
+            }
+            ModelState.AddModelError("", "Gửi email thất bại");//key and message
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult ResetPassword([FromQuery] string Token)
+        {
+            if (!ModelState.IsValid)
+                return View();
+
+            if (!string.IsNullOrEmpty(Token))
+            {
+                var tokenReset = new ResetPasswordRequest()
+                {
+                    Token = Token
+                };
+                return View(tokenReset);
+            }
+            return View("Error");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var result = await _userApiClient.ResetPassword(model);
+            if (result)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            ModelState.AddModelError("", "Reset mật khẩu thất bại");//key and message
+
+            return View(model);
         }
 
         //Giải mã Token

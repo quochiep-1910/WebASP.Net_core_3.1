@@ -33,6 +33,11 @@ namespace eShop.BackendApi.Controllers
             }
 
             var result = await _userService.Authencate(request);
+            if (result.Message == "RequiresTwoFactor")
+            {
+                return Ok(result.Message);
+            }
+
             if (string.IsNullOrEmpty(result.ResultObj))
             {
                 return BadRequest(result);
@@ -61,12 +66,19 @@ namespace eShop.BackendApi.Controllers
         [HttpGet("paging")]
         public async Task<IActionResult> GetAllPaging([FromQuery] GetUserPagingRequest request)
         {
-            var products = await _userService.GetUserPaging(request);
-            return Ok(products);
+            var userPaging = await _userService.GetUserPaging(request);
+            return Ok(userPaging);
+        }
+
+        [HttpGet("totalUser")]
+        public async Task<IActionResult> GetTotalUser()
+        {
+            var totalUser = await _userService.GetToTalUser();
+            return Ok(totalUser);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] UserUpdateRequest request)
+        public async Task<IActionResult> Update(string id, [FromBody] UserUpdateRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -81,7 +93,7 @@ namespace eShop.BackendApi.Controllers
         }
 
         [HttpGet("GetId")]
-        public async Task<IActionResult> GetById(Guid id)
+        public async Task<IActionResult> GetById(string id)
         {
             var user = await _userService.GetById(id);
             return Ok(user);
@@ -95,14 +107,14 @@ namespace eShop.BackendApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(string id)
         {
             var result = await _userService.Delete(id);
             return Ok(result);
         }
 
         [HttpPut("{id}/roles")]
-        public async Task<IActionResult> RoleAssign(Guid id, [FromBody] RoleAssignRequest request)
+        public async Task<IActionResult> RoleAssign(string id, [FromBody] RoleAssignRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -176,7 +188,43 @@ namespace eShop.BackendApi.Controllers
                 return BadRequest(ModelState);
 
             var result = await _authService.PostEnableAuthenticatorModel(request, userId);
-            return Ok(result);
+            if (result.IsSuccessed)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpPost("LoginWith2Fa")]
+        [AllowAnonymous]
+        public async Task<IActionResult> LoginWith2Fa([FromBody] LoginWith2fa request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(request);
+            }
+            var result = await _userService.LoginWith2Fa(request);
+            if (result.IsSuccessed)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpGet("Disable2Fa")]
+        public async Task<IActionResult> Disable2Fa()
+        {
+            var user = User.Identity.Name;
+            if (user == null)
+            {
+                return BadRequest();
+            }
+            var result = await _userService.Disable2Fa(user);
+            if (result.IsSuccessed)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
         }
     }
 }

@@ -14,13 +14,13 @@
 
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/font-awesome.min.css" rel="stylesheet">
-    <link href="/css/prettyPhoto.css" rel="stylesheet">
-    <link href="/css/price-range.css" rel="stylesheet">
-    <link href="/css/animate.css" rel="stylesheet">
-    <link href="/css/main.css" rel="stylesheet">
-    <link href="/css/responsive.css" rel="stylesheet">
+    <link href="~/css/prettyPhoto.min.css" rel="stylesheet" />
+    <link href="~/css/price-range.min.css" rel="stylesheet" />
+    <link href="~/css/animate.min.css" rel="stylesheet" />
+    <link href="~/css/main.min.css" rel="stylesheet" />
+    <link href="~/css/responsive.min.css" rel="stylesheet" />
 
-    <script src="/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
 
@@ -114,27 +114,60 @@
                     </div>
                     <div class="col-md-8 clearfix">
                         <div class="shop-menu clearfix pull-right">
+
                             <ul class="nav navbar-nav">
                                 @if (User.Identity.IsAuthenticated)
                                 {
-                                    <li><a href=""><i class="fa fa-user"></i>Welcome <strong>@User.Identity.Name</strong> </a></li>
-                                    <li><a href=""><i class="fa fa-star"></i> Wishlist</a></li>
                                     <li>
-                                        <form action="/@culture/Account/Logout" method="post">
-                                            <button type="submit" style="padding-right:0;margin-top:10px;margin-bottom:0px;background:transparent;border:none;">
-                                                <i class="fa fa-lock"></i>
-                                                Logout
+                                        <div class="dropdown">
+                                            <button class="btn dropdown-toggle" style="margin-top:3px" type="button" data-toggle="dropdown">
+                                                <i class="fa fa-user"></i> Welcome
+                                                <strong>@User.Identity.Name</strong>
+                                                <span class="caret"></span>
                                             </button>
-                                        </form>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a asp-action="Profile" asp-controller="Home">
+                                                        <i class="fa fa-key" aria-hidden="true"></i> Profile
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                <li>
+                                                    <a asp-action="ChangePassword" asp-controller="Account">
+                                                        <i class="fa fa-key" aria-hidden="true"></i> Change password
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <form action="/@culture/Account/Logout" method="post">
+                                                        <button type="submit" style="padding-right:0;margin-top:10px;margin-bottom:0px;background:transparent;border:none;">
+                                                            <i class="fa fa-lock"></i>
+                                                            Logout
+                                                        </button>
+                                                    </form>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </li>
+                                    <li><a href=""><i class="fa fa-star"></i> Wishlist</a></li>
+
                                 }
                                 else
                                 {
 
                                     <li><a href="/@culture/Account/Login"><i class="fa fa-lock"></i> Login</a></li>
                                 }
-                                <li><a href="/@culture/Cart/Checkout"><i class="fa fa-crosshairs"></i> Checkout</a></li>
-                                <li><a href="/@culture/cart"><i class="fa fa-shopping-cart"></i> Cart</a></li>
+                                <li>
+                                    <a href="/@culture/Cart/Checkout">
+                                        <i class="fa fa-crosshairs"></i> Checkout
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="/@culture/cart">
+                                        <i class="fa fa-shopping-cart"></i> Cart
+                                      
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -162,7 +195,7 @@
                                     <a href="#">Shop<i class="fa fa-angle-down"></i></a>
                                     <ul role="menu" class="sub-menu">
                                         <li><a href="shop.html">Products</a></li>
-                                        <li><a href="product-details.html">Product Details</a></li>type="button" class
+                                        <li><a href="product-details.html">Product Details</a>
                                         <li><a href="checkout.html">Checkout</a></li>
                                         <li><a href="cart.html">Cart</a></li>
                                         <li><a href="login.html">Login</a></li>
@@ -176,7 +209,7 @@
                                     </ul>
                                 </li>
                                 <li><a href="404.html">404</a></li>
-                                <li><a href="contact-us.html">Contact</a></li>
+                                <li><a asp-controller="Contact" asp-action="create">Contact</a></li>
                             </ul>
                         </div>
                     </div>
@@ -357,14 +390,20 @@
     </footer><!--/Footer-->
 
     <script src="/js/jquery.scrollUp.min.js" type="text/javascript"></script>
-    <script src="/js/price-range.js"></script>
+    <script src="~/js/price-range.min.js"></script>
     <script src="/js/jquery.prettyPhoto.js"></script>
-    <script src="/js/main.js"></script>
+    <script src="~/js/main.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <script src="/js/site.js"></script>
+    <script src="~/js/site.min.js"></script>
+    <script src="~/lib/Mustache/mustache.min.js"></script>
     <script>
         var site = new SiteController();
         site.initialize();
+    </script>
+    <script src="~/js/homeController/viewCategoryInHome.js"></script>
+    <script>
+        var categoryHome = new CategoryHomeController();
+        categoryHome.initialize();
     </script>
     @await Component.InvokeAsync("Notyf")
     @RenderSection("scripts", required: false)

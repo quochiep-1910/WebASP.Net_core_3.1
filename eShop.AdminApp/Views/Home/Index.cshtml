@@ -1,19 +1,31 @@
-﻿@{
+﻿@using eShop.ViewModels.Common
+@model HomeViewModel
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
+@{
+    var XLabels = Newtonsoft.Json.JsonConvert.SerializeObject(Model.RevenueStatisticViews.Select(x => x.Date.Date.ToString("MM/dd/yyyy")).ToList());
+    var YValues = Newtonsoft.Json.JsonConvert.SerializeObject(Model.RevenueStatisticViews.Select(x => x.Benefit).ToList());
+    var ZValues = Newtonsoft.Json.JsonConvert.SerializeObject(Model.RevenueStatisticViews.Select(x => x.Revenues).ToList());
     ViewData["Title"] = "Trang Chủ";
 }
 
+@section Scripts{
+    <script src="~/js/controller/home/pagingHomeController.min.js"></script>
+}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Blank Page</h1>
+                    <h1>Welecom @User.Identity.Name</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">Blank Page</li>
+                        <li class="breadcrumb-item active">Welecom @User.Identity.Name</li>
                     </ol>
                 </div>
             </div>
@@ -22,31 +34,297 @@
 
     <!-- Main content -->
     <section class="content">
+        <div class="container-fluid">
+            <!-- Small boxes (Stat box) -->
+            <div class="row">
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-info">
+                        <div class="inner">
+                            <h3>@Model.TotalOrder</h3>
 
-        <!-- Default box -->
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Title</h3>
+                            <p>Tổng đơn hàng</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-bag"></i>
+                        </div>
+                        <a asp-action="Index" asp-controller="Order" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-warning">
+                        <div class="inner">
+                            <h3>@Model.TotalUser</h3>
 
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
-                        <i class="fas fa-minus"></i>
-                    </button>
-                    <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
-                        <i class="fas fa-times"></i>
-                    </button>
+                            <p>Tổng người đăng kí</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-person-add"></i>
+                        </div>
+                        <a asp-action="Index" asp-controller="User" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-danger">
+                        <div class="inner">
+                            <h3>@Model.TotalProducts</h3>
+
+                            <p>Tổng sản phẩm hiện có</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-pie-graph"></i>
+                        </div>
+                        <a asp-action="Index" asp-controller="Product" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-success">
+                        <div class="inner">
+                            <h3>@Model.TotalContact</h3>
+
+                            <p>Thông tin liên lạc khách hàng</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-stats-bars"></i>
+                        </div>
+                        <a asp-action="Index" asp-controller="Order" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <!-- ./col -->
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <section class="content">
+        <div class="container-fluid">
+            <!-- Small boxes (Stat box) -->
+            <div class="row">
+                <div class="col-lg-7 connectedSortable">
+                    <section>
+                        <div class="card">
+                            <div class="card-header border-0">
+                                <div class="d-flex justify-content-between">
+                                    <i class="fas fa-chart-pie mr-1"></i>
+                                    <h3 class="card-title">
+                                        <a href="/Order/GetRevenue">
+                                            Doanh Thu
+                                        </a>
+                                    </h3>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="chart-container">
+                                    <canvas id="chart" style="width:100%; height:500px"></canvas>
+                                </div>
+                            </div><!-- /.card-body -->
+                        </div>
+                    </section>
+                </div>
+                <div class="col-lg-5">
+                    <div class="card">
+                        <div class="card-header border-0">
+                            <h3 class="card-title">Top sản phẩm được mua nhiều nhất</h3>
+                            <div class="card-tools">
+                                <a href="#" class="btn btn-tool btn-sm">
+                                    <i class="fas fa-download"></i>
+                                </a>
+                                <a href="#" class="btn btn-tool btn-sm">
+                                    <i class="fas fa-bars"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-striped table-valign-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Sản phẩm</th>
+                                        <th>Số lượng</th>
+                                        <th>Giá</th>
+                                        <th>More</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="productTopBody">
+                                    @*@foreach (var item in Model.ListProductTopSelling.Items)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <img src="@(Configuration["BaseAddress"]+@item.ThumbnailImage)" alt="@item.Name " class="img-circle img-size-32 mr-2">
+                                                    @item.Name
+                                                </td>
+                                                <td>@item.Stock</td>
+                                                <td>$@item.Price</td>
+                                                <td>
+                                                    <a asp-action="Details" asp-controller="Product" asp-route-id="@item.Id" class="text-muted">
+                                                        <i class="fas fa-search"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }*@
+                                </tbody>
+                            </table>
+                            <div class="Pager paginationPager"></div>
+                        </div>
+
+                        @*@await Component.InvokeAsync("Pager", Model.ListProductTopSelling.Paging)*@
+                    </div>
                 </div>
             </div>
-            <div class="card-body">
-                Start creating your amazing application!
-            </div>
-            <!-- /.card-body -->
-            <div class="card-footer">
-                Footer
-            </div>
-            <!-- /.card-footer-->
         </div>
-        <!-- /.card -->
     </section>
     <!-- /.content -->
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+@*<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>*@
+<script type="text/javascript">
+
+        $(function () {
+    var chartName = "chart";
+            var ctx = document.getElementById(chartName).getContext('2d');
+
+        var data = {
+           labels: @Html.Raw(XLabels),
+            datasets: [
+                {
+                    @*labels: @Html.Raw(XLabels),*@
+                    label: "Doanh thu",
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)',
+                        'rgba(255, 0, 0)',
+                        'rgba(0, 255, 0)',
+                        'rgba(0, 0, 255)',
+                        'rgba(192, 192, 192)',
+                        'rgba(255, 255, 0)',
+                        'rgba(255, 0, 255)'
+                    ],
+                    borderColor: [
+                        'rgba(255,99,132,1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(255, 0, 0)',
+                        'rgba(0, 255, 0)',
+                        'rgba(0, 0, 255)',
+                        'rgba(192, 192, 192)',
+                        'rgba(255, 255, 0)',
+                        'rgba(255, 0, 255)'
+                    ],
+                    borderWidth: 1,
+                    data: @Html.Raw(ZValues)
+
+    },
+                {
+                       @*labels: @Html.Raw(XLabels),*@
+                    label: "Doanh số",
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)',
+                        'rgba(255, 0, 0)',
+                        'rgba(0, 255, 0)',
+                        'rgba(0, 0, 255)',
+                        'rgba(192, 192, 192)',
+                        'rgba(255, 255, 0)',
+                        'rgba(255, 0, 255)'
+                    ],
+                    borderColor: [
+                        'rgba(255,99,132,1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(255, 0, 0)',
+                        'rgba(0, 255, 0)',
+                        'rgba(0, 0, 255)',
+                        'rgba(192, 192, 192)',
+                        'rgba(255, 255, 0)',
+                        'rgba(255, 0, 255)'
+                    ],
+                    borderWidth: 1,
+                    data: @Html.Raw(YValues)
+                }
+            ]
+
+            };
+
+var options = {
+                maintainAspectRatio: false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            min: 0,
+                            beginAtZero: true
+                        },
+                        gridLines: {
+                            display: true,
+                            color: "rgba(255,99,164,0.2)",
+                            color:""
+                        }
+}],
+                    xAxes: [{
+                        ticks: {
+                            min: 0,
+                            beginAtZero: true
+                        },
+                        gridLines: {
+                            display: false
+                        }
+                    }]
+                }
+            };
+
+       var myChart = new  Chart(ctx, {
+           options: {
+               responsive: true,
+               plugins: {
+                   legend: {
+                       position: 'top',
+                   },
+                   title: {
+                       display: true,
+                       text: 'Chart.js Bar Chart'
+                   }
+               }
+           },
+                data: data,
+                type:'bar'
+
+            });
+        });
+</script>
+
+<script id="tplProductTop" type="x-tmpl-mustache">
+     <tr>
+             <td>
+                 <img src="https://localhost:5001{{ThumbnailImage}}" alt="" class="img-circle img-size-32 mr-2">
+               {{Name}}
+             </td>
+             <td>{{Stock}}</td>
+             <td>${{Price}}</td>
+             <td>
+                 <a asp-action="Details" asp-controller="Product" asp-route-id="{{Id}}" class="text-muted">
+                     <i class="fas fa-search"></i>
+                 </a>
+             </td>
+         </tr>
+</script>

@@ -1,9 +1,14 @@
 ﻿using eShop.Application.Sales;
+using eShop.Application.System.Users;
 using eShop.Data.EF;
 using eShop.ViewModels.Sales.Order;
+using eShop.ViewModels.Sales.OrderDetail;
 using eShop.ViewModels.Sales.RevenueStatistics;
+using eShop.ViewModels.Utilities.Mail;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace eShop.BackendApi.Controllers
@@ -14,11 +19,13 @@ namespace eShop.BackendApi.Controllers
     {
         private readonly EShopDbContext _context;
         private readonly IOrderService _OrderService;
+        private readonly IUserService _userService;
 
-        public OrdersController(IOrderService OrderService, EShopDbContext context)
+        public OrdersController(IOrderService OrderService, EShopDbContext context, IUserService userService)
         {
             _OrderService = OrderService;
             _context = context;
+            _userService = userService;
         }
 
         [HttpPost]
@@ -33,7 +40,22 @@ namespace eShop.BackendApi.Controllers
                 return BadRequest();//400
             var order = await _OrderService.GetById(orderId);
 
-            return CreatedAtAction(nameof(GetById), new { id = orderId }, order);
+            return Ok(orderId);
+        }
+
+        [HttpPost("postorderdetail")]
+        public async Task<IActionResult> CreateOrderDetail([FromBody] List<OrderDetailViewModel> request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _OrderService.CreateOrderDetail(request);
+            if (result == 0)
+                return BadRequest();//400
+            var order = await _OrderService.GetById(request.Select(x => x.OrderId).FirstOrDefault());
+
+            return CreatedAtAction(nameof(GetById), new { id = request.Select(x => x.OrderId).FirstOrDefault() }, order);
         }
 
         [HttpGet("{orderId}")]
@@ -65,6 +87,24 @@ namespace eShop.BackendApi.Controllers
             return Ok(order);
         }
 
+        [HttpGet("totalOrder")]
+        [Authorize]
+        public async Task<IActionResult> GetTotalOrder()
+        {
+            var totalOrder = await _OrderService.GetTotalOrder();
+
+            return Ok(totalOrder);
+        }
+
+        [HttpGet("GetTotalOrderById")]
+        [Authorize]
+        public async Task<IActionResult> GetTotalOrderById(string id)
+        {
+            var totalOrderById = await _OrderService.GetTotalOrderById(id);
+
+            return Ok(totalOrderById);
+        }
+
         [HttpPut("{orderId}")]
         [Consumes("multipart/form-data")]
         [Authorize]
@@ -89,6 +129,13 @@ namespace eShop.BackendApi.Controllers
             var affectedResult = await _OrderService.GetRevenueStatistic(request);
 
             return Ok(affectedResult);
+        }
+
+        [HttpPost("SendEmail")]
+        public async Task<IActionResult> SendEmail([FromForm] SendMailViewModel sendMailViewModel)
+        {
+            var sendEmailRequest = await _userService.SendEmailRequest(sendMailViewModel);
+            return Ok();
         }
     }
 }

@@ -1,0 +1,235 @@
+﻿@model eShop.ViewModels.System.Users.UserViewModel
+@{
+    ViewData["Title"] = "Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Scripts{
+    <script src="~/js/controller/order/loadingTimlineOrder.min.js"></script>
+    <script>
+        var site = new OrderController();
+        site.initialize();
+    </script>
+}
+<style>
+    #infinite-table {
+        height: 637px;
+        overflow: auto;
+    }
+</style>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+    const div = document.querySelector("#infinite-table");
+</script>
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Profile</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">User Profile</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3">
+
+                    <!-- Profile Image -->
+                    <div class="card card-primary card-outline">
+                        <div class="card-body box-profile">
+                            <div class="text-center">
+                                <img class="profile-user-img img-fluid img-circle"
+                                     src="/img/user4-128x128.jpg"
+                                     alt="User profile picture">
+                            </div>
+
+                            <h3 class="profile-username text-center">Nina Mcintire</h3>
+
+                            <p class="text-muted text-center">Software Engineer</p>
+
+                            <ul class="list-group list-group-unbordered mb-3">
+
+                                <li class="list-group-item">
+                                    <b>Tổng sản phẩm đã mua: </b> <a class="float-right">543</a>
+                                </li>
+                            </ul>
+
+                            <a href="#" class="btn btn-primary btn-block"><b>Xem</b></a>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                    <!-- About Me Box -->
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">About Me</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <strong><i class="fas fa-address-card"></i> Họ Tên</strong>
+
+                            <p class="text-muted">
+                                @Model.FirstName @Model.LastName
+                            </p>
+
+                            <hr>
+
+                            <strong><i class="fas fa-envelope"></i> Email</strong>
+
+                            <p class="text-muted">@Model.Email</p>
+
+                            <hr>
+
+                            <strong><i class="fas fa-phone"></i> Số điện thoại</strong>
+
+                            <p class="text-muted">
+                                <span class="tag tag-danger">@Model.PhoneNumber</span>
+                            </p>
+
+                            <hr>
+
+                            <strong><i class="fas fa-birthday-cake"></i> Ngày Sinh</strong>
+
+                            <p class="text-muted">@Model.Dob</p>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+                <div class="col-md-9">
+                    <div class="card">
+                        <div class="card-header p-2">
+                            <ul class="nav nav-pills">
+                                <li class="nav-item"><a class="nav-link active" href="#timeline" data-toggle="tab">Lịch sử mua hàng</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Thay đổi thông tin</a></li>
+                            </ul>
+                        </div><!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="tab-content" id="infinite-table">
+
+                                <!-- /.tab-pane -->
+                                <div class="active tab-pane scrollRevenue" id="timeline">
+                                    <!-- The timeline -->
+                                    <div class="timeline timeline-inverse" id="timelineMustacheBody">
+                                    </div>
+                                </div>
+                                <!-- /.tab-pane -->
+
+                                <div class="tab-pane" id="settings">
+                                    <form asp-action="UpdateProfile" method="post" class="form-horizontal">
+                                        <input id="UserId" asp-for="Id" type="hidden" />
+                                        <div class="form-group row">
+                                            <label for="inputName" asp-for="FirstName" class="col-sm-2 col-form-label">Họ</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" asp-for="FirstName" class="form-control" id="inputName" placeholder="Name" value="@Model.FirstName">
+                                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="inputName" asp-for="LastName" class="col-sm-2 col-form-label">Tên</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" asp-for="LastName" class="form-control" id="inputName" placeholder="Name" value="@Model.LastName">
+                                                <span asp-validation-for="LastName" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="inputEmail" asp-for="Email" class="col-sm-2 col-form-label">Email</label>
+                                            <div class="col-sm-10">
+                                                <input type="email" asp-for="Email" class="form-control" id="inputEmail" value="@Model.Email">
+                                                <span asp-validation-for="Email" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="inputName2" asp-for="PhoneNumber" class="col-sm-2 col-form-label">Số điện thoại</label>
+                                            <div class="col-sm-10">
+                                                <input type="number" asp-for="PhoneNumber" class="form-control" id="inputName2" value="@Model.PhoneNumber" placeholder="Số điện thoại">
+                                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="inputName2" asp-for="Dob" class="col-sm-2 col-form-label">Ngày sinh</label>
+                                            <div class="col-sm-10">
+                                                <input asp-for="Dob" class="form-control" />
+                                                <span asp-validation-for="Dob" class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="offset-sm-2 col-sm-10">
+                                                <button type="submit" class="btn btn-danger">Submit</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- /.tab-pane -->
+                            </div>
+                            <!-- /.tab-content -->
+                        </div><!-- /.card-body -->
+                    </div>
+                    <!-- /.nav-tabs-custom -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+<script id="tplLoadingTimeline" type="x-tmpl-mustache">
+    <!-- timeline time label -->
+             <div class="time-label">
+                 <span class="bg-success">
+                        {{orderDate}}
+                 </span>
+             </div>
+             <!-- /.timeline-label -->
+             <!-- timeline item -->
+             <div>
+             <i class="fas fa-cart-arrow-down bg-success"></i>
+
+                 <div class="timeline-item">
+                     <span class="time"><i class="far fa-clock"></i> 12:05</span>
+
+                     <h3 class="timeline-header"><a href="#">Đơn hàng giao thành công</a> đến địa chỉ của bạn</h3>
+
+                     <div class="timeline-body">
+                        <ul>
+                           <li>Tên sản phẩm: {{name}}</li>
+                           <li>Mô tả sản phẩm: {{description}}</li>
+                           <li>Số Lượng:{{quantity}}</li>
+                           <li>Giá: {{price}}</li>
+                        </ul>
+                     </div>
+                     <div class="timeline-footer">
+                         <a href="/Order/Details/{{orderId}}" class="btn btn-primary btn-sm"><i class="fas fa-eye"> View</i></a>
+                     </div>
+                 </div>
+             </div>
+
+             <div>
+                 <i class="fas fa-image bg-info"></i>
+                 <div class="timeline-item">
+                     <span class="time"><i class="far fa-clock"></i> 27 mins ago</span>
+
+                     <h3 class="timeline-header"><a href="#">Hình ảnh đơn hàng</a> bạn đã đặt</h3>
+
+                     <div class="timeline-body">
+                       Vui lòng kiểm tra lại đơn hàng
+                     </div>
+                     <div class="timeline-body">
+                         <img  src="https://localhost:5001{{thumbnailImage}}" alt="{{name}}" style="width: 300px;">
+                     </div>
+                 </div>
+             </div>
+</script>

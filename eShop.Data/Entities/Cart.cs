@@ -9,7 +9,7 @@ namespace eShop.Data.Entities
         public int Quantity { set; get; }
         public decimal Price { set; get; }
 
-        public Guid UserId { get; set; }
+        public string UserId { get; set; }
 
         public Product Product { get; set; }
 

@@ -1,10 +1,12 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using eShop.AdminApp.Models;
 using eShop.ApiIntegration;
+using eShop.Utilities.Constants;
 using eShop.ViewModels.Common;
 using eShop.ViewModels.System.Users;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
-using System;
 using System.Threading.Tasks;
 
 namespace eShop.AdminApp.Controllers
@@ -49,7 +51,7 @@ namespace eShop.AdminApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Details(Guid id)
+        public async Task<IActionResult> Details(string id)
         {
             var result = await _userApiClient.GetById(id);
 
@@ -76,7 +78,36 @@ namespace eShop.AdminApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(Guid id)
+        public async Task<IActionResult> Profile()
+        {
+            if (User.Identity.Name != null)
+            {
+                var user = await _userApiClient.GetByUserName(User.Identity.Name);
+                return View(user);
+            }
+            return RedirectToAction("Error", "Home");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateProfile(UserUpdateRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+            var result = await _userApiClient.UpdateUser(request.Id, request);
+
+            if (result.IsSuccessed)
+            {
+                //TempData["result"] = "Cập nhập tài khoản quản trị thành công";
+                _notyf.Success("Cập nhập thông tin tài khoản");
+                return RedirectToAction("Profile");
+            }
+            ModelState.AddModelError("", result.Message);//key and message
+
+            return View(request);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(string id)
         {
             var result = await _userApiClient.GetById(id);
             if (result.IsSuccessed)
@@ -116,7 +147,7 @@ namespace eShop.AdminApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(string id)
         {
             var result = await _userApiClient.GetById(id);
             return View(new UserDeleteRequest()
@@ -146,8 +177,13 @@ namespace eShop.AdminApp.Controllers
             return View(request);
         }
 
+        public IActionResult Forbidden()
+        {
+            return View();
+        }
+
         [HttpGet]
-        public async Task<IActionResult> RoleAssign(Guid id)
+        public async Task<IActionResult> RoleAssign(string id)
         {
             var roleAssignRequest = await GetRoleroleAssignRequest(id);
             return View(roleAssignRequest);
@@ -172,7 +208,7 @@ namespace eShop.AdminApp.Controllers
             return View(roleAssignRequest);
         }
 
-        private async Task<RoleAssignRequest> GetRoleroleAssignRequest(Guid id)
+        private async Task<RoleAssignRequest> GetRoleroleAssignRequest(string id)
         {
             var userObj = await _userApiClient.GetById(id);
             var roleObj = await _roleApiClient.GetAll();
@@ -207,10 +243,63 @@ namespace eShop.AdminApp.Controllers
         public async Task<IActionResult> EnableAuthenticator()
         {
             var userId = await _userApiClient.GetByUserName(User.Identity.Name);
-            var resultAuthen = await _userApiClient.GetEnableAuthenticator(userId.Id.ToString());
-            return View(resultAuthen);
+            var authen = await _userApiClient.GetEnableAuthenticator(userId.Id.ToString());
+            var result = new EnableAuthenViewModel()
+            {
+                EnableAuthenticatorViewModel = authen
+            };
+            return View(result);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EnableAuthenticator(EnableAuthenViewModel request)
+
+        {
+            var user = await _userApiClient.GetByUserName(User.Identity.Name);
+            var resultAuthen = await _userApiClient.PostEnableAuthenticator(request.EnableAuthenticatorRequest, user.Id);
+            if (resultAuthen.Message == ResponseMessage.ErrorCodeAuthentication)
+            {
+                ModelState.AddModelError("", resultAuthen.Message);//key and message
+                _notyf.Error(resultAuthen.Message);
+                return RedirectToAction("EnableAuthenticator");
+            }
+            if (resultAuthen.ResultObj.StatusMessage == ResponseMessage.AuthenticatorHasBeenVerified)
+            {
+                _notyf.Success("Thêm Bảo mật 2 lớp thành công");
+                return RedirectToAction("TwoFactorAuthentication");
+            }
+            else if (resultAuthen.IsSuccessed)
+            {
+                if (resultAuthen.ResultObj.RecoveryCodes.Length != 0)
+                {
+                    var parameters = new RouteValueDictionary();
+                    for (int i = 0; i < resultAuthen.ResultObj.RecoveryCodes.Length; i++)
+                    {
+                        parameters["[" + i + "]"] = resultAuthen.ResultObj.RecoveryCodes[i];
+                    }
+
+                    return RedirectToAction("ShowRecoveryCodes", parameters);
+                }
+                _notyf.Success("Thêm Bảo mật 2 lớp thành công");
+                return RedirectToAction("TwoFactorAuthentication");
+            }
+            ModelState.AddModelError("", resultAuthen.Message);//key and message
+            _notyf.Error(resultAuthen.Message);
+            return RedirectToAction("EnableAuthenticator");
         }
 
         #endregion Enable Authenticator
+
+        [HttpGet]
+        public IActionResult ShowRecoveryCodes(string[] RecoveryCodes)
+        {
+            var codes = new ShowRecoveryCodes() { RecoveryCodes = RecoveryCodes };
+
+            if (RecoveryCodes == null || RecoveryCodes.Length == 0)
+            {
+                return RedirectToPage("./TwoFactorAuthentication");
+            }
+            return View(codes);
+        }
     }
 }

@@ -1,0 +1,77 @@
+﻿@model eShop.ViewModels.Sales.Order.OrderCreateRequest
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Thêm mới Sản phẩm</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active">Thêm mới Sản phẩm</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <section class="content">
+
+        <!-- Default box -->
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <a class="btn btn-success" asp-action="Index" asp-controller="Order">Về Danh Sách</a>
+                </div>
+                <hr />
+                <form asp-action="Create">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <input asp-for="UserId" type="hidden" />
+                    <div class="form-group">
+                        <label asp-for="ShipName" class="control-label"></label>
+                        <input asp-for="ShipName" class="form-control" />
+                        <span asp-validation-for="ShipName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ShipAddress" class="control-label"></label>
+                        <input asp-for="ShipAddress" class="form-control" />
+                        <span asp-validation-for="ShipAddress" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ShipEmail" class="control-label"></label>
+                        <input asp-for="ShipEmail" class="form-control" />
+                        <span asp-validation-for="ShipEmail" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ShipPhoneNumber" class="control-label"></label>
+                        <input asp-for="ShipPhoneNumber" class="form-control" />
+                        <span asp-validation-for="ShipPhoneNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Status" class="control-label"></label>
+                        <select asp-for="Status">
+                            <option value='0'>Đang Xử lý đơn</option>
+                            <option value='1'>Đã xác nhận bên bán còn hàng</option>
+                            <option value='2'>Đang chuyển hàng</option>
+                            <option value='3'>Thành Công</option>
+                            <option value='4'>Đã Huỷ</option>
+                        </select>
+                        <span asp-validation-for="Status" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>

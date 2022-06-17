@@ -2,6 +2,7 @@
 using eShop.ViewModels.Catalog.Products;
 
 using eShop.ViewModels.Common;
+using eShop.ViewModels.Sales.Order;
 using eShop.ViewModels.System.Users;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -36,9 +37,29 @@ namespace eShop.Application.Catalog.Products
 
         Task<ProductImageViewModel> GetImageById(int imageId);
 
+        /// <summary>
+        /// Lấy tất cả các sản phẩm mà user đó đã mua
+        /// </summary>
+        /// <param name="userId">user id</param>
+        /// <returns></returns>
+        Task<OrderViewModel> GetAllProductUserBought(string userId);
+
+        /// <summary>
+        /// Get all total Product Now
+        /// </summary>
+        /// <returns></returns>
+        Task<int> GetTotalProduct();
+
         Task<List<ProductViewModel>> GetAll(string LanguageId);
 
         Task<PagedResult<ProductViewModel>> GetAllByCategoryId(string languageId, GetPublicProductPagingRequest request);
+
+        /// <summary>
+        /// Lấy ra top sản phẩm bán chạy nhất
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<PagedResult<ProductViewModel>> GetTopProductSelling(GetManageProductPagingRequest request);
 
         Task<ApiResult<bool>> CategoryAssign(int id, CategoryAssignRequest request);
 

@@ -348,3 +348,6 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+/eShop.BackendApi/wwwroot/user-content
+eShop.BackendApi/appsettings.Development.json
+eShop.BackendApi/wwwroot/FilesSendMail/hinh-nen-laptop-full-hd-anh-nang-chieu-tren-con-duong-nui-de_xcvft_034800289.jpeg

@@ -1,6 +1,5 @@
-﻿using eShop.Data.Entities;
+﻿using eShop.Data.EF;
 using eShop.ViewModels.System.Roles;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,20 +9,19 @@ namespace eShop.Application.System.Roles
 {
     public class RoleService : IRoleService
     {
-        private readonly RoleManager<AppRole> _roleManager;
+        private readonly EShopDbContext _context;
 
-        public RoleService(RoleManager<AppRole> roleManager)
+        public RoleService(EShopDbContext context)
         {
-            _roleManager = roleManager;
+            _context = context;
         }
 
         public async Task<List<RoleViewModel>> GetAll()
         {
-            var roles = await _roleManager.Roles.Select(x => new RoleViewModel()
+            var roles = await _context.Roles.Select(x => new RoleViewModel()
             {
                 Id = x.Id,
                 Name = x.Name,
-                Description = x.Description
             }).ToListAsync();
             return roles;
         }
