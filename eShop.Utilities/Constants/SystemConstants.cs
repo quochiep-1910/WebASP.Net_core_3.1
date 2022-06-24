@@ -45,6 +45,16 @@
             Canceled
         }
 
+        public class OrderConstants
+        {
+            public const string CannotFindOrderCode = "Không tim thấy mã hoá đơn";
+            public const string OrderSuccess = "Thành công";
+            public const string OrderSaveInDataAndSuccess = "Đơn hàng đã được ghi nhận và thanh toán thành công";
+            public const string OrderIsCancel = "Đơn hàng đã bị huỷ bỏ";
+            public const string OrderIsRecodeInData = "Đơn hàng đã được ghi nhận";
+            public const string OrderIsFail = "Đơn đặt hàng thất bại";
+        }
+
         public class UserTokenConstants
         {
             public const string AuthenticatorKey = "AuthenticatorKey";

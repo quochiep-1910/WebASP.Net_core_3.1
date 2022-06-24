@@ -324,5 +324,15 @@ namespace eShop.Application.Sales
 
             return await _context.SaveChangesAsync();
         }
+
+        public async Task<bool> ChangeStatusOrder(int orderId, int status)
+        {
+            var order = await _context.Orders.FindAsync(orderId);
+            order.Status = (OrderStatus)status;
+
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
     }
 }

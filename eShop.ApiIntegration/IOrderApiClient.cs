@@ -36,5 +36,12 @@ namespace eShop.ApiIntegration
         /// <param name="sendMailViewModel"></param>
         /// <returns></returns>
         Task<bool> CreateSendEmail(SendMailViewModel sendMailViewModel);
+
+        /// <summary>
+        /// Change status order when momo payment success
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<bool> ChangeStatusOrder(ChangeStatusOrder request);
     }
 }

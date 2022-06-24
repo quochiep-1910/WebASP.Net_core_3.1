@@ -1,6 +1,7 @@
 ﻿using eShop.Application.Sales;
 using eShop.Application.System.Users;
 using eShop.Data.EF;
+using eShop.Utilities.Constants;
 using eShop.ViewModels.Sales.Order;
 using eShop.ViewModels.Sales.OrderDetail;
 using eShop.ViewModels.Sales.RevenueStatistics;
@@ -43,6 +44,13 @@ namespace eShop.BackendApi.Controllers
             return Ok(orderId);
         }
 
+        [HttpPost("changeStatusOrder")]
+        public async Task<IActionResult> ChangeStatusOrder([FromBody] ChangeStatusOrder order)
+        {
+            var updateOrder = await _OrderService.ChangeStatusOrder(order.OrderId, order.Status);
+            return Ok(updateOrder);
+        }
+
         [HttpPost("postorderdetail")]
         public async Task<IActionResult> CreateOrderDetail([FromBody] List<OrderDetailViewModel> request)
         {
@@ -63,7 +71,7 @@ namespace eShop.BackendApi.Controllers
         {
             var order = await _OrderService.GetById(orderId);
             if (order == null)
-                return BadRequest("Không tim thấy mã hoá đơn");
+                return BadRequest(SystemConstants.OrderConstants.CannotFindOrderCode);
             return Ok(order);
         }
 

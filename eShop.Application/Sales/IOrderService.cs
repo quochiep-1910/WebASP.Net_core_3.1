@@ -14,6 +14,8 @@ namespace eShop.Application.Sales
 
         Task<int> Update(OrderUpdateRequest request);
 
+        Task<bool> ChangeStatusOrder(int orderId, int status);
+
         Task<int> Delete(int orderId);
 
         Task<OrderViewModel> GetById(int orderId);

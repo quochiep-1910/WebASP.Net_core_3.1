@@ -68,15 +68,29 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="shopper-info">
+
                                 <form class="form-horizontal" asp-action="Checkout" asp-controller="Cart" method="post">
                                     <input asp-for="CheckoutModel.UserId" type="hidden">
                                     <input asp-for="CheckoutModel.ShipName" required id="txtName" type="text" placeholder="Tên">
                                     <input asp-for="CheckoutModel.ShipEmail" required id="txtEmail" type="email" placeholder="Email">
                                     <input asp-for="CheckoutModel.ShipAddress" required type="text" placeholder="Địa chỉ">
                                     <input asp-for="CheckoutModel.ShipPhoneNumber" required id="txtPhone" type="number" placeholder="Số điện thoại">
+                                    @*<button asp-action="MomoPaymentCheckOut" type="submit" class="btn btn-primary">
+                                            <img src="https://developers.momo.vn/v3/vi/img/logo.svg" style="width: 26px;" alt="My Site Logo">
+                                            Pay With MoMo
+                                        </button>*@
 
-                                    <button type="submit" class="btn btn-primary">Purchase</button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <img src="https://developers.momo.vn/v3/vi/img/logo.svg" alt="My Site Logo">
+                                        Purchase
+                                    </button>
                                 </form>
+                                @*<form class="form-horizontal" asp-action="MomoPaymentCheckOut" asp-controller="Cart" method="post">
+                                        <button type="submit" class="btn btn-primary">
+                                            <img src="https://developers.momo.vn/v3/vi/img/logo.svg" alt="My Site Logo">
+                                            Pay With MoMo
+                                        </button>
+                                    </form>*@
                             </div>
                         </div>
                     </div>

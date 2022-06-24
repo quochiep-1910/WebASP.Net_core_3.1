@@ -48,6 +48,22 @@ namespace eShop.ApiIntegration
             return Int32.Parse(orderId.Result);
         }
 
+        public async Task<bool> ChangeStatusOrder(ChangeStatusOrder request)
+        {
+            //1.Khởi tạo
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration[SystemConstants.AppSettings.BaseAddress]);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions); //lấy token
+
+            var json = JsonConvert.SerializeObject(request); //convert json to string
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync($"/api/Orders/changeStatusOrder", httpContent);
+
+            return response.IsSuccessStatusCode;
+        }
+
         public async Task<bool> CreateOrderDetail(List<OrderDetailViewModel> request)
         {
             //1.Khởi tạo
