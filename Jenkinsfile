@@ -11,25 +11,25 @@ pipeline {
 
     stage("build BackEndApi") {
       steps {
-        cd .\eShop.BackendApi\
-        dotnet build
-        dotnet run
+      sh  " cd .\\eShop.BackendApi\\ "
+      sh "  dotnet build "  
+      sh " dotnet run " 
         }
       }
     
     stage("build AdminApp") {
       steps {
-        cd .\eShop.AdminApp\
-        dotnet build
-        dotnet run
+      sh " cd .\\eShop.AdminApp\\ "    
+      sh " dotnet build "  
+      sh "  dotnet run "  
         }
       }
 
     stage("build WebApp") {
       steps {
-        cd .\eShop.WebApp\
-        dotnet build
-        dotnet run
+      sh " cd .\\eShop.WebApp\\ "   
+      sh " dotnet build "   
+      sh " dotnet run "  
         
       }
     }
