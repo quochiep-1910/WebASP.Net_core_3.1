@@ -5,17 +5,17 @@ pipeline {
     stages {
         stage('Restore packages'){
            steps{
-              'dotnet restore ASP.Net_Core.sln'
+              dotnet restore ASP.Net_Core.sln
             }
          }        
         stage('Clean'){
            steps{
-              'dotnet clean ASP.Net_Core.sln --configuration Release'
+              dotnet clean ASP.Net_Core.sln --configuration Release
             }
          }
         stage('Build'){
            steps{
-               'dotnet build ASP.Net_Core.sln --configuration Release --no-restore'
+               dotnet build ASP.Net_Core.sln --configuration Release --no-restore
             }
          }
     }
