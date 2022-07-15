@@ -92,8 +92,8 @@
 
                     <div class="form-group">
                         <label asp-for="ParentId" class="form-check-label"></label>
-                        <select id="list">
-                            <input type="hidden" asp-for="ParentId" />
+                        <select id="list" asp-for="ParentId">
+                            @*<input type="hidden" asp-for="ParentId"  />*@
                         </select>
                     </div>
 

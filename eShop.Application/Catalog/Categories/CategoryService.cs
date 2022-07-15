@@ -56,6 +56,11 @@ namespace eShop.Application.Catalog.Categories
                 Status = (Status)request.status,
                 CategoryTranslations = translations
             };
+            if (request.ParentId != null)
+            {
+                category.ParentId = request.ParentId;
+            }
+
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
             return category.Id;
