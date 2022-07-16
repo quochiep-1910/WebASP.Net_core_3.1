@@ -42,7 +42,7 @@ namespace eShop.Data.Migrations
                         on o.ID = od.OrderID
                         inner join Products p
                         on od.ProductID =p.ID
-                        where o.OrderDate <= cast(@toDate as date) and o.OrderDate >= cast(@fromDate as date)
+                        where o.OrderDate <= cast(@toDate as date) and o.OrderDate >= cast(@fromDate as date) and o.Status = 3
                         group by o.OrderDate
                    END";
             migrationBuilder.Sql(sp);
