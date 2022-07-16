@@ -154,7 +154,8 @@ namespace eShop.WebApp.Controllers
         {
             if (!ModelState.IsValid)
                 return View(model);
-            model.origin = Request.Headers["origin"];
+            //model.origin = Request.Headers["origin"];
+            model.origin = "https://localhost:44339";
             var result = await _userApiClient.ForgotPassword(model);
 
             if (result)
